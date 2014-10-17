@@ -12,6 +12,7 @@ namespace Frontend
         /// Der Haupteinstiegspunkt für die Anwendung.
         /// GITCOMMENTAR MOE
         /// Alfred Loran
+        /// dies ist ein test funktioniert git?
         /// </summary>
         [STAThread]
         static void Main()
