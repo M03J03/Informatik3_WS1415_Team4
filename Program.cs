@@ -8,12 +8,13 @@ namespace Frontend
 {
     static class Program
     {
+        
         /// <summary>
         /// Der Haupteinstiegspunkt für die Anwendung.
         /// GITCOMMENTAR MOE
         /// Alfred Loran
         /// Fabian Bosch
-        /// dies ist ein test funktioniert git?
+        /// dies ist ein test funktioniert git? test test test
         /// </summary>
         [STAThread]
         static void Main()
