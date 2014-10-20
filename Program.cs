@@ -15,6 +15,7 @@ namespace Frontend
         /// Alfred Loran
         /// Fabian Bosch
         /// dies ist ein test funktioniert git? test test test
+        /// Eugen get test
         /// </summary>
         [STAThread]
         static void Main()
