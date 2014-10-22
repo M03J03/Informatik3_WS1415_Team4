@@ -5,6 +5,7 @@ using System.Text;
 
 namespace DragonsAndRabbits.Client
 {
+    //Test
     class ClientGUI
     {
     }
