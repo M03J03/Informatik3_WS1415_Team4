@@ -59,6 +59,16 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client\Buffer.cs" />
+    <Compile Include="Client\ClientGUI.cs" />
+    <Compile Include="Client\Connector.cs" />
+    <Compile Include="Client\Controler.cs" />
+    <Compile Include="Client\Dragon.cs" />
+    <Compile Include="Client\Map.cs" />
+    <Compile Include="Client\Parser.cs" />
+    <Compile Include="Client\Player.cs" />
+    <Compile Include="Client\Staghunt.cs" />
+    <Compile Include="Client\Storage.cs" />
     <Compile Include="DefaultGui.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -95,6 +105,11 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>
     <VisualStudio AllowExistingFolder="true" />
