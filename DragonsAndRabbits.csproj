@@ -69,19 +69,6 @@
     <Compile Include="Client\Player.cs" />
     <Compile Include="Client\Staghunt.cs" />
     <Compile Include="Client\Storage.cs" />
-    <Compile Include="DefaultGui.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DefaultGui.Designer.cs">
-      <DependentUpon>DefaultGui.cs</DependentUpon>
-    </Compile>
-    <Compile Include="IBackend.cs" />
-    <Compile Include="IPositionable.cs" />
-    <Compile Include="ITile.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="test\Backend.cs" />
-    <Compile Include="test\Entity.cs" />
-    <Compile Include="test\MapCell.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
@@ -104,10 +91,6 @@
       <ProductName>Windows Installer 4.5</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
