@@ -11,13 +11,7 @@ namespace Frontend
         
         /// <summary>
         /// Der Haupteinstiegspunkt für die Anwendung.
-        /// GITCOMMENTAR MOE
-        /// Alfred Loran
-        /// Fabian Bosch
-        /// dies ist ein test funktioniert git? test test test
-        /// Eugen get test
-        /// Roman-test
-        /// Fabi Standrechner test
+        
         /// </summary>
         [STAThread]
         static void Main()
