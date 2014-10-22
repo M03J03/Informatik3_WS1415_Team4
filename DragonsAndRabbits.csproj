@@ -67,6 +67,7 @@
     <Compile Include="Client\Map.cs" />
     <Compile Include="Client\Parser.cs" />
     <Compile Include="Client\Player.cs" />
+    <Compile Include="Client\Rabbit.cs" />
     <Compile Include="Client\Staghunt.cs" />
     <Compile Include="Client\Storage.cs" />
   </ItemGroup>
