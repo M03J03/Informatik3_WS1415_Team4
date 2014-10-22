@@ -7,5 +7,8 @@ namespace DefaultGui.Client
 {
     class Map
     {
+
+        enum fieldType {water,forest,rocky,grassland};
+
     }
 }
