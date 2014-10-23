@@ -7,5 +7,6 @@ namespace DragonsAndRabbits.Client
 {
     class Connector
     {
+        ///test
     }
 }
