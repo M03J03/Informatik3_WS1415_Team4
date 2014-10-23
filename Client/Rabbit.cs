@@ -124,12 +124,12 @@ namespace DragonsAndRabbits.Client {
         //This method starts the stagHuntGame. The method neds
         public void stagHunt(Player player1, Player player2) {
             Contract.Requires(player1 != null && player2 != null);
-           // Contract.Requires((getPlayer1().getXCoordinate() == this.getXCoordinate()) && (getPlayer1().getYCoordinate() == this.getYCoordinate()));
-           // Contract.Requires((getPlayer2().getXCoordinate() == this.getXCoordinate()) && (getPlayer2().getYCoordinate() == this.getYCoordinate()));
-           // Contract.Requires(player1.isBusy() == true && player2,isBusy() == true);
-           // Contract.Ensures(player1.isBusy() == true && player2, isBusy() == true);
-           // Contract.Ensures((getPlayer1().getXCoordinate() == this.getXCoordinate()) && (getPlayer1().getYCoordinate() == this.getYCoordinate()));
-           // Contract.Ensures((getPlayer2().getXCoordinate() == this.getXCoordinate()) && (getPlayer2().getYCoordinate() == this.getYCoordinate()));
+            Contract.Requires((getPlayer1().getXCoordinate() == this.getXCoordinate()) && (getPlayer1().getYCoordinate() == this.getYCoordinate()));
+            Contract.Requires((getPlayer2().getXCoordinate() == this.getXCoordinate()) && (getPlayer2().getYCoordinate() == this.getYCoordinate()));
+            Contract.Requires(player1.isBusy() && player2.isBusy());
+            Contract.Ensures(player1.isBusy() && player2.isBusy());
+            Contract.Ensures((getPlayer1().getXCoordinate() == this.getXCoordinate()) && (getPlayer1().getYCoordinate() == this.getYCoordinate()));
+            Contract.Ensures((getPlayer2().getXCoordinate() == this.getXCoordinate()) && (getPlayer2().getYCoordinate() == this.getYCoordinate()));
             setPlayer1(player1);
             setPlayer2(player2);
         }
