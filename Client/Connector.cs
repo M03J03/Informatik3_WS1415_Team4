@@ -16,11 +16,11 @@ namespace DragonsAndRabbits.Client
         //This method make the connection to the server.
         public void login(String ip, int port)
         {
-            Contract.Requires(ip != null && (ip.Length <= 16 && ip.Length >= 6));
+            Contract.Requires(ip != null && (ip.Length <= 16 && ip.Length >= 7));
             Contract.Requires(port > 0 && port <= 65535);
             Contract.Ensures(ip != null && (port > 0 && port <= 65535));
 
-            if (ip == null || (ip.Length < 6 || ip.Length > 16))
+            if (ip == null || (ip.Length < 7 || ip.Length > 16))
             {
                 throw new Exception("The ip is null");
             }
@@ -37,6 +37,20 @@ namespace DragonsAndRabbits.Client
             {
                 this.port = port;
             }
+        }
+
+       //Gets the ip
+        public string getIP()
+        {
+            Contract.Ensures(ip != null && (ip.Length <= 16 && ip.Length >= 7)); //<-- only != null when method login is activated
+            return ip;
+        }
+
+       //gets the porNumber
+        public int getPort()
+        {
+            Contract.Ensures(port > 0 && port <= 65535); //<-- only not 0 when method login is activated
+            return port;
         }
 
         //Method to recieve messages from the server
