@@ -55,6 +55,7 @@ namespace DragonsAndRabbits.Client
 
         private void setScore(int score)
         {
+            Contract.Ensures(score >= 0);
             this.score = score;
         }
 
@@ -89,6 +90,7 @@ namespace DragonsAndRabbits.Client
         //This Method get the Y-Coordinate
         public int getY()
         {
+            Contract.Ensures(y >= 0);
             return y;
         }
 
