@@ -6,14 +6,25 @@ using DragonsAndRabbits.Client;
 using System.Diagnostics.Contracts;
 
 namespace DragonsAndRabbits.Client {
-    class Controler {
+    public class Controler {
 
         private ClientGUI gui = null;
         private Player player = null;
+        private string message;
 
         //Constructor get a static v
         public Controler(ClientGUI gui) {
             this.gui = gui;
+        }
+
+        public Controler()
+        {
+            // TODO: Complete member initialization
+        }
+
+        //Gets the message
+        public string getMessage() {
+            return message;
         }
 
         //This method is responsible to let the player move left.
@@ -45,6 +56,7 @@ namespace DragonsAndRabbits.Client {
         public void sendMessage(string message) {
             Contract.Requires(message.Length > 0);
             Contract.Ensures(message.Length > 0);
+            this.message = message;
         }
 
         // this method gets the written messages from other player to show the on the chatbox. This methos is running in a Thread.
