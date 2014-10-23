@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 
 namespace DragonsAndRabbits.Client
 {
-    class Dragon
+    public class Dragon
     {
         private static int dragonNumber = 0;
         private int id;
@@ -47,7 +47,7 @@ namespace DragonsAndRabbits.Client
             return id;
         }
 
-        //Method set a first Player in game
+        //Method sets a first Player in game
         private void setFirstPlayer(Player firstPlayer)
         {
             Contract.Assume(firstPlayer is Player, "Type is not Player!");
@@ -70,7 +70,7 @@ namespace DragonsAndRabbits.Client
             return firstPlayer;
         }
 
-        //Methode set a cecond Player in game,it checks - is first player same the second Player
+        //Methode to set a cecond Player in game,it checks - is first player same the second Player
 
         private void setSecondPlayer(Player secondPlayer)
         {

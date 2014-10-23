@@ -94,6 +94,18 @@ namespace DragonsAndRabbits.Client
             return y;
         }
 
+        //Method to set actual status of the Player.
+        private void setBusy()
+        {
+            this.busy = true;
+        }
+
+        //Method to get actual status of the Player.
+        public Boolean isBusy()
+        {
+            return busy;
+        }
+
         //This method starts the fight.
         public void figth()
         {
