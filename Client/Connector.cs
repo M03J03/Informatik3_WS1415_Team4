@@ -6,17 +6,37 @@ using System.Net.Sockets;
 
 namespace DragonsAndRabbits.Client
 {
-    class Connector
+   public class Connector
     {
-        Socket s = null;
-        Buffer b = null;
+        private Socket s = null;
+        private Buffer b = null;
+        private string ip = null;
+        private int port = 0;
 
         //This method make the connection to the server.
         public void login(String ip, int port)
         {
-            Contract.Requires(ip != null && ip.Length <= 16);
+            Contract.Requires(ip != null && (ip.Length <= 16 && ip.Length >= 6));
             Contract.Requires(port > 0 && port <= 65535);
             Contract.Ensures(ip != null && (port > 0 && port <= 65535));
+
+            if (ip == null || (ip.Length < 6 || ip.Length > 16))
+            {
+                throw new Exception("The ip is null");
+            }
+            else
+            {
+                this.ip = ip;
+            }
+
+            if (port <= 0 || port > 65535)
+            {
+                throw new Exception("Wrong Portnumber please insert a number between 1 and 65535");
+            }
+            else 
+            {
+                this.port = port;
+            }
         }
 
         //Method to recieve messages from the server
