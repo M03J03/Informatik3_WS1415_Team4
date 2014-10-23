@@ -97,6 +97,7 @@
     <Compile Include="Client\Rabbit.cs" />
     <Compile Include="Client\Staghunt.cs" />
     <Compile Include="Client\Storage.cs" />
+    <Compile Include="Client\Test.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include=".git\objects\info\" />

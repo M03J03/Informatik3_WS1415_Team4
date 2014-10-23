@@ -14,9 +14,9 @@ namespace DragonsAndRabbits.Client
         //
 
 
-        public static ClientGUI getGUI() {
-            return this;
-        }
+        //public static ClientGUI getGUI() {
+        //    return th
+        //}
 
     }
 }

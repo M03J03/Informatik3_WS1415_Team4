@@ -51,8 +51,8 @@ namespace DragonsAndRabbits.Client {
             return tmp;
             
 
-            Contract.ValueAtReturn<string> (bufferArrayList[0]);
-            Contract.Ensures(bufferArrayList.RemoveAt(0));
+           // Contract.ValueAtReturn<string> (bufferArrayList[0]);
+           // Contract.Ensures(bufferArrayList.RemoveAt(0));
 
         }
 

@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 
 namespace DragonsAndRabbits.Client
 {
-    class Player
+     public class Player
     {
         private int id;
         private String name;
