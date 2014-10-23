@@ -71,6 +71,7 @@ namespace DragonsAndRabbits.Client
 
         private void setX(int x)
         {
+            Contract.Requires(x<0);
             this.x = x;
         }
 
