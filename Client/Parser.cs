@@ -28,14 +28,17 @@ namespace DragonsAndRabbits.Client
 
             Contract.Requires(inputFromBuffer.Length > 0);
             Contract.Ensures(inputFromBuffer.Length > 0);
-            AnalyzeBuffer(inputFromBuffer);
+            analyzeBuffer(inputFromBuffer);
 
         }
 
-        private void AnalyzeBuffer(String bufferInput)
+        private void analyzeBuffer(String bufferInput)
         {
 
-
+            Contract.Requires(bufferInput.Contains("begin:"));
+            Contract.Requires(bufferInput.Contains("end:"));
+            Contract.Requires(bufferInput.IndexOf("begin:") < bufferInput.IndexOf("end:"));
+      
 
         }
 
