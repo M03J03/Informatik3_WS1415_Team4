@@ -8,7 +8,7 @@ namespace DragonsAndRabbits.Client
     class Map
     {
 
-        enum fieldType {water,forest,rocky,grassland};
+        enum fieldType { walkable, wall, forest, water, huntable };
 
     }
 }
