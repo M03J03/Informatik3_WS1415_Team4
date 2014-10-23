@@ -6,7 +6,7 @@ using System.Text;
 namespace DragonsAndRabbits.Client
 {
     //Test
-    class ClientGUI
+    public class ClientGUI
     {
 
         //because there is no agreement concerning the layout and the functionality of the ClientGUI yet, this class is empty.

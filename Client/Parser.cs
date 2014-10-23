@@ -6,13 +6,14 @@ using System.Diagnostics.Contracts;
 
 namespace DragonsAndRabbits.Client
 {
-    class Parser
+    public class Parser
     {
 
         String inputFromBuffer;
         String[] stringArrayOfValidMsg;
         String[] validPrompts;
          enum state  {update, delete};
+         String input;
 
 
 
@@ -42,18 +43,21 @@ namespace DragonsAndRabbits.Client
 
         }
 
-
+        public String getInput()
+        {
+            return input;
+        }
 
         public void getInputFromBuffer(String inputFromBuffer)
         {
-
+            
             Contract.Requires(inputFromBuffer.Length > 0);
             Contract.Ensures(inputFromBuffer.Length > 0);
             analyzeBuffer(inputFromBuffer);
-
+            this.input = inputFromBuffer;
         }
 
-        private void analyzeBuffer(String bufferInput)
+        public void analyzeBuffer(String bufferInput)
         {
 
             Contract.Requires(bufferInput.Contains("begin:"));
@@ -86,6 +90,7 @@ namespace DragonsAndRabbits.Client
                     
                 // MSGS at Position[i] contains a Rule to resolve the receiver of the message;
                 // Send valid MSG to Receiver with validationOfMessage = true;
+                
 
 
 
@@ -93,7 +98,6 @@ namespace DragonsAndRabbits.Client
 
 
         }
-
 
         private void sendMsgToListener(String Msg, bool isValid){
                Contract.Ensures(Msg.Length > 0);
