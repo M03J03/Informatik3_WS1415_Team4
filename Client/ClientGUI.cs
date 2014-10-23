@@ -8,5 +8,11 @@ namespace DragonsAndRabbits.Client
     //Test
     class ClientGUI
     {
+
+
+        public static ClientGUI getGUI() {
+            return this;
+        }
+
     }
 }
