@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{C77F56C4-1604-426B-A7D0-87D7A3D65EC5}</ProjectGuid>
+    <ProjectGuid>{7E5F39B7-C4FE-492B-963D-315F5847263C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <NoStandardLibraries>false</NoStandardLibraries>
     <AssemblyName>WindowsApplication</AssemblyName>
@@ -67,15 +67,11 @@
     <None Include=".git\logs\HEAD" />
     <None Include=".git\logs\refs\heads\master" />
     <None Include=".git\logs\refs\remotes\origin\HEAD" />
-    <None Include=".git\objects\pack\pack-76f208238b7c2670211c16deeb435f8c3046feb1.idx" />
-    <None Include=".git\objects\pack\pack-76f208238b7c2670211c16deeb435f8c3046feb1.pack" />
+    <None Include=".git\objects\pack\pack-7577f44b5902fb3fd7f40a87d5f509c5c300d2d4.idx" />
+    <None Include=".git\objects\pack\pack-7577f44b5902fb3fd7f40a87d5f509c5c300d2d4.pack" />
     <None Include=".git\packed-refs" />
     <None Include=".git\refs\heads\master" />
     <None Include=".git\refs\remotes\origin\HEAD" />
-    <None Include="COMMITMESSAGE" />
-    <None Include="config" />
-    <None Include="description" />
-    <None Include="HEAD" />
     <None Include="hooks\applypatch-msg.sample" />
     <None Include="hooks\commit-msg.sample" />
     <None Include="hooks\post-commit.sample" />
