@@ -12,7 +12,8 @@ namespace DragonsAndRabbits.Client
         private String name;
         private int score;
         private Boolean busy = false;
-        private int x, y;
+        private int xCoordinate;
+        private int yCoordinate;
         private static int playerNumber = 0;
 
         //Generates an object of Player.
@@ -64,34 +65,34 @@ namespace DragonsAndRabbits.Client
             return score;
         }
 
-        //This Method get the X-Coordinate
-        private void setX(int x)
+        //Sets the xCoordinate
+        private void setXCoordinate(int i)
         {
-            Contract.Requires(x >= 0);
-            Contract.Ensures(x >= 0);
-            this.x = x;
+            Contract.Requires(i >= 0);
+            Contract.Ensures(i >= 0);
+            this.xCoordinate = i;
         }
 
-        //This Method get the X-Coordinate
-        public int getX()
+        //Get the xCoordinate
+        public int getXCoordinate()
         {
-            Contract.Ensures(x >= 0);
-            return x;
+            Contract.Ensures(xCoordinate >= 0);
+            return xCoordinate;
         }
 
-        //This Method set the Y-Coordinate
-        private void setY(int y)
+        //Sets the xCoordinate
+        private void setYCoordinate(int i)
         {
-            Contract.Requires(y >= 0);
-            Contract.Ensures(y >= 0);
-            this.y = y;
+            Contract.Requires(i >= 0);
+            Contract.Ensures(i >= 0);
+            this.yCoordinate = i;
         }
 
-        //This Method get the Y-Coordinate
-        public int getY()
+        //Gets the y-Coordinate
+        public int getYCoordinate()
         {
-            Contract.Ensures(y >= 0);
-            return y;
+            Contract.Ensures(xCoordinate >= 0);
+            return xCoordinate;
         }
 
         //Method to set actual status of the Player.
