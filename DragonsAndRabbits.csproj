@@ -98,6 +98,7 @@
     <Compile Include="Client\Staghunt.cs" />
     <Compile Include="Client\Storage.cs" />
     <Compile Include="Client\Test.cs" />
+    <Compile Include="Exceptions\PlayerIsBusyException.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include=".git\objects\info\" />

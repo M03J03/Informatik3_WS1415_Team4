@@ -220,7 +220,7 @@ namespace DragonsAndRabbits.Client {
             Contract.Ensures((getPlayer2().getXCoordinate() == this.getXCoordinate()) && (getPlayer2().getYCoordinate() == this.getYCoordinate()));                   
         }
 
-        private void startStagHung() 
+        private void startStagHunt() 
         {
             //do something
         }
