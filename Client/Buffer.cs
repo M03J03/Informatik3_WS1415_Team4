@@ -12,7 +12,7 @@ namespace DragonsAndRabbits.Client
     {
 
         private static Buffer instance = null;
-        ArrayList bufferArrayList = null;
+        List<String> bufferList = null;
 
 
 
@@ -23,7 +23,7 @@ namespace DragonsAndRabbits.Client
 
         private Buffer()
         {
-            bufferArrayList = new ArrayList();
+            bufferList = new List<String>();
         }
 
         /// <summary>
@@ -49,18 +49,18 @@ namespace DragonsAndRabbits.Client
         /// <param name="messagetoBuffer"></param>
         public void addMessage(String messagetoBuffer)
         {
-            Contract.Requires(bufferArrayList != null);
+            Contract.Requires(bufferList != null);
 
             //sichert eine angelegte bufferArrayList zu. 
-            if (bufferArrayList == null)
+            if (bufferList == null)
             {
                 Buffer b = DragonsAndRabbits.Client.Buffer.Instance;
             }
 
-            this.bufferArrayList.Add(messagetoBuffer);
+            this.bufferList.Add(messagetoBuffer);
 
-            Contract.Ensures(bufferArrayList.Count > 0, "nothing sent to the bufferArrayList");
-            Contract.Ensures(bufferArrayList.Count == Contract.OldValue(bufferArrayList.Count) + 1);
+            Contract.Ensures(bufferList.Count > 0, "nothing sent to the bufferArrayList");
+            Contract.Ensures(bufferList.Count == Contract.OldValue(bufferList.Count) + 1);
         }
 
         /// <summary>
@@ -69,12 +69,12 @@ namespace DragonsAndRabbits.Client
         /// <returns>String from buffer at index [0] OR null</returns>
         public string getMessage()
         {
-            Contract.Requires(bufferArrayList.Count > 0);
+            Contract.Requires(bufferList.Count > 0);
             String tmp;
 
-            if (bufferArrayList.Count > 0)
+            if (bufferList.Count > 0)
             {
-                tmp = (String)bufferArrayList[0];
+                tmp = (String)bufferList[0];
                 removeMessage();
             }
             else
@@ -82,7 +82,7 @@ namespace DragonsAndRabbits.Client
                 tmp = null;
             }
 
-            Contract.Ensures(bufferArrayList.Count == Contract.OldValue(bufferArrayList.Count) - 1);
+            Contract.Ensures(bufferList.Count == Contract.OldValue(bufferList.Count) - 1);
             return tmp;
 
 
@@ -95,11 +95,11 @@ namespace DragonsAndRabbits.Client
         /// </summary> 
         private void removeMessage()
         {
-            Contract.Requires(bufferArrayList.Count > 0);
+            Contract.Requires(bufferList.Count > 0);
 
-            bufferArrayList.RemoveAt(0);
+            bufferList.RemoveAt(0);
 
-            Contract.Ensures(bufferArrayList.Count == Contract.OldValue(bufferArrayList.Count) - 1);
+            Contract.Ensures(bufferList.Count == Contract.OldValue(bufferList.Count) - 1);
 
 
         }
@@ -109,11 +109,11 @@ namespace DragonsAndRabbits.Client
         /// </summary>
         public void flushBuffer()
         {
-            Contract.Requires(bufferArrayList != null);
+            Contract.Requires(bufferList != null);
 
-            if (bufferArrayList != null)
+            if (bufferList != null)
             {
-                bufferArrayList.Clear();
+                bufferList.Clear();
             }
 
             Contract.Ensures(isEmpty());
@@ -130,7 +130,7 @@ namespace DragonsAndRabbits.Client
         {
             bool condition = true; //default
 
-            if (bufferArrayList.Count > 0)
+            if (bufferList.Count > 0)
             {
                 condition = false;
             }
