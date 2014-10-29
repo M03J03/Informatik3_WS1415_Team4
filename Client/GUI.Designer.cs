@@ -28,11 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.sendButton = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // sendButton
+            // 
+            this.sendButton.Location = new System.Drawing.Point(197, 203);
+            this.sendButton.Name = "sendButton";
+            this.sendButton.Size = new System.Drawing.Size(75, 23);
+            this.sendButton.TabIndex = 0;
+            this.sendButton.Text = "send";
+            this.sendButton.UseVisualStyleBackColor = true;
+            this.sendButton.Click += new System.EventHandler(this.sendButton_Click);
+            // 
+            // GUI
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.sendButton);
+            this.Name = "GUI";
             this.Text = "GUI";
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private System.Windows.Forms.Button sendButton;
     }
 }
