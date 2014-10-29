@@ -11,7 +11,7 @@ namespace DragonsAndRabbits.Client
     public class Controler
     {
 
-        private ClientGUI gui = null;
+        private GUI gui = null;
         private Map map;
         private Player player = null;
         private string message;
@@ -28,7 +28,7 @@ namespace DragonsAndRabbits.Client
         /// Creating an object with the commited parameter.
         /// </summary>
         /// <param name="gui"></param>
-        public Controler(ClientGUI gui, Map map)
+        public Controler(GUI gui, Map map)
         {
             setGUI(gui);
             setMap(map);
@@ -38,7 +38,7 @@ namespace DragonsAndRabbits.Client
         /// Sets the gui,
         /// </summary>
         /// <param name="gui"></param>
-        private void setGUI(ClientGUI gui)
+        private void setGUI(GUI gui)
         {
             if (gui == null)
             {
@@ -54,7 +54,7 @@ namespace DragonsAndRabbits.Client
         /// gets the Client gui Object.
         /// </summary>
         /// <returns></returns>
-        public ClientGUI getGUI()
+        public GUI getGUI()
         {
             return gui;
         }
