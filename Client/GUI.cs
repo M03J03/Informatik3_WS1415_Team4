@@ -8,6 +8,10 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace DragonsAndRabbits.Client
+
+    //because there is no agreement concerning the layout and the functionality of the ClientGUI yet, this class is empty.
+    //as long as there are no guidelines for functionality and therefore needed elements, this state will last.
+    //
 {
     public partial class GUI : Form
     {
