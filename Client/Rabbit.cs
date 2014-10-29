@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics.Contracts;
-using DragonsAndRabbits.Exceptions
+using DragonsAndRabbits.Exceptions;
 
 namespace DragonsAndRabbits.Client {
     public class Rabbit {
