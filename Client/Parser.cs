@@ -11,38 +11,32 @@ namespace DragonsAndRabbits.Client
 
         String inputFromBuffer;
         String[] stringArrayOfValidMsg;
-        String[] validPrompts;
-         enum state  {update, delete};
-         String input;
+        String[] validPrompts = {   "upd",
+                                    "del",
+                                    "map",
+                                    "mes",
+                                    "result",
+                                    "challenge",
+                                    "players",
+                                    "yourid",
+                                    "time",
+                                    "online",
+                                    "ents",
+                                    "player",
+                                    "server",
+                                    "",
+                                    "opponent",
+                                    "dragon",
+                                    "cell",
+                                    "ok",
+                                    "unknown",
+                                    "no",
+                                    "invalid" };
 
-
-
+        String input;
 
         public Parser()
         {
-
-            validPrompts[0] = "upd";            //
-            validPrompts[1] = "del";            //
-            validPrompts[2] = "map";            //
-            validPrompts[3] = "mes";            //
-            validPrompts[4] = "result";         //
-            validPrompts[5] = "challenge";      //
-            validPrompts[6] = "players";         //
-            validPrompts[7] = "yourid";         //
-            validPrompts[8] = "time";           //
-            validPrompts[9] = "online";        //
-            validPrompts[10] = "ents";          //
-            validPrompts[11] = "player";       //
-            validPrompts[12] = "server";        //
-            validPrompts[13] = "";              //  
-            validPrompts[14] = "opponent";      //
-            validPrompts[15] = "dragon";        //
-            validPrompts[16] = "cell";          //
-            validPrompts[17] = "ok";            //
-            validPrompts[18] = "unknown";       //
-            validPrompts[19] = "no";            //
-            validPrompts[20] = "invalid";       //
-
 
         }
 
@@ -51,17 +45,19 @@ namespace DragonsAndRabbits.Client
             return input;
         }
 
+        //without param
         public void getInputFromBuffer(String inputFromBuffer)
         {
-            
+
             Contract.Requires(inputFromBuffer.Length > 0);
-            Contract.Ensures(inputFromBuffer.Length > 0);
             analyzeBuffer(inputFromBuffer);
             this.input = inputFromBuffer;
+            Contract.Ensures(inputFromBuffer.Length > 0);
         }
 
         public void analyzeBuffer(String bufferInput)
         {
+            //OLD PRE / POST BUFFER
 
             Contract.Requires(bufferInput.Contains("begin:"));
             Contract.Requires(bufferInput.Contains("end:"));
@@ -78,10 +74,10 @@ namespace DragonsAndRabbits.Client
                 stringArrayOfValidMsg[counter] = validMsg;
             }
 
-                checkMsg(stringArrayOfValidMsg);
+            checkMsg(stringArrayOfValidMsg);
         }
 
-        public void checkMsg(String [] msgs)
+        public void checkMsg(String[] msgs)
         {
             Contract.Requires(msgs.Length >= 0);
             Contract.Ensures(msgs.Length >= 0);
@@ -109,9 +105,10 @@ namespace DragonsAndRabbits.Client
             }
         }
 
-        public void sendMsgToListener(String Msg, bool isValid){
-               Contract.Ensures(Msg.Length > 0);
-               Contract.Ensures(isValid);
+        public void sendMsgToListener(String Msg, bool isValid)
+        {
+            Contract.Ensures(Msg.Length > 0);
+            Contract.Ensures(isValid);
         }
 
         //Message begin:upd
