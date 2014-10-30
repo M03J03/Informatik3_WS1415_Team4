@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics.Contracts;
+using DragonsAndRabbits.Exceptions;
 
 namespace DragonsAndRabbits.Client
 {
@@ -11,12 +12,13 @@ namespace DragonsAndRabbits.Client
         private static int dragonNumber = 0;
         private int id;
         private Player firstPlayer, secondPlayer;
-        private Boolean busy;
         private String name;
-        private int x, y;
+        private int xCoordinate, yCoordinate;
 
 
-
+        /// <summary>
+        ///  Generates an object of Dragon.
+        /// </summary>
         public Dragon()
         {
             setID(++dragonNumber);
@@ -25,7 +27,11 @@ namespace DragonsAndRabbits.Client
 
         //Setter and Getter
 
-        //Method to set ID of the dragon
+
+        /// <summary>
+        /// Method to set ID of the dragon
+        /// </summary>
+        /// <param name="id"></param>
         private void setID(int id)
         {
             Contract.Requires(id > 0);
@@ -33,21 +39,29 @@ namespace DragonsAndRabbits.Client
 
             if (id < 0)
             {
-                throw new Exception("ID may not < 0 be");
+                throw new NullReferenceException("ID may not < 0 be");
             }
 
             this.id = id;
         }
 
-        //Method to get actual Number of the Dragon
+
+        /// <summary>
+        /// Method to get actual Number of the Dragon
+        /// </summary>
+        /// <returns></returns>
         public int getID()
         {
-            Contract.Requires(id > 0);
+
             Contract.Ensures(id > 0);
             return id;
         }
 
-        //Method sets a first Player in game
+
+        /// <summary>
+        /// Method sets a first Player
+        /// </summary>
+        /// <param name="firstPlayer"></param>
         private void setFirstPlayer(Player firstPlayer)
         {
             Contract.Assume(firstPlayer is Player, "Type is not Player!");
@@ -55,23 +69,30 @@ namespace DragonsAndRabbits.Client
 
             if (firstPlayer == null)
             {
-                throw new Exception("First Player is null");
+                throw new NullReferenceException("First Player is null");
             }
 
             this.firstPlayer = firstPlayer;
         }
 
-        //Method to get First Player
+
+        /// <summary>
+        /// Method to get First Player
+        /// </summary>
+        /// <returns></returns>
         public Player getFirstPlayer()
         {
-            Contract.Requires(firstPlayer != null);
+
             Contract.Ensures(firstPlayer != null);
 
             return firstPlayer;
         }
 
-        //Methode to set a cecond Player in game,it checks - is first player same the second Player
 
+        /// <summary>
+        /// Methode to set a cecond Player in game,it checks - is first player same the second Player
+        /// </summary>
+        /// <param name="secondPlayer"></param>
         private void setSecondPlayer(Player secondPlayer)
         {
             Contract.Assume(firstPlayer is Player, "Type must Player be!");
@@ -81,7 +102,7 @@ namespace DragonsAndRabbits.Client
 
             if (secondPlayer == null)
             {
-                throw new Exception("Second Player is null");
+                throw new NullReferenceException("Second Player is null");
             }
 
             if (firstPlayer.Equals(secondPlayer))
@@ -90,16 +111,23 @@ namespace DragonsAndRabbits.Client
             }
         }
 
-        //Method to get Second Player
+
+        /// <summary>
+        /// Method to get Second Player
+        /// </summary>
+        /// <returns></returns>
         public Player getSecondPlayer()
         {
-            Contract.Requires(secondPlayer != null);
+
             Contract.Ensures(secondPlayer != null);
 
             return secondPlayer;
         }
 
-        //Method to set name of the dragon
+
+        /// <summary>
+        /// Method to set name of the dragon
+        /// </summary>
         private void setName()
         {
             Contract.Requires(id > 0);
@@ -107,76 +135,127 @@ namespace DragonsAndRabbits.Client
             this.name = "Dragon" + getID();
         }
 
-        //Method to get the name of the Dragon
+
+        /// <summary>
+        /// Method to get the name of the Dragon
+        /// </summary>
+        /// <returns></returns>
         public String getName()
         {
-            Contract.Requires(name != null && name.Length > 3);
+
             Contract.Ensures(name != null && name.Length > 3);
+            if (name == null || name.Length < 3)
+            {
+                throw new NullReferenceException("There is no name existing or the name length is smaller than 3!");
+            }
             return this.name;
         }
 
-        //Method to set actual status of the Dragon. If two Player in the game - is status Busy
-        private void setBusy()
-        {
-            if (firstPlayer != null && secondPlayer != null)
-            {
-                this.busy = true;
-            }
 
-        }
-
-        //Method to get actual status of the Dragon
-        public Boolean isBusy()
-        {
-            return busy;
-        }
-
-        //Method to set X-Coordinate
-        private void setX(int x)
+        /// <summary>
+        /// Method to set X-Coordinate
+        /// </summary>
+        /// <param name="x"></param>
+        private void setXCoordinate(int x)
         {
             Contract.Requires(x >= 0);
             Contract.Ensures(x >= 0);
-            this.x = x;
+            this.xCoordinate = x;
         }
 
-        //Method to get X-Coordinate
-        public int getX()
+
+        /// <summary>
+        /// Method to get X-Coordinate
+        /// </summary>
+        /// <returns></returns>
+        public int getXCoordinate()
         {
-            Contract.Ensures(x >= 0);
+            Contract.Ensures(xCoordinate >= 0);
 
-            return x;
+            return xCoordinate;
         }
 
-        //Method to set Y-Coordinate
-        private void setY(int y)
+
+        /// <summary>
+        /// Method to set Y-Coordinate
+        /// </summary>
+        /// <param name="y"></param>
+        private void setYCoordinate(int y)
         {
             Contract.Requires(y >= 0);
             Contract.Ensures(y >= 0);
 
-            this.y = y;
+            this.yCoordinate = y;
         }
 
-        //Method to get Y-Coordinate
-        public int getY()
+
+        /// <summary>
+        /// Method to get Y-Coordinate
+        /// </summary>
+        /// <returns></returns>
+        public int getYCoordinate()
         {
-            Contract.Ensures(y >= 0);
+            Contract.Ensures(yCoordinate >= 0);
 
-            return y;
+            return yCoordinate;
         }
 
-        //Method starts the stagHunt game
-        public void stagHunt(Player firstPlayer, Player secondPlayer)
+
+        /// <summary>
+        /// Method starts the stagHunt game with two Players
+        /// </summary>
+        /// <param name="firstPlayer"></param>
+        /// <param name="secondPlayer"></param>
+        public void dragonFight(Player firstPlayer, Player secondPlayer)
         {
 
             Contract.Requires(firstPlayer != null && secondPlayer == null);
-            Contract.Requires((getFirstPlayer().getX() == this.getX()) && (getFirstPlayer().getY() == this.getY()));
-            Contract.Requires((getSecondPlayer().getX() == this.getX()) && (getSecondPlayer().getY() == this.getY()));
+            Contract.Requires((getFirstPlayer().getXCoordinate() == this.getXCoordinate()) && (getFirstPlayer().getYCoordinate() == this.getYCoordinate()));
+            Contract.Requires((getSecondPlayer().getXCoordinate() == this.getXCoordinate()) && (getSecondPlayer().getYCoordinate() == this.getYCoordinate()));
             Contract.Requires(firstPlayer.isBusy() && secondPlayer.isBusy());
+
+            if (player1 == null || player2 == null)
+            {
+                throw new NullReferenceException("First Player or Second Player is null!");
+            }
+            else
+            {
+                try
+                {
+                    if ((!((getFirstPlayer().isBusy())) && (!(getSecondPlayer().isBusy()))) && ((getFirstPlayer().getXCoordinate() == this.getXCoordinate()) && (getSecondPlayer().getYCoordinate() == this.getYCoordinate())))
+                    {
+                        setPlayer1(player1);
+                        setPlayer2(player2);
+
+                        if (this.sH.isSelected())
+                        {
+                            startDragonFight();
+                        }
+                    }
+                    else
+                    {
+                        throw new PlayerIsBusyException("One of the both players is busy!");
+                    }
+                }
+                catch (PlayerIsBusyException ex)
+                {
+                    Console.Error.WriteLine(ex.Message);
+                }
+            }
+
             Contract.Ensures(firstPlayer.isBusy() && secondPlayer.isBusy());
-            Contract.Ensures((getFirstPlayer().getX() == this.getX()) && (getFirstPlayer().getY() == this.getY()));
-            Contract.Ensures((getSecondPlayer().getX() == this.getX()) && (getSecondPlayer().getY() == this.getY()));
+            Contract.Ensures((getFirstPlayer().getXCoordinate() == this.getXCoordinate()) && (getFirstPlayer().getYCoordinate() == this.getYCoordinate()));
+            Contract.Ensures((getSecondPlayer().getXCoordinate() == this.getXCoordinate()) && (getSecondPlayer().getYCoordinate() == this.getYCoordinate()));
+
+
+
             setFirstPlayer(firstPlayer);
             setSecondPlayer(secondPlayer);
+        }
+
+        private void startDragonFight()
+        {
+
         }
     }
 }
