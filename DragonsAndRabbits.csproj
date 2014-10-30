@@ -87,7 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\Buffer.cs" />
-    <Compile Include="Client\ClientGUI.cs" />
     <Compile Include="Client\Connector.cs" />
     <Compile Include="Client\Controler.cs" />
     <Compile Include="Client\Dragon.cs" />
@@ -98,11 +97,20 @@
     <Compile Include="Client\Staghunt.cs" />
     <Compile Include="Client\Storage.cs" />
     <Compile Include="Client\Test.cs" />
+    <Compile Include="Exceptions\NoMessageException.cs" />
+    <Compile Include="Exceptions\NoPlayerException.cs" />
     <Compile Include="Exceptions\PlayerIsBusyException.cs" />
+    <Compile Include="Client\GUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Client\GUI.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include=".git\objects\info\" />
     <Folder Include=".git\refs\tags\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="GUI.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>
