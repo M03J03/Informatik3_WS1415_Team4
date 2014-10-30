@@ -97,13 +97,18 @@
     <Compile Include="Client\Staghunt.cs" />
     <Compile Include="Client\Storage.cs" />
     <Compile Include="Client\Test.cs" />
+    <Compile Include="Exceptions\ManagerInputException.cs" />
     <Compile Include="Exceptions\NoMessageException.cs" />
     <Compile Include="Exceptions\NoPlayerException.cs" />
+    <Compile Include="Exceptions\NotConnectedException.cs" />
+    <Compile Include="Exceptions\NoValidMessageExcecption.cs" />
+    <Compile Include="Exceptions\PlayerException.cs" />
     <Compile Include="Exceptions\PlayerIsBusyException.cs" />
     <Compile Include="Client\GUI.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Client\GUI.Designer.cs" />
+    <Compile Include="Exceptions\WrongWidthOrHeigthException.cs" />
     <Compile Include="GUI\GUI.cs">
       <SubType>Form</SubType>
     </Compile>
