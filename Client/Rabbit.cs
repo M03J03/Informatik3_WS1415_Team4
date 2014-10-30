@@ -186,8 +186,7 @@ namespace DragonsAndRabbits.Client {
             Contract.Requires(player1 != null && player2 != null);
             Contract.Requires((getPlayer1().getXCoordinate() == this.getXCoordinate()) && (getPlayer1().getYCoordinate() == this.getYCoordinate()));
             Contract.Requires((getPlayer2().getXCoordinate() == this.getXCoordinate()) && (getPlayer2().getYCoordinate() == this.getYCoordinate()));
-            Contract.Requires(player1.isBusy() && player2.isBusy());
-            Contract.Ensures(player1.isBusy() && player2.isBusy());
+            Contract.Requires(player1.isBusy() && player2.isBusy());            
         
             if (player1 == null || player2 == null)
             {
@@ -217,7 +216,8 @@ namespace DragonsAndRabbits.Client {
                 }
             }
             Contract.Ensures((getPlayer1().getXCoordinate() == this.getXCoordinate()) && (getPlayer1().getYCoordinate() == this.getYCoordinate()));
-            Contract.Ensures((getPlayer2().getXCoordinate() == this.getXCoordinate()) && (getPlayer2().getYCoordinate() == this.getYCoordinate()));                   
+            Contract.Ensures((getPlayer2().getXCoordinate() == this.getXCoordinate()) && (getPlayer2().getYCoordinate() == this.getYCoordinate()));
+            Contract.Ensures(player1.isBusy() && player2.isBusy());    
         }
 
         private void startStagHunt() 
