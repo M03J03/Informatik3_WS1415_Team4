@@ -104,6 +104,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Client\GUI.Designer.cs" />
+    <Compile Include="GUI\GUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\GUI.Designer.cs">
+      <DependentUpon>GUI.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include=".git\objects\info\" />
