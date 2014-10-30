@@ -21,7 +21,7 @@ namespace DragonsAndRabbits.Client
         /// </summary>
         public Controler()
         {
-
+            
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace DragonsAndRabbits.Client
         public Controler(GUI gui, Map map)
         {
             setGUI(gui);
-            setMap(map);
+            setMap(map);            
         }
 
         /// <summary>
@@ -267,19 +267,14 @@ namespace DragonsAndRabbits.Client
         }
 
         /// <summary>
-        /// this method gets the written messages from other player to show the on the chatbox. This methos is running in a Thread. The method is also connected to the parser
+        /// this method gets the written messages from other player to show the on the chatbox. This methos is running in a Thread. The method is also connected to the Manager
         /// </summary>
         /// <param name="p"></param>
-        public void revieveMessage(Parser p)
+        public void revieveMessage(int sourceID, String source, String text)
         {
-            if (p == null)
-            {
-                throw new NullReferenceException("There is no Parser!");
-            }
-            else
-            {
-                //i have no idea
-            }
+            Manager m = Manager.getManager();
+
+            //i need the specification for the gui. i dont know which components exists and whats the name of them
         }
     }
 }
