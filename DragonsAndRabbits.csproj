@@ -90,12 +90,12 @@
     <Compile Include="Client\Connector.cs" />
     <Compile Include="Client\Controler.cs" />
     <Compile Include="Client\Dragon.cs" />
+    <Compile Include="Client\Manager.cs" />
     <Compile Include="Client\Map.cs" />
+    <Compile Include="Client\MapCell.cs" />
     <Compile Include="Client\Parser.cs" />
     <Compile Include="Client\Player.cs" />
     <Compile Include="Client\Rabbit.cs" />
-    <Compile Include="Client\Staghunt.cs" />
-    <Compile Include="Client\Storage.cs" />
     <Compile Include="Client\Test.cs" />
     <Compile Include="Exceptions\ManagerInputException.cs" />
     <Compile Include="Exceptions\NoMessageException.cs" />
@@ -104,10 +104,6 @@
     <Compile Include="Exceptions\NoValidMessageExcecption.cs" />
     <Compile Include="Exceptions\PlayerException.cs" />
     <Compile Include="Exceptions\PlayerIsBusyException.cs" />
-    <Compile Include="Client\GUI.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Client\GUI.Designer.cs" />
     <Compile Include="Exceptions\WrongWidthOrHeigthException.cs" />
     <Compile Include="GUI\GUI.cs">
       <SubType>Form</SubType>
@@ -119,9 +115,6 @@
   <ItemGroup>
     <Folder Include=".git\objects\info\" />
     <Folder Include=".git\refs\tags\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="GUI.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>
