@@ -66,17 +66,19 @@ namespace DragonsAndRabbits.Client
             // Contract.Requires(bufferInput.LastIndexOf("begin:") < bufferInput.IndexOf("end:")); INCORRECT because begin:foo begin:fuu end:fuu begin:test end:test would be incorrect
 
             // get the first begins to filter messagenumber
+
+            // get the first begins to filter messagenumber
             int foundBegin = 0;
             int foundEnd = 0;
             int found = 0;
             int totFinds = 0;
-            int indexOfEnd = 0;
             int[] allIndexOfBegin = new int[100];
             int[] allIndexOfEnd = new int[100];
+            int indexOfEnd = 0;
             String checkForEnd = "end:";
             String message;
 
-            // get all begins
+            // get all "begin:"
             for (int i = 0; i < bufferInput.Length; i++)
             {
                 foundBegin = bufferInput.IndexOf("begin:", i);
@@ -88,10 +90,13 @@ namespace DragonsAndRabbits.Client
                     i = foundBegin;
                 }
                 else
+                {
                     break;
+                }
             }
+            totFinds = 0;
 
-            // get all ends
+            //get all "end:"
             for (int i = 0; i < bufferInput.Length; i++)
             {
                 foundEnd = bufferInput.IndexOf("end:", i);
@@ -103,20 +108,19 @@ namespace DragonsAndRabbits.Client
                     i = foundEnd;
                 }
                 else
+                {
                     break;
+                }
             }
 
-            totFinds = 0;
-            //MessageNumber
+            // Contains the Messagnumber
             String messagenumber = (bufferInput.Substring(allIndexOfBegin[0] + 6, allIndexOfBegin[1] - 6));
 
             checkForEnd = string.Concat(checkForEnd, messagenumber).Trim();
             found = 0;
-            totFinds = 0;
 
             for (int i = 6; i < bufferInput.Length; i++)
             {
-                Console.WriteLine("found" + found);
                 found = bufferInput.IndexOf(checkForEnd, i);
 
                 if (found >= 0)
@@ -125,14 +129,22 @@ namespace DragonsAndRabbits.Client
                     i = found;
                 }
                 else
+                {
                     break;
+                }
             }
 
-
-            // Content of Message
+            // Contains the remaining Message after filtering messageID
             message = bufferInput.Substring(((allIndexOfBegin[1])), indexOfEnd - (allIndexOfBegin[1]));
 
-            checkMsg(stringArrayOfValidMsg);
+            //check if there is another "begin:" in the remaining message
+            if (message.Contains("begin:"))
+            {
+
+
+
+
+            }
 
 
             Contract.Ensures(bufferInput.LastIndexOf("begin:") < bufferInput.IndexOf("end:"));
