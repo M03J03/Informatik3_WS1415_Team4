@@ -59,22 +59,22 @@ namespace DragonsAndRabbits.Client
         //***************************CONTROL*MANAGEMENT********************
 
 
-        public void opponentInfo(int pID, String decission, int points, int total)
+        public void opponentInfo(String type, String info)
         {
 
         }
 
-        public void challengeInfo(int challengeID, String type, bool accepted)
+        public void challengeInfo(String type, String info)
         {
 
         }
 
-        public void dragonInfo(int id, String type,bool busy, String decission, int x, int y)
+        public void dragonInfo(String type, String info)
         {
 
         }
 
-        public void playerInfo(int id, String type, bool busy, String name, int x, int y, int points)
+        public void playerInfo(String type, String info)
         {
 
         }
@@ -91,34 +91,27 @@ namespace DragonsAndRabbits.Client
             }
         }
 
-        public void mapCellInfo(int row, int col, List<String> props)
+        public void mapCellInfo(String type, String info)
         {
-            if (props.Count < (row * col))
-            {
-                throw new ManagerInputException("mapcell information is corrupt! ");
-            }
-            else
-            {
-
-            }
+           
         }
 
-        public void mapInfo (int breite, int höhe, List<MapCell> mcList)
+        public void mapInfo(String type, String info)
         {
 
         }
 
-        public void Msg (int sourceid, String src, String text)
+        public void Msg(String type, String info)
         {
 
         }
 
-        public void update(Dragon d, Player p, MapCell mc)
+        public void update(String type, String info)
         {
 
         }
 
-        public void deleteInfo(Dragon d, Player p)
+        public void deleteInfo(String type, String info)
         {
 
         }

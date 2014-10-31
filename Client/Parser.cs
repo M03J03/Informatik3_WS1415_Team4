@@ -221,7 +221,7 @@ namespace DragonsAndRabbits.Client
 
         public void sendEntitys(String type, String entity)
         {
-            Manager.Instance.dragon(type, entity);
+            Manager.Instance.dragonInfo(type, entity);
 
         }
 
@@ -269,7 +269,7 @@ namespace DragonsAndRabbits.Client
         {
             if (!(o is Dragon) || !(o is Player))
             {
-                throw new NoValidMessageException("invalid object type for this method");
+                throw new Exception("invalid object type for this method");
             }
             else
             {
