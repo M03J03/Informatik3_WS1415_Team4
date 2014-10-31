@@ -24,6 +24,7 @@ namespace DragonsAndRabbits.Client
         private Buffer()
         {
             bufferList = new List<String>();
+            Buffer b = new Buffer();
         }
 
         /// <summary>
@@ -117,6 +118,12 @@ namespace DragonsAndRabbits.Client
             }
 
             Contract.Ensures(isEmpty());
+
+        }
+
+        public static Buffer getBuffer(){
+
+            return Buffer.Instance;
 
         }
 

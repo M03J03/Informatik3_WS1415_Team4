@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics.Contracts;
+using System.Threading;
+using DragonsAndRabbits.Exceptions;
+using DragonsAndRabbits.Client;
 
 namespace DragonsAndRabbits.Client
 {
     public class Parser
     {
-
-        String inputFromBuffer;
+        private Buffer refToBuffer;
+        private Thread fred;
         String[] stringArrayOfValidMsg;
+
         String[] validPrompts = {   "upd",
                                     "del",
                                     "map",
@@ -33,26 +37,24 @@ namespace DragonsAndRabbits.Client
                                     "no",
                                     "invalid" };
 
-        String input;
-
-        public Parser()
+        public Parser(Buffer buffer)
         {
-
+            refToBuffer = buffer;
+            fred = new Thread(new ThreadStart(getInputFromBuffer));
+            fred.IsBackground = true;
+            fred.Start();
         }
 
-        public String getInput()
-        {
-            return input;
-        }
 
-        //without param
-        public void getInputFromBuffer(String inputFromBuffer)
+        
+        private void getInputFromBuffer()
         {
 
-            Contract.Requires(inputFromBuffer.Length > 0);
-            analyzeBuffer(inputFromBuffer);
-            this.input = inputFromBuffer;
-            Contract.Ensures(inputFromBuffer.Length > 0);
+           // Contract.Requires(refToBuffer->Length > 0);
+
+            analyzeBuffer(refToBuffer.getMessage());
+            
+          //  Contract.Ensures(inputFromBuffer.Length > 0);
         }
 
         public void analyzeBuffer(String bufferInput)
@@ -61,20 +63,79 @@ namespace DragonsAndRabbits.Client
 
             Contract.Requires(bufferInput.Contains("begin:"));
             Contract.Requires(bufferInput.Contains("end:"));
-            Contract.Requires(bufferInput.LastIndexOf("begin:") < bufferInput.IndexOf("end:"));
+            // Contract.Requires(bufferInput.LastIndexOf("begin:") < bufferInput.IndexOf("end:")); INCORRECT because begin:foo begin:fuu end:fuu begin:test end:test would be incorrect
 
-            Contract.Ensures(bufferInput.LastIndexOf("begin:") < bufferInput.IndexOf("end:"));
-            int counter = 0;
-            while (bufferInput.Length != 0)
+            // get the first begins to filter messagenumber
+            int foundBegin = 0;
+            int foundEnd = 0;
+            int found = 0;
+            int totFinds = 0;
+            int indexOfEnd = 0;
+            int[] allIndexOfBegin = new int[100];
+            int[] allIndexOfEnd = new int[100];
+            String checkForEnd = "end:";
+            String message;
+
+            // get all begins
+            for (int i = 0; i < bufferInput.Length; i++)
             {
+                foundBegin = bufferInput.IndexOf("begin:", i);
 
-                String validMsg = bufferInput.Substring(bufferInput.LastIndexOf("begin:"), (bufferInput.IndexOf("end:") - bufferInput.LastIndexOf("begin:")));
-                bufferInput = bufferInput.Remove(bufferInput.LastIndexOf("begin:"), (bufferInput.IndexOf("end:") - bufferInput.LastIndexOf("begin:")));
-                counter++;
-                stringArrayOfValidMsg[counter] = validMsg;
+                if (foundBegin >= 0)
+                {
+                    allIndexOfBegin[totFinds] = foundBegin;
+                    totFinds++;
+                    i = foundBegin;
+                }
+                else
+                    break;
             }
 
+            // get all ends
+            for (int i = 0; i < bufferInput.Length; i++)
+            {
+                foundEnd = bufferInput.IndexOf("end:", i);
+
+                if (foundEnd >= 0)
+                {
+                    allIndexOfEnd[totFinds] = foundEnd;
+                    totFinds++;
+                    i = foundEnd;
+                }
+                else
+                    break;
+            }
+
+            totFinds = 0;
+            //MessageNumber
+            String messagenumber = (bufferInput.Substring(allIndexOfBegin[0] + 6, allIndexOfBegin[1] - 6));
+
+            checkForEnd = string.Concat(checkForEnd, messagenumber).Trim();
+            found = 0;
+            totFinds = 0;
+
+            for (int i = 6; i < bufferInput.Length; i++)
+            {
+                Console.WriteLine("found" + found);
+                found = bufferInput.IndexOf(checkForEnd, i);
+
+                if (found >= 0)
+                {
+                    indexOfEnd = found;
+                    i = found;
+                }
+                else
+                    break;
+            }
+
+
+            // Content of Message
+            message = bufferInput.Substring(((allIndexOfBegin[1])), indexOfEnd - (allIndexOfBegin[1]));
+
             checkMsg(stringArrayOfValidMsg);
+
+
+            Contract.Ensures(bufferInput.LastIndexOf("begin:") < bufferInput.IndexOf("end:"));
         }
 
         public void checkMsg(String[] msgs)
@@ -105,158 +166,268 @@ namespace DragonsAndRabbits.Client
             }
         }
 
-        public void sendMsgToListener(String Msg, bool isValid)
+        //***************************CONTROL*MANAGEMENT********************
+
+        /// <summary>
+        /// this method sends the extracted information
+        /// </summary>
+        public void opponentInfo(String type, String oppInfo)
         {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
+            Manager.Instance.opponentInfo(type, oppInfo);
         }
 
-        //Message begin:upd
-        public void sendMsgToUpdater(String Msg, bool isValid)
+        /// <summary>
+        /// this method sends the extracted information
+        /// </summary>
+
+        public void sendChallengeInfo(String type, String chInfo)
         {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
+            Manager.Instance.challengeInfo(type, chInfo);
         }
 
-        // Message begin:del
-        public void sendMsgToBackend(String Msg, bool isValid)
+        /// <summary>
+        /// this method sends the extracted information
+        /// </summary>
+
+        public void sendDragonInfo(String type, String dragonInfo)
         {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
+            Manager.Instance.dragonInfo(type, dragonInfo);
         }
 
-        //Message begin:map
-        public void sendMsgToMap(String Msg, bool isValid)
+        /// <summary>
+        /// this method sends the extracted information
+        /// </summary>
+
+        public void sendPlayerInfo(String type, String playerInf)
         {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
+            Manager.Instance.playerInfo(type, playerInf);
         }
 
-        //Message begin:mes
-        public void sendMsgToMessenger(String Msg, bool isValid)
+        /// <summary>
+        /// this method sends the extracted entity
+        /// </summary>
+
+        public void sendEntitys(String type, String entity)
         {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
+            Manager.Instance.dragon(type, entity);
+
         }
 
-        //Message begin:result
-        public void sendMsgToResulter(String Msg, bool isValid)
+        /// <summary>
+        /// this method sends the extracted information
+        /// </summary>
+
+        public void sendMapCell(String type, String mapcells)
         {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
+            Manager.Instance.mapCellInfo(type, mapcells);
         }
 
-        //Message begin:challenge
-        public void sendMsgToChallenger(String Msg, bool isValid)
+        /// <summary>
+        /// this method sends the extracted information
+        /// </summary>
+
+        public void sendMap(String type, String map)
         {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
+            Manager.Instance.mapInfo(type, map);
         }
 
-        // Message begin:players
-        public void sendMsgToPlayers(String Msg, bool isValid)
+        /// <summary>
+        /// this method sends the extracted information
+        /// </summary>
+
+        public void sendMsg(String type, String message)
         {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
+            //Manager.Instance.msg(type, message);
         }
 
-        // Message begin:yourid
-        public void sendMsgToPlayer(String Msg, bool isValid)
+        /// <summary>
+        /// this method sends the extracted information
+        /// </summary>
+
+        public void sendUpdate(String type, String update)
         {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
+            Manager.Instance.update(type, update);
         }
 
-        // Message begin:time
-        public void sendMsgToBackend(String Msg, bool isValid)
+        /// <summary>
+        /// this method sends the extracted information
+        /// </summary>
+
+        public void sendDelete(String type, Object o)
         {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
+            if (!(o is Dragon) || !(o is Player))
+            {
+                throw new NoValidMessageException("invalid object type for this method");
+            }
+            else
+            {
+                Manager.Instance.deleteInfo(d);
+            }
         }
 
-        // Message begin:online
-        public void sendMsgToBackend(String Msg, bool isValid)
+        /// <summary>
+        /// this method sends the extracted information
+        /// </summary>
+
+        public void sendAnswer(String ans, String info)
         {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
+            Manager.Instance.anwerInfo(ans, info);
         }
 
-        // Message begin:ents
-        public void sendMsgToBackend(String Msg, bool isValid)
-        {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
-        }
+        
 
-        // Message begin:player
-        public void sendMsgToPlayer(String Msg, bool isValid)
-        {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
-        }
+        //public void sendMsgToListener(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
 
-        // Message begin:server
-        public void sendMsgToUNKNOWN(String Msg, bool isValid)
-        {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
-        }
+        ////Message begin:upd
+        //public void sendMsgToUpdater(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
 
-        // Message begin:<empty>
-        public void sendMsgToIGNORE(String Msg, bool isValid)
-        {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
-        }
+        //// Message begin:del
+        //public void sendMsgToBackend(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
 
-        // Message begin:opponent
-        public void sendMsgToChallenger(String Msg, bool isValid)
-        {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
-        }
+        ////Message begin:map
+        //public void sendMsgToMap(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
 
-        // Message begin:dragon
-        public void sendMsgToDragon(String Msg, bool isValid)
-        {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
-        }
+        ////Message begin:mes
+        //public void sendMsgToMessenger(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
 
-        // Message begin:cell
-        public void sendMsgToMap(String Msg, bool isValid)
-        {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
-        }
+        ////Message begin:result
+        //public void sendMsgToResulter(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
 
-        // Message begin:ok
-        public void sendMsgToMessenger(String Msg, bool isValid)
-        {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
-        }
+        ////Message begin:challenge
+        //public void sendMsgToChallenger(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
 
-        // Message begin:unknown
-        public void sendMsgToUNKNOWN(String Msg, bool isValid)
-        {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
-        }
+        //// Message begin:players
+        //public void sendMsgToPlayers(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
 
-        // Message begin:no
-        public void sendMsgToMessenger(String Msg, bool isValid)
-        {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
-        }
+        //// Message begin:yourid
+        //public void sendMsgToPlayer(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
 
-        // Message begin:invalid
-        public void sendMsgToBackend(String Msg, bool isValid)
-        {
-            Contract.Ensures(Msg.Length > 0);
-            Contract.Ensures(isValid);
-        }
+        //// Message begin:time
+        //public void sendMsgToBackend(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
+
+        //// Message begin:online
+        //public void sendMsgToBackend(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
+
+        //// Message begin:ents
+        //public void sendMsgToBackend(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
+
+        //// Message begin:player
+        //public void sendMsgToPlayer(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
+
+        //// Message begin:server
+        //public void sendMsgToUNKNOWN(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
+
+        //// Message begin:<empty>
+        //public void sendMsgToIGNORE(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
+
+        //// Message begin:opponent
+        //public void sendMsgToChallenger(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
+
+        //// Message begin:dragon
+        //public void sendMsgToDragon(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
+
+        //// Message begin:cell
+        //public void sendMsgToMap(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
+
+        //// Message begin:ok
+        //public void sendMsgToMessenger(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
+
+        //// Message begin:unknown
+        //public void sendMsgToUNKNOWN(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
+
+        //// Message begin:no
+        //public void sendMsgToMessenger(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
+
+        //// Message begin:invalid
+        //public void sendMsgToBackend(String Msg, bool isValid)
+        //{
+        //    Contract.Ensures(Msg.Length > 0);
+        //    Contract.Ensures(isValid);
+        //}
 
     }
 }

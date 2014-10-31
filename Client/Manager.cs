@@ -11,7 +11,6 @@ namespace DragonsAndRabbits.Client
     class Manager
     {
         private static Manager instance = null;
-
         private Dragon dragon = null;
         private Player player = null;
         private Rabbit rabbit = null;
@@ -28,10 +27,11 @@ namespace DragonsAndRabbits.Client
         /// </summary>
         private Manager()
         {
+            Buffer buffer = Buffer.getBuffer();
             setDragon();
             setPlayer();
             setRabbit();
-            setParser();
+            setParser(buffer);
             setGUI();
         }
 
@@ -248,11 +248,12 @@ namespace DragonsAndRabbits.Client
         /// sets the aprser object
         /// </summary>
         /// <param name="p"></param>
-        private void setParser() 
+        private void setParser(Buffer buffer) 
         {
             if (parser == null)
             {
-                parser = new Parser.Instance(); //assuming that the Parser is a Singleton too.
+                parser = new Parser(buffer);
+
             }
         }
 
