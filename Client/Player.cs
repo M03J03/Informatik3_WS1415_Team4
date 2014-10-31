@@ -77,7 +77,6 @@ namespace DragonsAndRabbits.Client
         /// <param name="score"></param>
         private void setScore(int score)
         {
-            Contract.Ensures(score >= 0);
             this.score = score;
         }
 
@@ -135,9 +134,9 @@ namespace DragonsAndRabbits.Client
         /// <summary>
         /// Method to set actual status of the Player
         /// </summary>
-        private void setBusy()
+        private void setBusy(Boolean busy)
         {
-            this.busy = true;
+            this.busy = busy;
         }
 
         /// <summary>
@@ -158,6 +157,51 @@ namespace DragonsAndRabbits.Client
         }
 
         public void rest()
+        {
+
+        }
+
+        /// <summary>
+        /// this method to update attribyte of the object Player
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="bysu"></param>
+        /// <param name="yCoordinate"></param>
+        /// <param name="xCoordinate"></param>
+        /// <returns></returns>
+        public Boolean update(int id, Boolean bysu, int yCoordinate, int xCoordinate)
+        {
+            if (this.id == id)
+            {
+                this.setBusy(busy);
+                this.setYCoordinate(yCoordinate);
+                this.setXCoordinate(xCoordinate);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// this method distributes the revieved information
+        /// </summary>
+        /// <param name="d"></param>
+        /// <param name="p"></param>
+        public void deleteInfo(Dragon d, Player p)
+        {
+
+        }
+
+        /// <summary>
+        /// This method starts the skirMishGame. The method neds two player objects
+        /// </summary>
+        /// <param name="player1"></param>
+        /// <param name="player2"></param>
+        public void skirMish(Player player1, Player player2)
+        {
+
+        }
+
+        private void startSkirmish()
         {
 
         }

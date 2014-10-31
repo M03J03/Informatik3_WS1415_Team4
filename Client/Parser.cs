@@ -72,8 +72,8 @@ namespace DragonsAndRabbits.Client
             int foundEnd = 0;
             int found = 0;
             int totFinds = 0;
-            int[] allIndexOfBegin = new int[100];
-            int[] allIndexOfEnd = new int[100];
+            int[] allIndexOfBegin = new int[100];   // This will be changed to List
+            int[] allIndexOfEnd = new int[100];     // This will be changed to List
             int indexOfEnd = 0;
             String checkForEnd = "end:";
             String message;
@@ -156,14 +156,14 @@ namespace DragonsAndRabbits.Client
             Contract.Ensures(msgs.Length >= 0);
 
             bool goOn = true;
-            int Counter = 0;
+            int counter = 0;
             for (int i = 0; i < msgs.Length; i++)
             {
 
                 // while there is no match && there are valid prompts left to compare with
-                while (goOn && (Counter < validPrompts.Length))
+                while (goOn && (counter < validPrompts.Length))
                 {
-                    if (msgs[i].Contains(validPrompts[Counter]))
+                    if (msgs[i].Contains(validPrompts[counter]))
                     {
                         goOn = false;
 
@@ -171,7 +171,7 @@ namespace DragonsAndRabbits.Client
                     }
                     else
                     {
-                        Counter++;
+                        counter++;
                     }
 
                 } // end while
