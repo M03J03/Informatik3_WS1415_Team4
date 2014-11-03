@@ -11,7 +11,6 @@ namespace DragonsAndRabbits.Client
     {
         private int id;
         private Boolean busy = false;
-        private Player player1, player2;
         private String name;
         private int xCoordinate, yCoordinate;
 
@@ -67,80 +66,11 @@ namespace DragonsAndRabbits.Client
         }
 
         /// <summary>
-        /// Method sets a first Player
-        /// </summary>
-        /// <param name="firstPlayer"></param>
-        protected void setPlayer1(Player player1)
-        {
-            Contract.Assume(player1 is Player, "Type is not Player!");
-            Contract.Requires(player1 != null);
-
-            if (player1 == null)
-            {
-                throw new NullReferenceException("First Player is null");
-            }
-
-            this.player1 = player1;
-        }
-
-
-        /// <summary>
-        /// Method to get First Player
-        /// </summary>
-        /// <returns></returns>
-        public Player getPlayer1()
-        {
-
-            Contract.Ensures(player1 != null);
-
-            return player1;
-        }
-
-
-        /// <summary>
-        /// Methode to set a cecond Player in game,it checks - is first player same the second Player
-        /// </summary>
-        /// <param name="secondPlayer"></param>
-        protected void setPlayer2(Player player2)
-        {
-            Contract.Assume(player2 is Player, "Type must Player be!");
-            Contract.Requires(!player2.Equals(player1));
-            Contract.Requires(player2 != null);
-            
-
-            if (player2 == null)
-            {
-                throw new NullReferenceException("Second Player is null");
-            }
-
-            if (player2.Equals(player2))
-            {
-                throw new Exception("Second Player is same First Player");
-            }
-
-            this.player2 = player2;
-        }
-
-
-        /// <summary>
-        /// Method to get Second Player
-        /// </summary>
-        /// <returns></returns>
-        public Player getPlayer2()
-        {
-
-            Contract.Ensures(player2 != null);
-
-            return player2;
-        }
-
-
-        /// <summary>
         /// Method to set name of the dragon
         /// </summary>
         protected void setName(String name)
         {
-            Contract.Requires(name!= null);
+            Contract.Requires(name != null);
             Contract.Requires(name.Length >= 3);
 
             if (name == null || name.Length < 3)
@@ -174,7 +104,8 @@ namespace DragonsAndRabbits.Client
             Contract.Requires(x >= 0);
             Contract.Ensures(x >= 0);
 
-            if (x < 0) {
+            if (x < 0)
+            {
                 throw new Exception("X-Coordinate may not smaller 0 be!");
             }
             this.xCoordinate = x;
