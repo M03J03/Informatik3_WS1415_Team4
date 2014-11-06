@@ -111,6 +111,7 @@
     <Compile Include="GUI\GUI.Designer.cs">
       <DependentUpon>GUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="Piece.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include=".git\objects\info\" />

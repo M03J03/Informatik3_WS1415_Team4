@@ -54,13 +54,17 @@ namespace Connector
         /// <summary>
         /// interaction with server
         /// </summary>
-        private void interactionWithServer()
+        private void recieveFromServer()
         {
-            while (isConnected())
-            {
-                sender.send("Somebody there?!?!");
-                rec.recieve();
-            }
+            rec.recieve();
+        }
+
+        /// <summary>
+        /// Sends a message to the server
+        /// </summary>
+        private void sendToServer(/* Buffer b*/)
+        {
+            sender.send("Somebody there????");
         }
 
         /// <summary>
@@ -68,8 +72,18 @@ namespace Connector
         /// </summary>
         public void start()
         {
-            Thread recieveThread = new Thread(new ThreadStart(interactionWithServer));
-            recieveThread.Start();
+            while (isConnected())
+            {
+                Thread recieveThread = new Thread(new ThreadStart(recieveFromServer));
+                recieveThread.Start();
+                Console.WriteLine("RecieveThread is Running");
+                Thread.Sleep(1000);
+                Console.WriteLine("Thread is slepping");
+                Thread sendThread = new Thread(new ThreadStart(sendToServer));
+                Console.WriteLine("SendThread is Running");
+                Thread.Sleep(1000);
+                Console.WriteLine("Thread is slepping");
+            }
         }
 
 
@@ -111,7 +125,6 @@ namespace Connector
                     NetworkStream stream = client.GetStream();
                     stream.Write(data, 0, data.Length);
                     Console.WriteLine("Sends: {0}", message);
-                    stream.Close(); //Close the stream
                 }
                 catch (ArgumentNullException e)
                 {
@@ -180,27 +193,42 @@ namespace Connector
             /// <returns></returns>
             public string recieve()
             {
-                // Receive the TcpServer.response. 
-                // Buffer to store the response bytes.
-                Byte[] data = new Byte[256];
+                String responseData = null;
 
-                // Get a client stream for writing. 
-                NetworkStream stream = client.GetStream();
+                try
+                {
+                    // Receive the TcpServer.response. 
+                    // Buffer to store the response bytes.
+                    Byte[] data = new Byte[256];
 
-                // String to store the response ASCII representation.
-                String responseData = String.Empty;
+                    // Get a client stream for writing. 
+                    NetworkStream stream = client.GetStream();
 
-                // Read the first batch of the TcpServer response bytes.
-                Int32 bytes = stream.Read(data, 0, data.Length);
-                responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
-                Console.WriteLine("Received: {0}", responseData);
-                stream.Close(); //Close the stream
+                    // String to store the response ASCII representation.
+                    responseData = String.Empty;
+
+                    // Read the first batch of the TcpServer response bytes.
+                    Int32 bytes = stream.Read(data, 0, data.Length);
+                    responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
+                    Console.WriteLine("Received: {0}", responseData);
+                }
+                catch (ArgumentNullException e)
+                {
+                    Console.WriteLine("ArgumentNullException: {0}", e);
+                }
+                catch (SocketException e)
+                {
+                    Console.WriteLine("SocketException: {0}", e);
+                }
                 return responseData;
             }
         }
 
 
-
+        /// <summary>
+        /// Main - Method
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(String[] args)
         {
             Connector con = new Connector();
