@@ -12,10 +12,9 @@ namespace DragonsAndRabbits.Client
     {
 
         private static Buffer instance = null;
+        private readonly int bufferLimit = 200;
         List<String> bufferList = null;
-
-
-
+        
 
         /// <summary>
         /// This constructor only initializes a single (singleton) instance of Buffer. Called from the Singleton procedure -'Instance'
@@ -52,10 +51,15 @@ namespace DragonsAndRabbits.Client
         {
             Contract.Requires(bufferList != null);
 
-            //sichert eine angelegte bufferArrayList zu. 
             if (bufferList == null)
             {
                 Buffer b = DragonsAndRabbits.Client.Buffer.Instance;
+            }
+
+            //at this point, if maximum is reached - one element is killed
+            if (bufferList.Count==bufferLimit)
+            {
+                bufferList.RemoveAt(0);
             }
 
             this.bufferList.Add(messagetoBuffer);
@@ -106,7 +110,7 @@ namespace DragonsAndRabbits.Client
         }
 
         /// <summary>
-        /// this method provides the possibility to delete the whole buffer in case of errors.
+        /// this method provides the possibility to delete the whole buffer in case of errors. hopefully this method is never needed.
         /// </summary>
         public void flushBuffer()
         {
