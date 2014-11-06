@@ -1,176 +1,211 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Net.Sockets;
-using DragonsAndRabbits.Exceptions;
+using System.Threading;
 
-
-namespace DragonsAndRabbits.Client
+namespace Connector
 {
-   public class Connector
+    class Connector
     {
-        private Socket s = null;
-        private Buffer b = null;
-        private string ip = null;
-        private int port = 0;
+
+        private static readonly string server = "127.0.0.1";
+        private static readonly Int32 port = 666;
+
+        //private Buffer buffer = new Buffer();
+        private static TcpClient client = null;
+
+        private Receiever rec;
+        private Sender sender;
+
         private bool connected = false;
-        private string message;
 
-       /// <summary>
-       /// Generates aconnector object mit the commited parameters.
-       /// </summary>
-       /// <param name="ip"></param>
-       /// <param name="port"></param>
-        public Connector(String ip, int port)
+
+        /// <summary>
+        /// Generates a Connector - Objekt and the two objects of Reciever and Sender, too.
+        /// </summary>
+        public Connector()
         {
-            login(ip, port);
+            rec = new Receiever();
+            sender = new Sender();
+            setIsConnected(true);
         }
 
         /// <summary>
-        /// gets the message
+        /// Set if the client is connected or not
+        /// </summary>
+        /// <param name="connected"></param>
+        private void setIsConnected(bool connected)
+        {
+            this.connected = connected;
+        }
+
+        /// <summary>
+        /// Get if client is connected or not.
         /// </summary>
         /// <returns></returns>
-        public String getMessage()
-        {
-            return message;
-        }
-
-        /// <summary>
-        /// sets the message
-        /// </summary>
-        /// <param name="message"></param>
-        private void setMessage(String message)
-        {
-            this.message = message;
-        }
-              
-        /// <summary>
-        /// return if the client is connected or not
-        /// </summary>
-        /// <returns></returns>
-        public bool isConnected()
+        private bool isConnected()
         {
             return connected;
         }
 
         /// <summary>
-        /// sets the parameter ture or false
+        /// interaction with server
         /// </summary>
-        /// <param name="connected"></param>
-        private void setConnected(bool connected)
+        private void interactionWithServer()
         {
-            this.connected = connected;
-        }
-
-        //This method make the connection to the server.
-        public void login(String ip, int port)
-        {
-            Contract.Requires(ip != null && (ip.Length <= 16 && ip.Length >= 7));
-            Contract.Requires(port > 0 && port <= 65535);
-
-            if ((ip == null || (ip.Length < 7 || ip.Length > 16)) && (port <= 0 || port > 65535))
+            while (isConnected())
             {
-                throw new Exception("The ip is null or not long enough or the portnumber is smaller than 0 or bigger than 65535");
+                sender.send("Somebody there?!?!");
+                rec.recieve();
             }
-            else
-            {
-                this.ip = ip;
-                this.port = port;
-                setConnected(true);
-            }
-
-            Contract.Ensures(ip != null && (port > 0 && port <= 65535));
         }
 
         /// <summary>
-        /// gets the ip
+        /// This method starts the interaction with the server.
         /// </summary>
-        /// <returns></returns>
-        public string getIP()
+        public void start()
         {
-            if (!(isConnected()))
-            {
-                throw new NotConnectedException("The client is not connected with the server!");
-            }
-            return ip;
-            Contract.Ensures(ip != null && (ip.Length <= 16 && ip.Length >= 7)); //<-- only != null when method login is activated
+            Thread recieveThread = new Thread(new ThreadStart(interactionWithServer));
+            recieveThread.Start();
         }
 
-        /// <summary>
-        /// gets the portNumber.
-        /// </summary>
-        /// <returns></returns>
-        public int getPort()
-        {
-            if (!(isConnected()))
-            {
-                throw new NotConnectedException("The client is not connected with the server!");
-            }
 
-            return port;
-            Contract.Ensures(port > 0 && port <= 65535); //<-- only not 0 when method login is activated
+        /// <summary>
+        /// Close the connection to the server
+        /// </summary>
+        public void closeConnection()
+        {
+            client.Close();
+            setIsConnected(false);
+            System.Console.WriteLine("I am death");
         }
 
-        /// <summary>
-        /// Method recieve messages from the server
-        /// </summary>
-        /// <param name="message"></param>
-        public void recieveFromServer(String message)
-        {
-            Contract.Requires(message.Length >= 9); //length of message consists of the length of the word begin + blank + the length of the word end
-
-            if (message.Length < 9)
-            {
-                throw new NoValidMessageExcecption("The recieved message have to be at least 9 signs long");
-            }
-            else
-            {
-                setMessage(message);
-            }
-            Contract.Ensures(message.Length >= 9);
-        }
 
         /// <summary>
-        /// Method to send the recieved message into the buffer class. This method is running in a thread
+        /// This class sends to the Server via a TCP connection
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="buff"></param>
-        public void sendToBuffer(String message, Buffer buff)
+        class Sender
         {
-            Contract.Requires(message.Length >= 9);
-            Contract.Requires(buff != null);
+            private TcpClient client;
 
-            if (message.Length < 9)
+            /// <summary>
+            /// Generates a sender object.
+            /// </summary>
+            public Sender()
             {
-                throw new NoMessageException("The recieved message have to be at least 9 signs long");
+                setTcpClient(server, port);
             }
-            else
+
+            /// <summary>
+            /// Sends a message to the server.
+            /// </summary>
+            /// <param name="message"></param>
+            public void send(string message)
             {
-                this.b = buff;
-                if (b.isEmpty())
+                try
                 {
-                    //do some stuff
+                    Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
+                    NetworkStream stream = client.GetStream();
+                    stream.Write(data, 0, data.Length);
+                    Console.WriteLine("Sends: {0}", message);
+                    stream.Close(); //Close the stream
+                }
+                catch (ArgumentNullException e)
+                {
+                    Console.WriteLine("ArgumentNullException: {0}", e);
+                }
+                catch (SocketException e)
+                {
+                    Console.WriteLine("SocketException: {0}", e);
                 }
             }
-            Contract.Ensures(buff != null && message.Length >= 9);
+
+            /// <summary>
+            /// Sets the TcpClient - Object
+            /// </summary>
+            /// <param name="server"></param>
+            /// <param name="port"></param>
+            private void setTcpClient(String server, Int32 port)
+            {
+                client = new TcpClient(server, port);
+            }
+
+            /// <summary>
+            /// Gets the TcpClient
+            /// </summary>
+            /// <returns></returns>
+            public TcpClient getTcpClient()
+            {
+                return client;
+            }
         }
 
         /// <summary>
-        /// this method send the message to the server. This method gets the parsed message from the parser and sneds it to server.
+        /// Recieves the response from the server
         /// </summary>
-        /// <param name="message"></param>
-        public void sendToServer(String message)
+        class Receiever
         {
-            Contract.Requires(message.Length >= 9);
-            if (message.Length < 9)
+            private TcpClient client;
+
+            public Receiever()
             {
-                throw new NoMessageException("The recieved message have to be at least 9 signs long");
+                setTcpClient(server, port);
             }
-            else
-            { 
-                //do some stuff
+
+            /// <summary>
+            /// Sets the TcpClient - Object
+            /// </summary>
+            /// <param name="server"></param>
+            /// <param name="port"></param>
+            private void setTcpClient(String server, Int32 port)
+            {
+                client = new TcpClient(server, port);
             }
-            Contract.Ensures(message.Length != 9);
+
+            /// <summary>
+            /// Gets the TcpClient
+            /// </summary>
+            /// <returns></returns>
+            public TcpClient getTcpClient()
+            {
+                return client;
+            }
+
+            /// <summary>
+            /// Recieve the respone of the server
+            /// </summary>
+            /// <returns></returns>
+            public string recieve()
+            {
+                // Receive the TcpServer.response. 
+                // Buffer to store the response bytes.
+                Byte[] data = new Byte[256];
+
+                // Get a client stream for writing. 
+                NetworkStream stream = client.GetStream();
+
+                // String to store the response ASCII representation.
+                String responseData = String.Empty;
+
+                // Read the first batch of the TcpServer response bytes.
+                Int32 bytes = stream.Read(data, 0, data.Length);
+                responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
+                Console.WriteLine("Received: {0}", responseData);
+                stream.Close(); //Close the stream
+                return responseData;
+            }
+        }
+
+
+
+        static void Main(String[] args)
+        {
+            Connector con = new Connector();
+            con.start();
+            System.Console.ReadLine();
         }
     }
 }
