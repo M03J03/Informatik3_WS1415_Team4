@@ -12,6 +12,7 @@ namespace DragonsAndRabbits.Client
     {
 
         private static Buffer instance = null;
+        private static readonly Object bufferLock = new Object(); 
         private readonly int bufferLimit = 200;
         List<String> bufferList = null;
         
@@ -23,11 +24,10 @@ namespace DragonsAndRabbits.Client
         private Buffer()
         {
             bufferList = new List<String>();
-            Buffer b = new Buffer();
         }
 
         /// <summary>
-        /// procedure to get only one global accessible instance of Buffer
+        /// procedure to get only one global accessible instance of Buffer - threadsave initialisation guaranteed.
         //// </summary>
         /// <return> Buffer - instance</return>
         public static Buffer Instance
@@ -35,9 +35,15 @@ namespace DragonsAndRabbits.Client
             get
             {
                 if (instance == null)
-                {
-                    instance = new Buffer();
-                }
+                  //double checked thread savety. NOT only one Thread can get here.
+                    lock (bufferLock)
+                    {
+                        if (instance == null)
+                        {
+                            //only ONE thread can get here
+                            instance = new Buffer();
+                        }
+                    }
                 return instance;
             }
         }
