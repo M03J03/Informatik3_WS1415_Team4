@@ -94,6 +94,7 @@
     <Compile Include="Client\Map.cs" />
     <Compile Include="Client\MapCell.cs" />
     <Compile Include="Client\Parser.cs" />
+    <Compile Include="Client\Piece.cs" />
     <Compile Include="Client\Player.cs" />
     <Compile Include="Client\Rabbit.cs" />
     <Compile Include="Client\Test.cs" />

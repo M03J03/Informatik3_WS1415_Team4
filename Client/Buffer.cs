@@ -12,7 +12,7 @@ namespace DragonsAndRabbits.Client
     {
 
         private static Buffer instance = null;
-        private static readonly Object bufferLock = new Object(); 
+        private static readonly Object bufferInitLock = new Object(); 
         private readonly int bufferLimit = 200;
         List<String> bufferList = null;
         
@@ -31,19 +31,22 @@ namespace DragonsAndRabbits.Client
         //// </summary>
         /// <return> Buffer - instance</return>
         public static Buffer Instance
+            
         {
             get
             {
                 if (instance == null)
-                  //double checked thread savety. NOT only one Thread can get here.
-                    lock (bufferLock)
+                {
+                    //double checked thread savety. NOT only one Thread can get here.
+                    lock (bufferInitLock)
                     {
                         if (instance == null)
                         {
-                            //only ONE thread can get here
+                            //only ONE Thread can get here.
                             instance = new Buffer();
                         }
                     }
+                }
                 return instance;
             }
         }
@@ -140,7 +143,7 @@ namespace DragonsAndRabbits.Client
         //method for comparing and for analytics
 
         /// <summary>
-        /// this method is to compare, to test and to analyze the state of the buffer
+        /// this method is to compare, to test and to analyze the state of the buffer - returns true if there is nothing in the buffer at all.
         /// </summary>
         /// <returns>bool condition</returns>
         public bool isEmpty()
@@ -155,5 +158,24 @@ namespace DragonsAndRabbits.Client
 
             return condition;
         }
+
+        /// <summary>
+        /// this method is to compare, to test and to analyze the state of the buffer - returns true if the bufferLimit is reached
+        /// </summary>
+        /// <returns>bool condition</returns>
+        public bool hasLimitReached()
+        {
+            bool condition = false; //default
+
+            if (bufferList.Count == bufferLimit)
+            {
+                condition = true;
+            }
+
+
+            return condition;
+        }
+   
+
     }
 }
