@@ -28,7 +28,7 @@ namespace DragonsAndRabbits.Client
 
         /// <summary>
         /// procedure to get only one global accessible instance of Buffer
-        /// </summary>
+        //// </summary>
         /// <return> Buffer - instance</return>
         public static Buffer Instance
         {
