@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace DragonsAndRabbits.Client
 {
@@ -59,19 +60,36 @@ namespace DragonsAndRabbits.Client
         public void addMessage(String messagetoBuffer)
         {
             Contract.Requires(bufferList != null);
+             if (bufferList == null)
+             {
+               Buffer b = DragonsAndRabbits.Client.Buffer.Instance;
+             }
 
-            if (bufferList == null)
+            try
             {
-                Buffer b = DragonsAndRabbits.Client.Buffer.Instance;
+                //locks the bufferlist exclusively for the following operations.
+                Monitor.Enter (bufferList);
+                
+                    //at this point, if maximum is reached - one element is killed
+                    if (bufferList.Count == bufferLimit)
+                    {
+                        bufferList.RemoveAt(0);
+                    }
+                    this.bufferList.Add(messagetoBuffer); 
+                
+                Monitor.Exit(bufferList);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                //animates waiting threads waiting for acces to the buffer.
+                Monitor.Pulse(bufferList); 
             }
 
-            //at this point, if maximum is reached - one element is killed
-            if (bufferList.Count==bufferLimit)
-            {
-                bufferList.RemoveAt(0);
-            }
-
-            this.bufferList.Add(messagetoBuffer);
 
             Contract.Ensures(bufferList.Count > 0, "nothing sent to the bufferArrayList");
             Contract.Ensures(bufferList.Count == Contract.OldValue(bufferList.Count) + 1);
@@ -80,21 +98,37 @@ namespace DragonsAndRabbits.Client
         /// <summary>
         /// this method pulls out one message (at index 0) from the buffer. Calls the removeMessage(). 
         /// </summary>
-        /// <returns>String from buffer at index [0] OR null</returns>
+        /// <param name="parser"></param>
         public string getMessage()
         {
             Contract.Requires(bufferList.Count > 0);
-            String tmp;
 
-            if (bufferList.Count > 0)
+
+            String tmp=null;
+
+            try
             {
-                tmp = (String)bufferList[0];
-                removeMessage();
+                Monitor.Enter(bufferList);
+
+                if (bufferList.Count > 0)
+                {
+                    tmp = (String)bufferList[0];
+                    removeMessage();
+                }
+                
+                //Monitor.Exit() 
             }
-            else
+            catch(Exception e)
             {
-                tmp = null;
+                throw e;
             }
+
+            finally
+            {
+                Monitor.Exit(bufferList); //throws exception, if monitor.enter was not called before
+            }
+
+
 
             Contract.Ensures(bufferList.Count == Contract.OldValue(bufferList.Count) - 1);
             return tmp;
