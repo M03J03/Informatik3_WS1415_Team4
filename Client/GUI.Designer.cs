@@ -2,7 +2,6 @@
 {
     partial class GUI
     {
-        /*
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -243,7 +242,5 @@
         private System.Windows.Forms.Button resumeButton;
         private System.Windows.Forms.Button finishedButton;
         private System.Windows.Forms.Label playerIdLabel;
-         * */
     }
-         
 }

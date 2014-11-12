@@ -14,7 +14,6 @@ namespace DragonsAndRabbits.Client {
         private Player player2;
         private int xCoordinate;
         private int yCoordinate;
-        private Staghunt sH;
 
         /// <summary>
         /// Generates an object of rabit. Id counts ++ for each instance. The Name ob the Rabit is also set by the name Rabbit and the actuel istance number of the object.
@@ -199,11 +198,7 @@ namespace DragonsAndRabbits.Client {
                         if ((!((getPlayer1().isBusy())) && (!(getPlayer2().isBusy()))) && ((getPlayer1().getXCoordinate() == this.getXCoordinate()) && (getPlayer2().getYCoordinate() == this.getYCoordinate())))
                         {
                             setPlayer1(player1);
-                            setPlayer2(player2);
-
-                            if(this.sH.isSelected()) {
-                                startStagHunt();
-                            }
+                            setPlayer2(player2);                       
                         }
                         else
                         {

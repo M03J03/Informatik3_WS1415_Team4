@@ -185,7 +185,7 @@ namespace DragonsAndRabbits.Client
         /// </summary>
         public void opponentInfo(String type, String oppInfo)
         {
-            Manager.Instance.opponentInfo(type, oppInfo);
+            //Manager.Instance.opponentInfo(type, oppInfo);
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace DragonsAndRabbits.Client
 
         public void sendChallengeInfo(String type, String chInfo)
         {
-            Manager.Instance.challengeInfo(type, chInfo);
+            //Manager.Instance.challengeInfo(type, chInfo);
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace DragonsAndRabbits.Client
 
         public void sendDragonInfo(String type, String dragonInfo)
         {
-            Manager.Instance.dragonInfo(type, dragonInfo);
+            //Manager.Instance.dragonInfo(type, dragonInfo);
         }
 
         /// <summary>
@@ -212,7 +212,7 @@ namespace DragonsAndRabbits.Client
 
         public void sendPlayerInfo(String type, String playerInf)
         {
-            Manager.Instance.playerInfo(type, playerInf);
+            //Manager.Instance.playerInfo(type, playerInf);
         }
 
         /// <summary>
@@ -221,7 +221,7 @@ namespace DragonsAndRabbits.Client
 
         public void sendEntitys(String type, String entity)
         {
-            Manager.Instance.dragonInfo(type, entity);
+            //Manager.Instance.dragonInfo(type, entity);
 
         }
 
@@ -231,7 +231,7 @@ namespace DragonsAndRabbits.Client
 
         public void sendMapCell(String type, String mapcells)
         {
-            Manager.Instance.mapCellInfo(type, mapcells);
+            //Manager.Instance.mapCellInfo(type, mapcells);
         }
 
         /// <summary>
@@ -240,7 +240,7 @@ namespace DragonsAndRabbits.Client
 
         public void sendMap(String type, String map)
         {
-            Manager.Instance.mapInfo(type, map);
+            //Manager.Instance.mapInfo(type, map);
         }
 
         /// <summary>
@@ -258,7 +258,7 @@ namespace DragonsAndRabbits.Client
 
         public void sendUpdate(String type, String update)
         {
-            Manager.Instance.update(type, update);
+            //Manager.Instance.update(type, update);
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace DragonsAndRabbits.Client
             }
             else
             {
-                Manager.Instance.deleteInfo(d);
+               // Manager.Instance.deleteInfo(d);
             }
         }
 

@@ -29,7 +29,10 @@ namespace DragonsAndRabbits.Client
         /// </summary>
         private Manager()
         {
-            Buffer buffer = Buffer.Instance;
+            Buffer buffer = Buffer.getBuffer();
+            setDragon();
+            setPlayer();
+            setRabbit();
             setParser(buffer);
             setGUI();
         }
@@ -216,15 +219,15 @@ namespace DragonsAndRabbits.Client
         /// sets the player object
         /// </summary>
         /// <param name="player"></param>
-        private void setPlayer(Player p)
+        private void setPlayer()
         {
-            if (p is Player && p != null)
+            if (player == null)
             {
-                listPlayer.Add(p);
+                this.player = new Player();
             }
             else
             {
-                throw new ManagerInputException("Player setting missmatch!");
+                throw new PlayerException("Player already exists!");
             }
         }
 
@@ -245,15 +248,15 @@ namespace DragonsAndRabbits.Client
         /// sets the object of the dragon
         /// </summary>
         /// <param name="d"></param>
-        private void setDragon(Dragon d)
+        private void setDragon()
         {
-            if (d is Dragon && d !=null)
+            if (dragon == null)
             {
-                listDragon.Add(d);
+                //this.dragon = new Dragon();
             }
             else
             {
-                throw new ManagerInputException("Dragon setting mismatch");
+                throw new ManagerInputException("Dragon already exists!");
             }
 
         }
@@ -278,15 +281,15 @@ namespace DragonsAndRabbits.Client
         /// sets the object if the rabbit
         /// </summary>
         /// <param name="r"></param>
-        private void setRabbit(Rabbit r)
+        private void setRabbit()
         {
-            if (r is Rabbit && r != null)
+            if (rabbit == null)
             {
-                listRabbit.Add(r);
+                this.rabbit = new Rabbit();
             }
             else
             {
-                throw new ManagerInputException("Rabbit setting missmatch");
+                throw new ManagerInputException("Rabbit already exists!");
             }
          
         }

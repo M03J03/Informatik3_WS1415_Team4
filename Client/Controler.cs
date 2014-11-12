@@ -5,13 +5,14 @@ using System.Text;
 using DragonsAndRabbits.Client;
 using System.Diagnostics.Contracts;
 using DragonsAndRabbits.Exceptions;
+//using DragonsAndRabbits.Client;
 
 namespace DragonsAndRabbits.Client
 {
     public class Controler
     {
 
-        private GUI gui = null;
+        //private GUI gui = null;
         private Map map;
         private Player player = null;
         private string message;
@@ -23,17 +24,18 @@ namespace DragonsAndRabbits.Client
         {
             
         }
-
+        
         /// <summary>
         /// Creating an object with the commited parameter.
         /// </summary>
         /// <param name="gui"></param>
-        public Controler(GUI gui, Map map)
+        public Controler(/*GUI gui*/ Map map)
         {
-            setGUI(gui);
+            //setGUI(gui);
             setMap(map);            
         }
-
+        
+        /*
         /// <summary>
         /// Sets the gui,
         /// </summary>
@@ -49,7 +51,8 @@ namespace DragonsAndRabbits.Client
                 this.gui = gui;
             }
         }
-
+         * */
+        /*
         /// <summary>
         /// gets the Client gui Object.
         /// </summary>
@@ -58,6 +61,7 @@ namespace DragonsAndRabbits.Client
         {
             return gui;
         }
+         * */
 
         /// <summary>
         /// sets the map.
@@ -128,7 +132,7 @@ namespace DragonsAndRabbits.Client
                 if (getPlayer() != null)
                 {
                     //I need a method like this. This method should go with the player one step left.
-                    getMap().moveLeft();
+                    //getMap().moveLeft();
                 }
                 else
                 {
@@ -152,7 +156,7 @@ namespace DragonsAndRabbits.Client
                 if (getPlayer() != null)
                 {
                     //I need a method like this. Thismethod should go withthe player one step rigth.
-                    getMap().moveRigth();
+                    //getMap().moveRigth();
                 }
                 else
                 {
@@ -176,7 +180,7 @@ namespace DragonsAndRabbits.Client
                 if (getPlayer() != null)
                 {
                     //I need a method like this. This method should go with the player one step up.
-                    getMap().moveUp();
+                    //getMap().moveUp();
                 }
                 else
                 {
@@ -200,7 +204,7 @@ namespace DragonsAndRabbits.Client
                 if (getPlayer() != null)
                 {
                     //I need a method like this. This method should go with the player one step down.
-                    getMap().moveDown();
+                    //getMap().moveDown();
                 }
                 else
                 {
@@ -224,7 +228,7 @@ namespace DragonsAndRabbits.Client
                 if (getPlayer() != null)
                 {
                     //I need a method like this. This method should the player attack.
-                    getMap().attack();
+                    //getMap().attack();
                 }
                 else
                 {
@@ -272,7 +276,7 @@ namespace DragonsAndRabbits.Client
         /// <param name="p"></param>
         public void revieveMessage(int sourceID, String source, String text)
         {
-            Manager m = Manager.getManager();
+            //Manager m = Manager.getManager();
 
             //i need the specification for the gui. i dont know which components exists and whats the name of them
         }

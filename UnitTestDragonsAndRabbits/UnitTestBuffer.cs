@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DragonsAndRabbits.Client.Buffer;
+using DragonsAndRabbits.Client;
 
 namespace UnitTestDragonsAndRabbits
 {
@@ -9,14 +9,13 @@ namespace UnitTestDragonsAndRabbits
     public class UnitTestBuffer
     {
 
-        DragonsAndRabbits.Client.Buffer buffer = DragonsAndRabbits.Client.Buffer.Instance;
-            
-            [TestMethod]
+
+        [TestMethod]
 
         //this test ensures that there IS a buffer #1Test 
         public void TestInitBuffer()
         {
-            DragonsAndRabbits.Client.Buffer buffer = DragonsAndRabbits.Client.Buffer.Instance;
+            DragonsAndRabbits.Client.Buffer buffer = new DragonsAndRabbits.Client.Buffer();
             Assert.IsTrue(buffer != null && buffer is DragonsAndRabbits.Client.Buffer);
 
         }
@@ -24,7 +23,7 @@ namespace UnitTestDragonsAndRabbits
         //this method ensures, that the transfer from Connector to Buffer works...
         public void TestBufferAddMethod()
         {
-            DragonsAndRabbits.Client.Buffer buffer = DragonsAndRabbits.Client.Buffer.Instance;
+            DragonsAndRabbits.Client.Buffer buffer = new DragonsAndRabbits.Client.Buffer();
             buffer.addMessage("hello");
             Assert.IsFalse(buffer.isEmpty());
 
@@ -33,7 +32,7 @@ namespace UnitTestDragonsAndRabbits
 
         public void TestBufferGetMethod()
         {
-            DragonsAndRabbits.Client.Buffer buffer = DragonsAndRabbits.Client.Buffer.Instance;
+            DragonsAndRabbits.Client.Buffer buffer = new DragonsAndRabbits.Client.Buffer();
             buffer.addMessage("hello");
 
             String local = buffer.getMessage();
@@ -45,7 +44,7 @@ namespace UnitTestDragonsAndRabbits
 
         public void TestBufferFlushMethod()
         {
-            DragonsAndRabbits.Client.Buffer buffer = DragonsAndRabbits.Client.Buffer.Instance;
+            DragonsAndRabbits.Client.Buffer buffer = new DragonsAndRabbits.Client.Buffer();
             buffer.addMessage("hello");
 
             buffer.flushBuffer();

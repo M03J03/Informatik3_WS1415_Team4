@@ -77,11 +77,11 @@ namespace Connector
                 Thread recieveThread = new Thread(new ThreadStart(recieveFromServer));
                 recieveThread.Start();
                 Console.WriteLine("RecieveThread is Running");
-                Thread.Sleep(1000);
+                Thread.Sleep(100);
                 Console.WriteLine("Thread is slepping");
                 Thread sendThread = new Thread(new ThreadStart(sendToServer));
                 Console.WriteLine("SendThread is Running");
-                Thread.Sleep(1000);
+                Thread.Sleep(100);
                 Console.WriteLine("Thread is slepping");
             }
         }
@@ -175,7 +175,14 @@ namespace Connector
             /// <param name="port"></param>
             private void setTcpClient(String server, Int32 port)
             {
-                client = new TcpClient(server, port);
+                try
+                {
+                    client = new TcpClient(server, port);
+                }
+                catch (SocketException er)
+                {
+                    System.Console.WriteLine("Could not establish the connection. It may be offline!" + er.Message);
+                }
             }
 
             /// <summary>

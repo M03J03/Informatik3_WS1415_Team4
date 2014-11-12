@@ -11,7 +11,6 @@ namespace DragonsAndRabbits.GUI
 {
     public partial class GUI : Form
     {
-        /*
         public GUI()
         {
             InitializeComponent();
@@ -47,6 +46,10 @@ namespace DragonsAndRabbits.GUI
         }
 
 
-        */
+
+
+
+
+
     }
 }

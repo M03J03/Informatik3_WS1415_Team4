@@ -53,13 +53,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="UnitTestBuffer.cs" />
-    <Compile Include="UnitTestDragon.cs" />
     <Compile Include="UnitTestParser.cs" />
     <Compile Include="UnitTestController.cs" />
     <Compile Include="UnitTestConnector.cs" />
+    <Compile Include="UnitTestBuffer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitTestPlayer.cs" />
     <Compile Include="UnitTestRabbit.cs" />
   </ItemGroup>
   <ItemGroup>

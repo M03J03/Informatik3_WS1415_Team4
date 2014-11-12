@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
-using System.Threading;
 
 namespace DragonsAndRabbits.Client
 {
@@ -13,7 +12,6 @@ namespace DragonsAndRabbits.Client
     {
 
         private static Buffer instance = null;
-        private static readonly Object bufferInitLock = new Object(); 
         private readonly int bufferLimit = 200;
         List<String> bufferList = null;
         
@@ -25,28 +23,20 @@ namespace DragonsAndRabbits.Client
         private Buffer()
         {
             bufferList = new List<String>();
+            Buffer b = new Buffer();
         }
 
         /// <summary>
-        /// procedure to get only one global accessible instance of Buffer - threadsave initialisation guaranteed.
-        //// </summary>
+        /// procedure to get only one global accessible instance of Buffer
+        /// </summary>
         /// <return> Buffer - instance</return>
         public static Buffer Instance
-            
         {
             get
             {
                 if (instance == null)
                 {
-                    //double checked thread savety. NOT only one Thread can get here.
-                    lock (bufferInitLock)
-                    {
-                        if (instance == null)
-                        {
-                            //only ONE Thread can get here.
-                            instance = new Buffer();
-                        }
-                    }
+                    instance = new Buffer();
                 }
                 return instance;
             }
@@ -60,36 +50,19 @@ namespace DragonsAndRabbits.Client
         public void addMessage(String messagetoBuffer)
         {
             Contract.Requires(bufferList != null);
-             if (bufferList == null)
-             {
-               Buffer b = DragonsAndRabbits.Client.Buffer.Instance;
-             }
 
-            try
+            if (bufferList == null)
             {
-                //locks the bufferlist exclusively for the following operations.
-                Monitor.Enter (bufferList);
-                
-                    //at this point, if maximum is reached - one element is killed
-                    if (bufferList.Count == bufferLimit)
-                    {
-                        bufferList.RemoveAt(0);
-                    }
-                    this.bufferList.Add(messagetoBuffer); 
-                
-                Monitor.Exit(bufferList);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-            finally
-            {
-                //animates waiting threads waiting for acces to the buffer.
-                Monitor.Pulse(bufferList); 
+                Buffer b = DragonsAndRabbits.Client.Buffer.Instance;
             }
 
+            //at this point, if maximum is reached - one element is killed
+            if (bufferList.Count==bufferLimit)
+            {
+                bufferList.RemoveAt(0);
+            }
+
+            this.bufferList.Add(messagetoBuffer);
 
             Contract.Ensures(bufferList.Count > 0, "nothing sent to the bufferArrayList");
             Contract.Ensures(bufferList.Count == Contract.OldValue(bufferList.Count) + 1);
@@ -98,37 +71,21 @@ namespace DragonsAndRabbits.Client
         /// <summary>
         /// this method pulls out one message (at index 0) from the buffer. Calls the removeMessage(). 
         /// </summary>
-        /// <param name="parser"></param>
+        /// <returns>String from buffer at index [0] OR null</returns>
         public string getMessage()
         {
             Contract.Requires(bufferList.Count > 0);
+            String tmp;
 
-
-            String tmp=null;
-
-            try
+            if (bufferList.Count > 0)
             {
-                Monitor.Enter(bufferList);
-
-                if (bufferList.Count > 0)
-                {
-                    tmp = (String)bufferList[0];
-                    removeMessage();
-                }
-                
-                //Monitor.Exit() 
+                tmp = (String)bufferList[0];
+                removeMessage();
             }
-            catch(Exception e)
+            else
             {
-                throw e;
+                tmp = null;
             }
-
-            finally
-            {
-                Monitor.Exit(bufferList); //throws exception, if monitor.enter was not called before
-            }
-
-
 
             Contract.Ensures(bufferList.Count == Contract.OldValue(bufferList.Count) - 1);
             return tmp;
@@ -177,7 +134,7 @@ namespace DragonsAndRabbits.Client
         //method for comparing and for analytics
 
         /// <summary>
-        /// this method is to compare, to test and to analyze the state of the buffer - returns true if there is nothing in the buffer at all.
+        /// this method is to compare, to test and to analyze the state of the buffer
         /// </summary>
         /// <returns>bool condition</returns>
         public bool isEmpty()
@@ -192,24 +149,5 @@ namespace DragonsAndRabbits.Client
 
             return condition;
         }
-
-        /// <summary>
-        /// this method is to compare, to test and to analyze the state of the buffer - returns true if the bufferLimit is reached
-        /// </summary>
-        /// <returns>bool condition</returns>
-        public bool hasLimitReached()
-        {
-            bool condition = false; //default
-
-            if (bufferList.Count == bufferLimit)
-            {
-                condition = true;
-            }
-
-
-            return condition;
-        }
-   
-
     }
 }

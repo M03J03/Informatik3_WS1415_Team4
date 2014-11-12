@@ -90,6 +90,10 @@
     <Compile Include="Client\Connector.cs" />
     <Compile Include="Client\Controler.cs" />
     <Compile Include="Client\Dragon.cs" />
+    <Compile Include="Client\GUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Client\GUI.Designer.cs" />
     <Compile Include="Client\Manager.cs" />
     <Compile Include="Client\Map.cs" />
     <Compile Include="Client\MapCell.cs" />
@@ -97,7 +101,6 @@
     <Compile Include="Client\Piece.cs" />
     <Compile Include="Client\Player.cs" />
     <Compile Include="Client\Rabbit.cs" />
-    <Compile Include="Client\Test.cs" />
     <Compile Include="Exceptions\ManagerInputException.cs" />
     <Compile Include="Exceptions\NoMessageException.cs" />
     <Compile Include="Exceptions\NoPlayerException.cs" />
@@ -112,7 +115,6 @@
     <Compile Include="GUI\GUI.Designer.cs">
       <DependentUpon>GUI.cs</DependentUpon>
     </Compile>
-    <Compile Include="Piece.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include=".git\objects\info\" />
