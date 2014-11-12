@@ -90,7 +90,6 @@
     <Compile Include="Client\Connector.cs" />
     <Compile Include="Client\Controler.cs" />
     <Compile Include="Client\Dragon.cs" />
-    <Compile Include="Client\GUI.Designer.cs" />
     <Compile Include="Client\Manager.cs" />
     <Compile Include="Client\Map.cs" />
     <Compile Include="Client\MapCell.cs" />
