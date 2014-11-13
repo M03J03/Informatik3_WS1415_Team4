@@ -11,12 +11,12 @@ namespace DragonsAndRabbits.Client
     class Manager
     {
         private static Manager instance = null;
-        //only for test reasons vv
-        private Dragon dragon = null;
-        private Player player = null;
-        private Rabbit rabbit = null;
-        private Parser parser = null;
-         //only for test reasons ^^
+            //only for test reasons vv
+            private Dragon dragon = null;
+            private Player player = null;
+            private Rabbit rabbit = null;
+            private Parser parser = null;
+             //only for test reasons ^^
         private GUI.GUI gui = null;
         private List<Dragon> listDragon = null;
         private List<Player> listPlayer = null;
@@ -196,7 +196,7 @@ namespace DragonsAndRabbits.Client
         /// </summary>
         /// <param name="ans"></param>
         /// <param name="info"></param>
-        public void anwerInfo(String ans, String info)
+        public void answerInfo(String ans, String info)
         {
 
         }
@@ -239,25 +239,26 @@ namespace DragonsAndRabbits.Client
         /// get the dragon object
         /// </summary>
         /// <returns></returns>
-        public Dragon getDragon()
+        public List<Dragon> getDragonList()
         {
-            return this.dragon;
+            return this.listDragon;
         }
 
         /// <summary>
         /// sets the object of the dragon
         /// </summary>
         /// <param name="d"></param>
-        private void setDragon()
+        private void setDragon(Dragon d)
         {
-            if (dragon == null)
+            if (listDragon == null)
             {
                 //this.dragon = new Dragon();
+                
             }
-            else
-            {
-                throw new ManagerInputException("Dragon already exists!");
-            }
+           
+            //listdragon.add(Dragon d);
+               
+            
 
         }
 
@@ -270,9 +271,9 @@ namespace DragonsAndRabbits.Client
         /// get the object of the rabbit
         /// </summary>
         /// <returns></returns>
-        public Rabbit getRabbit()
+        public List<Rabbit> getRabbitList()
         {
-            return this.rabbit;
+            return this.listRabbit;
         }
 
 
@@ -281,7 +282,7 @@ namespace DragonsAndRabbits.Client
         /// sets the object if the rabbit
         /// </summary>
         /// <param name="r"></param>
-        private void setRabbit()
+        private void setRabbit(Rabbit r)
         {
             if (rabbit == null)
             {
