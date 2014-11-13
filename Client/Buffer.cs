@@ -104,11 +104,9 @@ namespace DragonsAndRabbits.Client
             String tmp = null;
             bool locked = false;
 
-
-            //locks the bufferList exclusively for the following task
-      
             try
-            {
+            {   
+                //locks the bufferList exclusively for the following task(s)
                 Monitor.Enter(bufferList, ref locked);
 
                 if (!isEmpty())
@@ -120,12 +118,14 @@ namespace DragonsAndRabbits.Client
                 {
                     Console.WriteLine("Buffer needs to be refilled!");
                     refillBuffer();
+                    tmp = (String)bufferList[0];
+                    removeMessage();
                 }
             }
 
             catch(Exception e)
             {
-                throw new BufferException("could not lock the bufferlist", e);
+                throw new BufferException("could not lock the bufferList", e);
             }
 
             finally
@@ -216,8 +216,9 @@ namespace DragonsAndRabbits.Client
             return condition;
         }
 
+
         /// <summary>
-        /// refills the whole buffer at once as long as the queueList contains elements.
+        /// refills the whole buffer at once as long as the queueList contains elements. - is called by getMessage()-Method
         /// </summary>
         private void refillBuffer()
         {
