@@ -219,10 +219,14 @@ namespace Connector
                     Int32 bytes = stream.Read(data, 0, data.Length);
                     responseData = System.Text.Encoding.UTF8.GetString(data, 0, bytes);
 
+                    responseData = responseData.Trim();
+
+
+                    Console.WriteLine("Received: {0}", responseData);
 
                     DragonsAndRabbits.Client.Buffer.Instance.addMessage(responseData);
 
-                    //Console.WriteLine("Received: {0}", responseData);
+                    
                 }
                 catch (ArgumentNullException e)
                 {
@@ -247,7 +251,9 @@ namespace Connector
         {
             Connector con = new Connector();
             con.start();
+            
             System.Console.ReadLine();
+
         }
     }
 }

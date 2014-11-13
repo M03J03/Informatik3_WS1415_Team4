@@ -25,6 +25,7 @@ namespace DragonsAndRabbits.Client
 
         private Buffer()
         {
+            Console.WriteLine("Buffer Instanz erstellt");
             bufferList = new List<String>();
             queueList = new List<string>();
         }
@@ -49,6 +50,7 @@ namespace DragonsAndRabbits.Client
                         }
                     }
                 }
+                Console.WriteLine("Buffer angefragt!");
                 return instance;
             }
         }
@@ -62,9 +64,11 @@ namespace DragonsAndRabbits.Client
         {
             Contract.Requires(queueList != null); //met because this method is called via the getter of the instance of buffer
 
-            
+                Console.WriteLine("queueList count before add: " + queueList.Count);
+                Console.WriteLine("GOT THIS: ->" + messagetoBuffer);
                 this.queueList.Add(messagetoBuffer);
 
+                Console.WriteLine("queueList count after add: " + queueList.Count);
 
                 //unnecessary, because of the guideline to make a Thread wait while bufferlimit is reached.
                 ////at this point, if maximum is reached - one element gets killed at index 0
@@ -85,9 +89,12 @@ namespace DragonsAndRabbits.Client
         /// <returns>String from buffer at index [0] OR null</returns>
         public string getMessage()
         {
+
             Contract.Requires(bufferList.Count > 0);
             String tmp = null;
 
+
+            //possible lock here instead of in refillbuffer()
            
             if (!isEmpty())
             {
@@ -96,6 +103,7 @@ namespace DragonsAndRabbits.Client
             }
             else
             {
+                Console.WriteLine("Buffer needs to be refilled!");
                 refillBuffer();
             }
          
@@ -187,21 +195,24 @@ namespace DragonsAndRabbits.Client
         /// </summary>
         public void refillBuffer()
         {
-
+            
             try
             {
                 Monitor.Enter(bufferList);
                 while (!hasLimitReached() && queueList.Count > 0)
                 {
-
+                    Console.WriteLine("buffer refill capacity: " + bufferList.Count);
+                    Console.WriteLine("queue delete capacity: " + queueList.Count);
                     bufferList.Add(queueList[0]);
                     queueList.RemoveAt(0);
-                }
+               }
             }
             finally
             {
+                Console.WriteLine("buffer REFILLED SIZE: " + bufferList.Count);
                 Monitor.Exit(bufferList);
                 Monitor.Pulse(bufferList);
+
             }
 
         }
