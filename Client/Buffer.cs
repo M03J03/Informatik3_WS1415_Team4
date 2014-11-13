@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DragonsAndRabbits.Exceptions;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,7 +14,6 @@ namespace DragonsAndRabbits.Client
     {
 
         private static Buffer instance = null;
-        private static readonly Object bufferInitLock = new Object();
         private readonly int bufferLimit = 200;
         List<String> bufferList = null;
         List<String> queueList = null;
@@ -25,7 +25,7 @@ namespace DragonsAndRabbits.Client
 
         private Buffer()
         {
-            Console.WriteLine("Buffer Instanz erstellt");
+            Console.WriteLine("Buffer Instance set up!");
             bufferList = new List<String>();
             queueList = new List<string>();
         }
@@ -40,17 +40,30 @@ namespace DragonsAndRabbits.Client
             {
                 if (instance == null)
                 {
+                    // The lock-keyword calls Monitor.Enter at the beginning and Monitor.Exit at the end of the block. ThreadInterruptedException can be thrown.
                     //double checked thread savety. NOT only one Thread can get here.
-                    lock (bufferInitLock)
+                    try
                     {
-                        if (instance == null)
+                        lock (instance)
                         {
-                            //only ONE Thread can get here.
-                            instance = new Buffer();
+                            if (instance == null)
+                            {
+                                //only ONE Thread can get here.
+                                instance = new Buffer();
+                            }
                         }
                     }
+                    catch (ThreadInterruptedException te)
+                    {
+                        throw new BufferException("No Instance of Buffer created! - Thread terminated too early", te);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Exception in Buffer",e);
+                    }
                 }
-                Console.WriteLine("Buffer angefragt!");
+
+                Console.WriteLine("Buffer requested!");
                 return instance;
             }
         }
@@ -62,29 +75,26 @@ namespace DragonsAndRabbits.Client
         /// <param name="messagetoBuffer"></param>
         public void addMessage(String messagetoBuffer)
         {
-            Contract.Requires(queueList != null); //met because this method is called via the getter of the instance of buffer
+            Contract.Requires(queueList != null); //is met, because this method is called via the getter of the instance which initiates a queueList
 
                 Console.WriteLine("queueList count before add: " + queueList.Count);
                 Console.WriteLine("GOT THIS: ->" + messagetoBuffer);
+
                 this.queueList.Add(messagetoBuffer);
 
                 Console.WriteLine("queueList count after add: " + queueList.Count);
 
-                //unnecessary, because of the guideline to make a Thread wait while bufferlimit is reached.
-                ////at this point, if maximum is reached - one element gets killed at index 0
-                //if (hasLimitReached())
-                //{
-                //    bufferList.RemoveAt(0);
-                //}
-
-            
+                          
 
             Contract.Ensures(queueList.Count > 0, "nothing sent to the recieveList");
             Contract.Ensures(queueList.Count == Contract.OldValue(queueList.Count) + 1);
         }
 
+
+
+
         /// <summary>
-        /// this method pulls out one message (at index 0) from the buffer. Calls the removeMessage(). 
+        /// this method extracts one message (at index 0) of the buffer. Calls the removeMessage()- method. 
         /// </summary>
         /// <returns>String from buffer at index [0] OR null</returns>
         public string getMessage()
@@ -92,24 +102,43 @@ namespace DragonsAndRabbits.Client
 
             Contract.Requires(bufferList.Count > 0);
             String tmp = null;
+            bool locked = false;
 
 
-            //possible lock here instead of in refillbuffer()
-           
-            if (!isEmpty())
+            //locks the bufferList exclusively for the following task
+      
+            try
             {
-                tmp = (String)bufferList[0];
-                removeMessage();
+                Monitor.Enter(bufferList, ref locked);
+
+                if (!isEmpty())
+                {
+                    tmp = (String)bufferList[0];
+                    removeMessage();
+                }
+                else
+                {
+                    Console.WriteLine("Buffer needs to be refilled!");
+                    refillBuffer();
+                }
             }
-            else
+
+            catch(Exception e)
             {
-                Console.WriteLine("Buffer needs to be refilled!");
-                refillBuffer();
+                throw new BufferException("could not lock the bufferlist", e);
+            }
+
+            finally
+            {
+                if (locked)
+                {
+                    Monitor.Exit(bufferList);
+                }
+                Monitor.Pulse(bufferList);
             }
          
             Contract.Ensures(bufferList.Count == Contract.OldValue(bufferList.Count) - 1);
             return tmp;
-
 
         }
 
@@ -168,8 +197,7 @@ namespace DragonsAndRabbits.Client
             {
                 condition = false;
             }
-
-
+            
             return condition;
         }
 
@@ -185,36 +213,23 @@ namespace DragonsAndRabbits.Client
             {
                 condition = true;
             }
-
-
             return condition;
         }
 
         /// <summary>
-        /// refills the whole buffer at once.
+        /// refills the whole buffer at once as long as the queueList contains elements.
         /// </summary>
-        public void refillBuffer()
+        private void refillBuffer()
         {
-            
-            try
+          while (!hasLimitReached() && queueList.Count > 0)
             {
-                Monitor.Enter(bufferList);
-                while (!hasLimitReached() && queueList.Count > 0)
-                {
-                    Console.WriteLine("buffer refill capacity: " + bufferList.Count);
-                    Console.WriteLine("queue delete capacity: " + queueList.Count);
-                    bufferList.Add(queueList[0]);
-                    queueList.RemoveAt(0);
-               }
-            }
-            finally
-            {
-                Console.WriteLine("buffer REFILLED SIZE: " + bufferList.Count);
-                Monitor.Exit(bufferList);
-                Monitor.Pulse(bufferList);
+                Console.WriteLine("buffer refill capacity: " + bufferList.Count);
+                Console.WriteLine("queue delete capacity: " + queueList.Count);
 
+                bufferList.Add(queueList[0]);
+                queueList.RemoveAt(0);
             }
-
+        
         }
 
 
