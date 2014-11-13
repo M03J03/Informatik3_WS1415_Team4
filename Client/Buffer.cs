@@ -16,7 +16,7 @@ namespace DragonsAndRabbits.Client
         private static readonly Object bufferInitLock = new Object();
         private readonly int bufferLimit = 200;
         List<String> bufferList = null;
-        List<String> recieveList = null;
+        List<String> queueList = null;
 
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace DragonsAndRabbits.Client
         private Buffer()
         {
             bufferList = new List<String>();
-            recieveList = new List<string>();
+            queueList = new List<string>();
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace DragonsAndRabbits.Client
         /// <param name="messagetoBuffer"></param>
         public void addMessage(String messagetoBuffer)
         {
-            Contract.Requires(recieveList != null);
+            Contract.Requires(queueList != null);
 
 
 
@@ -68,12 +68,12 @@ namespace DragonsAndRabbits.Client
                 {
                     Buffer b = DragonsAndRabbits.Client.Buffer.Instance;
                 }
-                if (recieveList == null)
+                if (queueList == null)
                 {
                     Buffer b = DragonsAndRabbits.Client.Buffer.Instance;
                 }
 
-                this.recieveList.Add(messagetoBuffer);
+                this.queueList.Add(messagetoBuffer);
 
 
                 //unnecessary, because of the guideline to make a Thread wait while bufferlimit is reached.
@@ -85,8 +85,8 @@ namespace DragonsAndRabbits.Client
 
             
 
-            Contract.Ensures(recieveList.Count > 0, "nothing sent to the recieveList");
-            Contract.Ensures(recieveList.Count == Contract.OldValue(recieveList.Count) + 1);
+            Contract.Ensures(queueList.Count > 0, "nothing sent to the recieveList");
+            Contract.Ensures(queueList.Count == Contract.OldValue(queueList.Count) + 1);
         }
 
         /// <summary>
@@ -103,6 +103,10 @@ namespace DragonsAndRabbits.Client
             {
                 tmp = (String)bufferList[0];
                 removeMessage();
+            }
+            else
+            {
+                refillBuffer();
             }
          
             Contract.Ensures(bufferList.Count == Contract.OldValue(bufferList.Count) - 1);
@@ -194,21 +198,22 @@ namespace DragonsAndRabbits.Client
         public void refillBuffer()
         {
 
-            if (isEmpty() && recieveList != null)
+            try
             {
-                while ( !hasLimitReached() && recieveList.Count > 0)
+                Monitor.Enter(bufferList);
+                while (!hasLimitReached() && queueList.Count > 0)
                 {
 
-                    bufferList.Add(recieveList[0]);
-                    recieveList.RemoveAt(0);
-
+                    bufferList.Add(queueList[0]);
+                    queueList.RemoveAt(0);
                 }
-
             }
-            else
+            finally
             {
-                return;
+                Monitor.Exit(bufferList);
+                Monitor.Pulse(bufferList);
             }
+
         }
 
 

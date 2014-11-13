@@ -13,9 +13,7 @@ namespace Connector
 
         private static readonly string server = "127.0.0.1";
         private static readonly Int32 port = 666;
-        private Thread recieveThread = null;
-        private Thread sendThread = null;
-        private Thread t = null;
+       
 
         //private DragonsAndRabbits.Client.Buffer buffer = DragonsAndRabbits.Client.Buffer.Instance;
         private static TcpClient client = null;
@@ -77,12 +75,12 @@ namespace Connector
         {
             while (isConnected())
             {
-                recieveThread = new Thread(new ThreadStart(recieveFromServer));
+                Thread recieveThread = new Thread(new ThreadStart(recieveFromServer));
                 recieveThread.Start();
                 Console.WriteLine("RecieveThread is Running");
                 Thread.Sleep(100);
                 Console.WriteLine("Thread is slepping");
-                sendThread = new Thread(new ThreadStart(sendToServer));
+                Thread sendThread = new Thread(new ThreadStart(sendToServer));
                 Console.WriteLine("SendThread is Running");
                 Thread.Sleep(100);
                 Console.WriteLine("Thread is slepping");
@@ -239,10 +237,7 @@ namespace Connector
         }
 
 
-        public Thread getRecieveThread()
-        {
-            return recieveThread;
-        }
+
 
         /// <summary>
         /// Main - Method
