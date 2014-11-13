@@ -13,7 +13,7 @@ namespace Connector
 
         private static readonly string server = "127.0.0.1";
         private static readonly Int32 port = 666;
-       
+
 
         //private DragonsAndRabbits.Client.Buffer buffer = DragonsAndRabbits.Client.Buffer.Instance;
         private static TcpClient client = null;
@@ -21,7 +21,7 @@ namespace Connector
         private Receiever rec;
         private Sender sender;
 
-        private bool connected = false;
+        private static bool connected = false;
 
 
         /// <summary>
@@ -31,23 +31,20 @@ namespace Connector
         {
             rec = new Receiever();
             sender = new Sender();
-            setIsConnected(true);
+            connected = true;
         }
 
         /// <summary>
         /// Set if the client is connected or not
         /// </summary>
         /// <param name="connected"></param>
-        private void setIsConnected(bool connected)
-        {
-            this.connected = connected;
-        }
+
 
         /// <summary>
         /// Get if client is connected or not.
         /// </summary>
         /// <returns></returns>
-        private bool isConnected()
+        private static bool isConnected()
         {
             return connected;
         }
@@ -73,18 +70,25 @@ namespace Connector
         /// </summary>
         public void start()
         {
-            while (isConnected())
+            Thread recieveThread;
+            try
             {
-                Thread recieveThread = new Thread(new ThreadStart(recieveFromServer));
+                recieveThread = new Thread(new ThreadStart(recieveFromServer));
                 recieveThread.Start();
-                Console.WriteLine("RecieveThread is Running");
-                Thread.Sleep(100);
-                Console.WriteLine("Thread is slepping");
-                Thread sendThread = new Thread(new ThreadStart(sendToServer));
-                Console.WriteLine("SendThread is Running");
-                Thread.Sleep(100);
-                Console.WriteLine("Thread is slepping");
             }
+            catch (ArgumentNullException er)
+            {
+                Console.WriteLine("Thread ist tod");
+            }
+
+            //Console.WriteLine("RecieveThread is Running");
+            //Thread.Sleep(100);
+            //Console.WriteLine("Thread is slepping");
+            //Thread sendThread = new Thread(new ThreadStart(sendToServer));
+            //sendThread.Start();
+            //Thread.Sleep(100);
+            //Console.WriteLine("Thread is slepping");
+
         }
 
 
@@ -94,7 +98,7 @@ namespace Connector
         public void closeConnection()
         {
             client.Close();
-            setIsConnected(false);
+            connected = false;
             System.Console.WriteLine("I am death");
         }
 
@@ -120,21 +124,27 @@ namespace Connector
             /// <param name="message"></param>
             public void send(string message)
             {
-                try
+
+                while (isConnected())
                 {
-                    Byte[] data = System.Text.Encoding.UTF8.GetBytes(message);
-                    NetworkStream stream = client.GetStream();
-                    stream.Write(data, 0, data.Length);
-                    Console.WriteLine("Sends: {0}", message);
+                    try
+                    {
+                        Byte[] data = System.Text.Encoding.UTF8.GetBytes(message);
+                        NetworkStream stream = client.GetStream();
+                        stream.Write(data, 0, data.Length);
+                        Console.WriteLine("Sends: {0}", message);
+                    }
+                    catch (ArgumentNullException e)
+                    {
+                        Console.WriteLine("ArgumentNullException: {0}", e);
+                    }
+                    catch (SocketException e)
+                    {
+                        Console.WriteLine("SocketException: {0}", e);
+                    }
                 }
-                catch (ArgumentNullException e)
-                {
-                    Console.WriteLine("ArgumentNullException: {0}", e);
-                }
-                catch (SocketException e)
-                {
-                    Console.WriteLine("SocketException: {0}", e);
-                }
+
+
             }
 
             /// <summary>
@@ -202,39 +212,40 @@ namespace Connector
             public string recieve()
             {
                 String responseData = null;
-
-                try
+                while (isConnected())
                 {
-                    // Receive the TcpServer.response. 
-                    // Buffer to store the response bytes.
-                    Byte[] data = new Byte[256];
+                    Console.WriteLine("method recieve is running");
+                    try
+                    {
+                        // Receive the TcpServer.response. 
+                        // Buffer to store the response bytes.
+                        Byte[] data = new Byte[256];
 
-                    // Get a client stream for writing. 
-                    NetworkStream stream = client.GetStream();
+                        // Get a client stream for writing. 
+                        NetworkStream stream = client.GetStream();
 
-                    // String to store the response UTF8 representation.
-                    responseData = String.Empty;
+                        // String to store the response UTF8 representation.
+                        responseData = String.Empty;
 
-                    // Read the first batch of the TcpServer response bytes.
-                    Int32 bytes = stream.Read(data, 0, data.Length);
-                    responseData = System.Text.Encoding.UTF8.GetString(data, 0, bytes);
+                        // Read the first batch of the TcpServer response bytes.
+                        Int32 bytes = stream.Read(data, 0, data.Length);
+                        responseData = System.Text.Encoding.UTF8.GetString(data, 0, bytes);
 
-                    responseData = responseData.Trim();
+                        responseData = responseData.Trim();
 
 
-                    Console.WriteLine("Received: {0}", responseData);
+                        Console.WriteLine("Received: {0}", responseData);
 
-                    DragonsAndRabbits.Client.Buffer.Instance.addMessage(responseData);
-
-                    
-                }
-                catch (ArgumentNullException e)
-                {
-                    Console.WriteLine("ArgumentNullException: {0}", e);
-                }
-                catch (SocketException e)
-                {
-                    Console.WriteLine("SocketException: {0}", e);
+                        DragonsAndRabbits.Client.Buffer.Instance.addMessage(responseData);
+                    }
+                    catch (ArgumentNullException e)
+                    {
+                        Console.WriteLine("ArgumentNullException: {0}", e);
+                    }
+                    catch (SocketException e)
+                    {
+                        Console.WriteLine("SocketException: {0}", e);
+                    }
                 }
                 return responseData;
             }
@@ -251,7 +262,7 @@ namespace Connector
         {
             Connector con = new Connector();
             con.start();
-            
+
             System.Console.ReadLine();
 
         }
