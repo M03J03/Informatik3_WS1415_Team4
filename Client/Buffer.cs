@@ -14,9 +14,9 @@ namespace DragonsAndRabbits.Client
 
         private static Buffer instance = null;
         private static readonly Object bufferInitLock = new Object();
-        private static bool bufferlocked = false; //default
         private readonly int bufferLimit = 200;
         List<String> bufferList = null;
+        List<String> recieveList = null;
 
 
         /// <summary>
@@ -26,6 +26,7 @@ namespace DragonsAndRabbits.Client
         private Buffer()
         {
             bufferList = new List<String>();
+            recieveList = new List<string>();
         }
 
         /// <summary>
@@ -54,55 +55,38 @@ namespace DragonsAndRabbits.Client
 
 
         /// <summary>
-        /// this method saves recieved packets from the connector to the buffer.
+        /// this method saves recieved packets from the connector to the RECIEVELIST    .
         /// </summary>
         /// <param name="messagetoBuffer"></param>
         public void addMessage(String messagetoBuffer)
         {
-            Contract.Requires(bufferList != null);
+            Contract.Requires(recieveList != null);
 
 
-
-            try
-            {
-                Monitor.TryEnter(bufferList, 25 , ref bufferlocked); //waits 25ms to get the list
 
                 if (bufferList == null)
                 {
                     Buffer b = DragonsAndRabbits.Client.Buffer.Instance;
                 }
-
-                if (bufferlocked)
+                if (recieveList == null)
                 {
-                    this.bufferList.Add(messagetoBuffer);
+                    Buffer b = DragonsAndRabbits.Client.Buffer.Instance;
                 }
 
+                this.recieveList.Add(messagetoBuffer);
+
+
+                //unnecessary, because of the guideline to make a Thread wait while bufferlimit is reached.
                 ////at this point, if maximum is reached - one element gets killed at index 0
                 //if (hasLimitReached())
                 //{
                 //    bufferList.RemoveAt(0);
                 //}
 
-                else //if bufferlist isn't locked
-                {
+            
 
-                }
-            }
-            finally
-            {
-                if (bufferlocked)
-                {
-                    Monitor.Exit(bufferList);
-                }
-
-                Monitor.PulseAll(bufferList);
-               
-            }
-
-
-
-            Contract.Ensures(bufferList.Count > 0, "nothing sent to the bufferArrayList");
-            Contract.Ensures(bufferList.Count == Contract.OldValue(bufferList.Count) + 1);
+            Contract.Ensures(recieveList.Count > 0, "nothing sent to the recieveList");
+            Contract.Ensures(recieveList.Count == Contract.OldValue(recieveList.Count) + 1);
         }
 
         /// <summary>
@@ -114,38 +98,13 @@ namespace DragonsAndRabbits.Client
             Contract.Requires(bufferList.Count > 0);
             String tmp = null;
 
-
-
-
-            try
+           
+            if (!isEmpty())
             {
-                Monitor.TryEnter(bufferList, 25, ref bufferlocked); //tries for 25ms to get access to the List
-                
-                if (bufferlocked)
-                {
-                    if (!isEmpty())
-                    {
-                        tmp = (String)bufferList[0];
-                        removeMessage();
-                    }
-                 }
-
-                else // if bufferlist isn't locked ************************dangling ELSE????????????????????
-                {
-                  
-                }
-
+                tmp = (String)bufferList[0];
+                removeMessage();
             }
-            finally
-            {
-                if (bufferlocked)
-                {
-                    Monitor.Exit(bufferList);
-                }
-
-                Monitor.PulseAll(bufferList);
-            }
-
+         
             Contract.Ensures(bufferList.Count == Contract.OldValue(bufferList.Count) - 1);
             return tmp;
 
@@ -184,6 +143,7 @@ namespace DragonsAndRabbits.Client
             Contract.Ensures(isEmpty());
 
         }
+
 
         public static Buffer getBuffer()
         {
@@ -226,6 +186,29 @@ namespace DragonsAndRabbits.Client
 
 
             return condition;
+        }
+
+        /// <summary>
+        /// refills the whole buffer at once.
+        /// </summary>
+        public void refillBuffer()
+        {
+
+            if (isEmpty() && recieveList != null)
+            {
+                while ( !hasLimitReached() && recieveList.Count > 0)
+                {
+
+                    bufferList.Add(recieveList[0]);
+                    recieveList.RemoveAt(0);
+
+                }
+
+            }
+            else
+            {
+                return;
+            }
         }
 
 
