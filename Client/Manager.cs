@@ -30,9 +30,9 @@ namespace DragonsAndRabbits.Client
         private Manager()
         {
             Buffer buffer = Buffer.getBuffer();
-            setDragon();
+            //setDragon();
             setPlayer();
-            setRabbit();
+            //setRabbit();
             setParser(buffer);
             setGUI();
         }
