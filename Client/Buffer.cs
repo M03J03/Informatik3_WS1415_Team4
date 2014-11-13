@@ -60,19 +60,9 @@ namespace DragonsAndRabbits.Client
         /// <param name="messagetoBuffer"></param>
         public void addMessage(String messagetoBuffer)
         {
-            Contract.Requires(queueList != null);
+            Contract.Requires(queueList != null); //met because this method is called via the getter of the instance of buffer
 
-
-
-                if (bufferList == null)
-                {
-                    Buffer b = DragonsAndRabbits.Client.Buffer.Instance;
-                }
-                if (queueList == null)
-                {
-                    Buffer b = DragonsAndRabbits.Client.Buffer.Instance;
-                }
-
+            
                 this.queueList.Add(messagetoBuffer);
 
 
