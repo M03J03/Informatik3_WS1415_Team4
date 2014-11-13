@@ -17,7 +17,7 @@ namespace DragonsAndRabbits.Client
         private readonly int bufferLimit = 200;
         private List<String> bufferList = null;
         private List<String> queueList = null;
-        private static readonly Object blubb = new Object();
+        private static readonly Object logObj = new Object();
 
         /// <summary>
         /// This constructor only initializes a single (singleton) instance of Buffer. Called from the Singleton procedure -'Instance'
@@ -44,7 +44,7 @@ namespace DragonsAndRabbits.Client
                     //double checked thread savety. NOT only one Thread can get here.
                     //try
                     //{
-                        lock (blubb)
+                        lock (logObj)
                         {
                             if (instance == null)
                             {
