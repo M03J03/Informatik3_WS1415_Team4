@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace DragonsAndRabbits.Client
 {
@@ -13,6 +14,7 @@ namespace DragonsAndRabbits.Client
 
         private static Buffer instance = null;
         private static readonly Object bufferInitLock = new Object();
+        private static bool bufferlocked = false; //default
         private readonly int bufferLimit = 200;
         List<String> bufferList = null;
 
@@ -59,18 +61,45 @@ namespace DragonsAndRabbits.Client
         {
             Contract.Requires(bufferList != null);
 
-            if (bufferList == null)
+
+
+            try
             {
-                Buffer b = DragonsAndRabbits.Client.Buffer.Instance;
+                Monitor.TryEnter(bufferList, 25 , ref bufferlocked); //waits 25ms to get the list
+
+                if (bufferList == null)
+                {
+                    Buffer b = DragonsAndRabbits.Client.Buffer.Instance;
+                }
+
+                if (bufferlocked)
+                {
+                    this.bufferList.Add(messagetoBuffer);
+                }
+
+                ////at this point, if maximum is reached - one element gets killed at index 0
+                //if (hasLimitReached())
+                //{
+                //    bufferList.RemoveAt(0);
+                //}
+
+                else //if bufferlist isn't locked
+                {
+
+                }
+            }
+            finally
+            {
+                if (bufferlocked)
+                {
+                    Monitor.Exit(bufferList);
+                }
+
+                Monitor.PulseAll(bufferList);
+               
             }
 
-            //at this point, if maximum is reached - one element is killed
-            if (bufferList.Count == bufferLimit)
-            {
-                bufferList.RemoveAt(0);
-            }
 
-            this.bufferList.Add(messagetoBuffer);
 
             Contract.Ensures(bufferList.Count > 0, "nothing sent to the bufferArrayList");
             Contract.Ensures(bufferList.Count == Contract.OldValue(bufferList.Count) + 1);
@@ -83,16 +112,38 @@ namespace DragonsAndRabbits.Client
         public string getMessage()
         {
             Contract.Requires(bufferList.Count > 0);
-            String tmp;
+            String tmp = null;
 
-            if (bufferList.Count > 0)
+
+
+
+            try
             {
-                tmp = (String)bufferList[0];
-                removeMessage();
+                Monitor.TryEnter(bufferList, 25, ref bufferlocked); //tries for 25ms to get access to the List
+                
+                if (bufferlocked)
+                {
+                    if (!isEmpty())
+                    {
+                        tmp = (String)bufferList[0];
+                        removeMessage();
+                    }
+                 }
+
+                else // if bufferlist isn't locked ************************dangling ELSE????????????????????
+                {
+                  
+                }
+
             }
-            else
+            finally
             {
-                tmp = null;
+                if (bufferlocked)
+                {
+                    Monitor.Exit(bufferList);
+                }
+
+                Monitor.PulseAll(bufferList);
             }
 
             Contract.Ensures(bufferList.Count == Contract.OldValue(bufferList.Count) - 1);
@@ -108,6 +159,7 @@ namespace DragonsAndRabbits.Client
         /// </summary> 
         private void removeMessage()
         {
+            //The following Contract is met by calling this method
             Contract.Requires(bufferList.Count > 0);
 
             bufferList.RemoveAt(0);
