@@ -8,13 +8,16 @@ using System.Threading;
 
 namespace Connector
 {
-    class Connector
+    public class Connector
     {
 
         private static readonly string server = "127.0.0.1";
         private static readonly Int32 port = 666;
+        private Thread recieveThread = null;
+        private Thread sendThread = null;
+        private Thread t = null;
 
-        //private Buffer buffer = new Buffer();
+        //private DragonsAndRabbits.Client.Buffer buffer = DragonsAndRabbits.Client.Buffer.Instance;
         private static TcpClient client = null;
 
         private Receiever rec;
@@ -74,12 +77,12 @@ namespace Connector
         {
             while (isConnected())
             {
-                Thread recieveThread = new Thread(new ThreadStart(recieveFromServer));
+                recieveThread = new Thread(new ThreadStart(recieveFromServer));
                 recieveThread.Start();
                 Console.WriteLine("RecieveThread is Running");
                 Thread.Sleep(100);
                 Console.WriteLine("Thread is slepping");
-                Thread sendThread = new Thread(new ThreadStart(sendToServer));
+                sendThread = new Thread(new ThreadStart(sendToServer));
                 Console.WriteLine("SendThread is Running");
                 Thread.Sleep(100);
                 Console.WriteLine("Thread is slepping");
@@ -121,7 +124,7 @@ namespace Connector
             {
                 try
                 {
-                    Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
+                    Byte[] data = System.Text.Encoding.UTF8.GetBytes(message);
                     NetworkStream stream = client.GetStream();
                     stream.Write(data, 0, data.Length);
                     Console.WriteLine("Sends: {0}", message);
@@ -211,13 +214,17 @@ namespace Connector
                     // Get a client stream for writing. 
                     NetworkStream stream = client.GetStream();
 
-                    // String to store the response ASCII representation.
+                    // String to store the response UTF8 representation.
                     responseData = String.Empty;
 
                     // Read the first batch of the TcpServer response bytes.
                     Int32 bytes = stream.Read(data, 0, data.Length);
-                    responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
-                    Console.WriteLine("Received: {0}", responseData);
+                    responseData = System.Text.Encoding.UTF8.GetString(data, 0, bytes);
+
+
+                    DragonsAndRabbits.Client.Buffer.Instance.addMessage(responseData);
+
+                    //Console.WriteLine("Received: {0}", responseData);
                 }
                 catch (ArgumentNullException e)
                 {
@@ -231,6 +238,11 @@ namespace Connector
             }
         }
 
+
+        public Thread getRecieveThread()
+        {
+            return recieveThread;
+        }
 
         /// <summary>
         /// Main - Method
