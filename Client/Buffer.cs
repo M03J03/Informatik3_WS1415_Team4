@@ -15,9 +15,9 @@ namespace DragonsAndRabbits.Client
 
         private static Buffer instance = null;
         private readonly int bufferLimit = 200;
-        List<String> bufferList = null;
-        List<String> queueList = null;
-
+        private List<String> bufferList = null;
+        private List<String> queueList = null;
+        private static readonly Object blubb = new Object();
 
         /// <summary>
         /// This constructor only initializes a single (singleton) instance of Buffer. Called from the Singleton procedure -'Instance'
@@ -42,9 +42,9 @@ namespace DragonsAndRabbits.Client
                 {
                     // The lock-keyword calls Monitor.Enter at the beginning and Monitor.Exit at the end of the block. ThreadInterruptedException can be thrown.
                     //double checked thread savety. NOT only one Thread can get here.
-                    try
-                    {
-                        lock (instance)
+                    //try
+                    //{
+                        lock (blubb)
                         {
                             if (instance == null)
                             {
@@ -52,15 +52,15 @@ namespace DragonsAndRabbits.Client
                                 instance = new Buffer();
                             }
                         }
-                    }
-                    catch (ThreadInterruptedException te)
-                    {
-                        throw new BufferException("No Instance of Buffer created! - Thread terminated too early", te);
-                    }
-                    catch (Exception e)
-                    {
-                        throw new Exception("Exception in Buffer",e);
-                    }
+                    //}
+                    //catch (ThreadInterruptedException te)
+                    //{
+                    //    throw new BufferException("No Instance of Buffer created! - Thread terminated too early", te);
+                    //}
+                    //catch (ArgumentNullException e)
+                    //{
+                    //    throw new Exception("Exception in Buffer");
+                    //}
                 }
 
                 Console.WriteLine("Buffer requested!");
