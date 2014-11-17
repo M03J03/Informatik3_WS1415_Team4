@@ -46,6 +46,8 @@
   <ItemGroup>
     <Content Include=".gitattributes" />
     <Content Include=".gitignore" />
+    <Content Include="GUI\resources\dragon.jpg" />
+    <Content Include="GUI\resources\dragon2.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".git\config" />
