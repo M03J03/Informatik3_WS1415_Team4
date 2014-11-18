@@ -30,7 +30,7 @@ namespace DragonsAndRabbits.GUI
             // 
             // sendButton
             // 
-            this.sendButton.Location = new System.Drawing.Point(898, 603);
+            this.sendButton.Location = new System.Drawing.Point(908, 601);
             this.sendButton.Name = "sendButton";
             this.sendButton.Size = new System.Drawing.Size(75, 23);
             this.sendButton.TabIndex = 0;
@@ -52,7 +52,7 @@ namespace DragonsAndRabbits.GUI
             this.chatRun.Multiline = true;
             this.chatRun.Name = "chatRun";
             this.chatRun.ReadOnly = true;
-            this.chatRun.Size = new System.Drawing.Size(265, 295);
+            this.chatRun.Size = new System.Drawing.Size(240, 295);
             this.chatRun.TabIndex = 2;
             // 
             // idLabel
@@ -80,7 +80,7 @@ namespace DragonsAndRabbits.GUI
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.PowderBlue;
             this.pictureBox1.Image = global::DragonsAndRabbits.Properties.Resources.dragon;
-            this.pictureBox1.Location = new System.Drawing.Point(733, 12);
+            this.pictureBox1.Location = new System.Drawing.Point(708, 32);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(240, 192);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -104,9 +104,40 @@ namespace DragonsAndRabbits.GUI
             this.PerformLayout();
 
         }
-
        
 
+       
+        public void drawMap(int row, int column, List<String> attributes){
+
+          
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="s"></param>
+        public void transformTile(int tile)
+        {
+            switch (tile)
+            {
+                case 0:
+                    Console.WriteLine ("transformtile case 0");
+                    break;
+                case 1:
+                    Console.WriteLine ("transformtile case 1");
+                    break; 
+                case 2:
+                    Console.WriteLine ("transformtile case 2");
+                    break;
+                case 3:
+                    Console.WriteLine ("transformtile case 3");
+                    break;
+
+
+                
+                   
+        }
 
         
     }

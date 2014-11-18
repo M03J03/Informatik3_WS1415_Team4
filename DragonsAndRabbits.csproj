@@ -48,6 +48,12 @@
     <Content Include=".gitignore" />
     <Content Include="GUI\resources\dragon.jpg" />
     <Content Include="GUI\resources\dragon2.jpg" />
+    <Content Include="GUI\resources\forest.jpg" />
+    <Content Include="GUI\resources\huntable.jpg" />
+    <Content Include="GUI\resources\sand.jpg" />
+    <Content Include="GUI\resources\stones.jpg" />
+    <Content Include="GUI\resources\walkable.jpg" />
+    <Content Include="GUI\resources\water.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".git\config" />
