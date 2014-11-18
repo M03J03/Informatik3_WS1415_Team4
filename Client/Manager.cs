@@ -145,6 +145,29 @@ namespace DragonsAndRabbits.Client
             else
             {
 
+                  foreach (String s in attributes){
+                //PROPERTY: "WALKABLE"|"WALL"|"FOREST"|"WATER"|"HUNTABLE"
+
+                if(s.Equals ("WALKABLE")|| s.Equals("walkable")){
+                    gui.transformTile(); //only a possibility to draw the map.
+                }
+                 if(s.Equals ("WALL")|| s.Equals("wall")){
+                     
+                }
+                 if(s.Equals ("FOREST")|| s.Equals("forest")){
+                     mapViewPanel.add(transformTile(s));
+                }
+                 if(s.Equals ("WATER")|| s.Equals("water")){
+                     mapViewPanel.add(transformTile(s));
+                }
+                 if(s.Equals ("HUNTABLE")|| s.Equals("huntable")){
+                     mapViewPanel.add(transformTile(s));
+                }
+
+                
+
+            }
+
             }
         }
 
