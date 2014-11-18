@@ -7,13 +7,21 @@ using DragonsAndRabbits.Exceptions;
 
 namespace DragonsAndRabbits.Client
 {
-    public class Piece
+    protected abstract class Piece
     {
         private int id;
         private Boolean busy = false;
         private String name;
         private int xCoordinate, yCoordinate;
 
+        protected Piece(int id, String name, int xCoordinate, int yCoordinate)
+        {
+            setID(id);
+            setName(name);
+            setXCoordinate(xCoordinate);
+            setYCoordinate(yCoordinate);
+
+        }
 
         //Setter and Getter
 
@@ -21,13 +29,12 @@ namespace DragonsAndRabbits.Client
         /// <summary>
         /// Method to set ID of the dragon
         /// </summary>
-        /// <param name="id"></param>
+        /// <paramname="id"></param>
         protected void setID(int id)
         {
-            Contract.Requires(id > 0);
-            Contract.Ensures(id > 0);
+            Contract.Requires(id> 0);
 
-            if (id < 0)
+            if (id< 0)
             {
                 throw new NullReferenceException("ID may not < 0 be");
             }
@@ -43,7 +50,7 @@ namespace DragonsAndRabbits.Client
         public int getID()
         {
 
-            Contract.Ensures(id > 0);
+            Contract.Ensures(id> 0);
             return id;
         }
 
@@ -71,9 +78,9 @@ namespace DragonsAndRabbits.Client
         protected void setName(String name)
         {
             Contract.Requires(name != null);
-            Contract.Requires(name.Length >= 3);
+            Contract.Requires(name.Length>= 3);
 
-            if (name == null || name.Length < 3)
+            if (name == null || name.Length< 3)
             {
                 throw new NullReferenceException("There is no name existing or the name length is smaller than 3!");
             }
@@ -89,7 +96,7 @@ namespace DragonsAndRabbits.Client
         public String getName()
         {
 
-            Contract.Ensures(name != null && name.Length >= 3);
+            Contract.Ensures(name != null &&name.Length>= 3);
 
             return this.name;
         }
@@ -98,15 +105,14 @@ namespace DragonsAndRabbits.Client
         /// <summary>
         /// Method to set X-Coordinate
         /// </summary>
-        /// <param name="x"></param>
+        /// <paramname="x"></param>
         protected void setXCoordinate(int x)
         {
             Contract.Requires(x >= 0);
-            Contract.Ensures(x >= 0);
 
             if (x < 0)
             {
-                throw new Exception("X-Coordinate may not smaller 0 be!");
+                throw new Exception("X-Coordinatemay not smaller 0 be!");
             }
             this.xCoordinate = x;
         }
@@ -118,7 +124,7 @@ namespace DragonsAndRabbits.Client
         /// <returns></returns>
         public int getXCoordinate()
         {
-            Contract.Ensures(xCoordinate >= 0);
+            Contract.Ensures(xCoordinate>= 0);
 
             return xCoordinate;
         }
@@ -127,11 +133,10 @@ namespace DragonsAndRabbits.Client
         /// <summary>
         /// Method to set Y-Coordinate
         /// </summary>
-        /// <param name="y"></param>
+        /// <paramname="y"></param>
         protected void setYCoordinate(int y)
         {
             Contract.Requires(y >= 0);
-            Contract.Ensures(y >= 0);
 
             if (y < 0)
             {
@@ -141,18 +146,46 @@ namespace DragonsAndRabbits.Client
             this.yCoordinate = y;
         }
 
-
         /// <summary>
         /// Method to get Y-Coordinate
         /// </summary>
         /// <returns></returns>
         public int getYCoordinate()
         {
-            Contract.Ensures(yCoordinate >= 0);
+            Contract.Ensures(yCoordinate>= 0);
 
             return yCoordinate;
         }
+
+        /// <summary>
+        /// This Method to update attribute of the Object Dragon
+        /// </summary>
+        /// <paramname="id"></param>
+        /// <paramname="busy"></param>
+        /// <paramname="xCoordinate"></param>
+        /// <paramname="yCoordinate"></param>
+        /// <returns></returns>
+        public void update(int id, Boolean busy, int xCoordinate, int yCoordinate)
+        {
+            if (getID() == id)
+            {
+                setBusy(busy);
+                setXCoordinate(xCoordinate);
+                setYCoordinate(yCoordinate);
+            }
+        }
+
+        /// <summary>
+        /// This Method to update attribute of the Object Dragon
+        /// </summary>
+        /// <paramname="id"></param>
+        /// <paramname="busy"></param>
+        public void update(int id, Boolean busy)
+        {
+            if (getID() == id)
+            {
+                setBusy(busy);
+            }
+        }
     }
-
-
 }
