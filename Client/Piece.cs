@@ -27,7 +27,7 @@ namespace DragonsAndRabbits.Client
 
 
         /// <summary>
-        /// Method to set ID of the dragon
+        /// Method to set ID of the Dragon or Player 
         /// </summary>
         /// <paramname="id"></param>
         protected void setID(int id)
@@ -44,7 +44,7 @@ namespace DragonsAndRabbits.Client
 
 
         /// <summary>
-        /// Method to get actual Number of the Dragon
+        /// Method to get actual Number of the Dragon or Player 
         /// </summary>
         /// <returns></returns>
         public int getID()
@@ -56,7 +56,7 @@ namespace DragonsAndRabbits.Client
 
 
         /// <summary>
-        /// Method to set actual status of the Dragon
+        /// Method to set actual status of the Dragon or Player 
         /// </summary>
         protected void setBusy(Boolean busy)
         {
@@ -64,7 +64,7 @@ namespace DragonsAndRabbits.Client
         }
 
         /// <summary>
-        /// Method to get actual status of the Dragon
+        /// Method to get actual status of the Dragon or Player 
         /// </summary>
         /// <returns></returns>
         public Boolean isBusy()
@@ -73,7 +73,7 @@ namespace DragonsAndRabbits.Client
         }
 
         /// <summary>
-        /// Method to set name of the dragon
+        /// Method to set name of the Dragon or Player 
         /// </summary>
         protected void setName(String name)
         {
@@ -90,7 +90,7 @@ namespace DragonsAndRabbits.Client
 
 
         /// <summary>
-        /// Method to get the name of the Dragon
+        /// Method to get the name of the Dragon or Player 
         /// </summary>
         /// <returns></returns>
         public String getName()
@@ -103,7 +103,7 @@ namespace DragonsAndRabbits.Client
 
 
         /// <summary>
-        /// Method to set X-Coordinate
+        /// Method to set X-Coordinate of the Dragon or Player 
         /// </summary>
         /// <paramname="x"></param>
         protected void setXCoordinate(int x)
@@ -119,7 +119,7 @@ namespace DragonsAndRabbits.Client
 
 
         /// <summary>
-        /// Method to get X-Coordinate
+        /// Method to get X-Coordinate of the Dragon or Player 
         /// </summary>
         /// <returns></returns>
         public int getXCoordinate()
@@ -131,7 +131,7 @@ namespace DragonsAndRabbits.Client
 
 
         /// <summary>
-        /// Method to set Y-Coordinate
+        /// Method to set Y-Coordinate of the Dragon or Player 
         /// </summary>
         /// <paramname="y"></param>
         protected void setYCoordinate(int y)
@@ -147,7 +147,7 @@ namespace DragonsAndRabbits.Client
         }
 
         /// <summary>
-        /// Method to get Y-Coordinate
+        /// Method to get Y-Coordinate of the Dragon or Player 
         /// </summary>
         /// <returns></returns>
         public int getYCoordinate()
@@ -158,7 +158,7 @@ namespace DragonsAndRabbits.Client
         }
 
         /// <summary>
-        /// This Method to update attribute of the Object Dragon
+        /// This Method to update attribute of the Dragon or Player 
         /// </summary>
         /// <paramname="id"></param>
         /// <paramname="busy"></param>
@@ -176,7 +176,7 @@ namespace DragonsAndRabbits.Client
         }
 
         /// <summary>
-        /// This Method to update attribute of the Object Dragon
+        /// This Method to update attribute of the Dragon or Player 
         /// </summary>
         /// <paramname="id"></param>
         /// <paramname="busy"></param>
