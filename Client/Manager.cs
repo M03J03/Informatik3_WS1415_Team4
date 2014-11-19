@@ -29,12 +29,12 @@ namespace DragonsAndRabbits.Client
         /// </summary>
         private Manager()
         {
-            Buffer buffer = Buffer.getBuffer();
+            //Buffer buffer = Buffer.getBuffer();
             //setDragon();
-            setPlayer();
+            //setPlayer();
             //setRabbit();
-            setParser(buffer);
-            setGUI();
+            //setParser(buffer);
+            //setGUI();
         }
 
 
@@ -381,20 +381,31 @@ namespace DragonsAndRabbits.Client
 
         private void setGUI()
         {
- 	        this.gui=new GUI.GUI();
+           this.gui=new GUI.GUI();
         }
 
-        private void chatUpdateToServer()
+        internal void chatUpdateToServer(String message)
         {
-            throw new NotImplementedException("update chat to server not yet implemented.");
+            //called from Send-Event out of the GUI
         }
 
-        private void chatUpdateToClient(String message)
+
+        internal void chatUpdateToClient(String message)
         {
-            gui.setChatUpdate(message);
+            try
+            {
+                gui.setChatUpdate(message);
+            }
+            catch(NullReferenceException ne){
+
+            }
         }
 
-
-
+        internal void movePlayer(String direction)
+        {
+            //display on the gui - only for test purposes
+                chatUpdateToClient(direction);
+            
+        }
     }
 }

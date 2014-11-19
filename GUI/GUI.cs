@@ -6,12 +6,16 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using DragonsAndRabbits.Client;
 
 
 namespace DragonsAndRabbits.GUI
 {
     public partial class GUI : Form
     {
+        private Manager mgr = Manager.Instance;
+
+
 
         public GUI()
         {
@@ -78,7 +82,6 @@ namespace DragonsAndRabbits.GUI
             // 
             this.mapViewPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.mapViewPanel.BackColor = System.Drawing.Color.Silver;
-            this.mapViewPanel.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.mapViewPanel.Cursor = System.Windows.Forms.Cursors.No;
             this.mapViewPanel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.mapViewPanel.Location = new System.Drawing.Point(46, 32);
@@ -110,18 +113,27 @@ namespace DragonsAndRabbits.GUI
             this.Controls.Add(this.chatRun);
             this.Controls.Add(this.chatTextBox);
             this.Controls.Add(this.sendButton);
+            this.KeyPreview = true;
             this.Name = "GUI";
             this.Text = "DragonsAndRabbits";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.control_keys);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
+       
+
         
 
 
-
+        /// <summary>
+        /// this method is to dynamically draw the different tiles to the GUI
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="attributes"></param>
         public void drawMap(int row, int column, List<String> attributes)
         {
            
@@ -136,19 +148,14 @@ namespace DragonsAndRabbits.GUI
             {
                 idLabel.Text = "HEY! button has been pressed!";
                 PictureBox pb = new PictureBox();
-                //pb.SizeMode = PictureBoxSizeMode.CenterImage;
                 pb.SizeMode = PictureBoxSizeMode.StretchImage;
-                              
-                
                 pb.Size = new System.Drawing.Size(height, width);
                 pb.Margin = new System.Windows.Forms.Padding(0);
                   // pb.Location = new System.Drawing.Point(width * i); //starting point
-                  //  pb.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+                pb.BorderStyle = System.Windows.Forms.BorderStyle.None;
 
                 pb.Image = global::DragonsAndRabbits.Properties.Resources.forest;
                 mapViewPanel.Controls.Add(pb);
-                
-                
                 
             }
             
@@ -162,15 +169,22 @@ namespace DragonsAndRabbits.GUI
         /// <param name="message"></param>
         internal void setChatUpdate(string message)
         {
-            chatTextBox.AppendText(message);
+            if (message != null && message != "")
+            {
+                chatRun.AppendText(message + "\r\n");
+            }
+            
         }
+
+
+
     
         //**************************************vv******EVENTS*****vv***************************************
 
 
 
         /// <summary>
-        /// Button-Click-Event. This method adds a message 
+        /// Button-Click-Event. This method adds a message to the chatrun and sends an update towards the manager
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -186,20 +200,15 @@ namespace DragonsAndRabbits.GUI
                 throw new ArgumentNullException("GUI ButtonClick argument is null");
             }
 
-            try{
-                if (chatTextBox.TextLength > 0)
+            if (chatTextBox.TextLength > 0)
                 {
+                    //showText on Chatrun:
                     chatRun.AppendText (chatTextBox.Text + "\r\n");
-                    //then sendText to Server
-                }                    
-                
-                chatTextBox.ResetText();
-                              
-            }
-            catch (ArgumentNullException ae)
-            {
-                //do something
-            }
+                    //then sendText to Server:
+                    mgr.chatUpdateToServer(chatTextBox.Text);
+                }
+
+            chatTextBox.ResetText();
              
         }
 
@@ -222,7 +231,60 @@ namespace DragonsAndRabbits.GUI
          
         }
 
+        private void control_keys(object sender, KeyEventArgs e)
+        {
 
+            List<Keys> keyCodes = new List<Keys> { Keys.Left,Keys.Right, Keys.Up, Keys.Down };
+
+            Console.WriteLine("controlkeys entered");
+
+
+            if (keyCodes.Contains(e.KeyCode))
+            {
+                switch (e.KeyCode)
+                {
+                    case (Keys.Left):
+                        {
+                            chatRun.AppendText("left \r\n");
+                            //mgr.movePlayer("left");
+                            break;
+                        }
+                    case (Keys.Right):
+                        {
+                            chatRun.AppendText("right \r\n");
+                           // mgr.movePlayer("right");
+                            break;
+                        }
+                    case (Keys.Up):
+                        {
+                            chatRun.AppendText("up \r\n");
+                            //mgr.movePlayer("up");
+                            break;
+                        }
+                    case (Keys.Down):
+                        {
+                            chatRun.AppendText("down \r\n");
+                           // mgr.movePlayer("down");
+                            break;
+                        }
+                    default:{
+
+                        break;
+                        }
+                   }
+                
+
+                //ArrowKey pressed
+                
+                Console.WriteLine(e.KeyCode.ToString());
+            }
+             else
+                    {
+                        //chatRun.AppendText("fail!");
+                    }
+      
+            
+        }
 
 
 
@@ -230,7 +292,7 @@ namespace DragonsAndRabbits.GUI
 
         static void Main(String[] args)
         {
-            GUI gui= new GUI();
+            GUI gui = new GUI();
         }
 
 
