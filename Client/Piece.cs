@@ -7,7 +7,7 @@ using DragonsAndRabbits.Exceptions;
 
 namespace DragonsAndRabbits.Client
 {
-    protected abstract class Piece
+    public abstract class Piece
     {
         private int id;
         private Boolean busy = false;
