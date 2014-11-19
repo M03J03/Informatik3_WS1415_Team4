@@ -14,7 +14,7 @@ namespace DragonsAndRabbits.Client
         private String name;
         private int xCoordinate, yCoordinate;
 
-        protected Piece(int id, String name, int xCoordinate, int yCoordinate)
+        public Piece(int id, String name, int xCoordinate, int yCoordinate)
         {
             setID(id);
             setName(name);
