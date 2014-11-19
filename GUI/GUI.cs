@@ -7,14 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+
 namespace DragonsAndRabbits.GUI
 {
     public partial class GUI : Form
     {
-        
+
         public GUI()
         {
+            Console.WriteLine("GUI activated!");
             InitializeComponent();
+            this.ShowDialog();
         }
 
         private void InitializeComponent()
@@ -23,26 +26,30 @@ namespace DragonsAndRabbits.GUI
             this.chatTextBox = new System.Windows.Forms.TextBox();
             this.chatRun = new System.Windows.Forms.TextBox();
             this.idLabel = new System.Windows.Forms.Label();
-            this.mapViewPanel = new System.Windows.Forms.Panel();
+            this.mapViewPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // sendButton
             // 
+            this.sendButton.ForeColor = System.Drawing.SystemColors.AppWorkspace;
             this.sendButton.Location = new System.Drawing.Point(908, 601);
             this.sendButton.Name = "sendButton";
             this.sendButton.Size = new System.Drawing.Size(75, 23);
             this.sendButton.TabIndex = 0;
             this.sendButton.Text = "send...";
             this.sendButton.UseVisualStyleBackColor = true;
+            this.sendButton.Click += new System.EventHandler(this.sendButton_Click);
             // 
             // chatTextBox
             // 
+            this.chatTextBox.AcceptsReturn = true;
             this.chatTextBox.Location = new System.Drawing.Point(708, 603);
             this.chatTextBox.Name = "chatTextBox";
             this.chatTextBox.Size = new System.Drawing.Size(184, 20);
             this.chatTextBox.TabIndex = 1;
+            this.chatTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.chatTextBox_on_return);
             // 
             // chatRun
             // 
@@ -54,6 +61,7 @@ namespace DragonsAndRabbits.GUI
             this.chatRun.ReadOnly = true;
             this.chatRun.Size = new System.Drawing.Size(240, 295);
             this.chatRun.TabIndex = 2;
+            this.chatRun.WordWrap = false;
             // 
             // idLabel
             // 
@@ -68,13 +76,18 @@ namespace DragonsAndRabbits.GUI
             // 
             // mapViewPanel
             // 
+            this.mapViewPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.mapViewPanel.BackColor = System.Drawing.Color.Silver;
-            this.mapViewPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.mapViewPanel.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.mapViewPanel.Cursor = System.Windows.Forms.Cursors.No;
             this.mapViewPanel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.mapViewPanel.Location = new System.Drawing.Point(46, 32);
+            this.mapViewPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.mapViewPanel.MaximumSize = new System.Drawing.Size(600, 600);
+            this.mapViewPanel.MinimumSize = new System.Drawing.Size(600, 600);
             this.mapViewPanel.Name = "mapViewPanel";
             this.mapViewPanel.Size = new System.Drawing.Size(600, 600);
-            this.mapViewPanel.TabIndex = 4;
+            this.mapViewPanel.TabIndex = 6;
             // 
             // pictureBox1
             // 
@@ -104,41 +117,125 @@ namespace DragonsAndRabbits.GUI
             this.PerformLayout();
 
         }
-       
 
-       
-        public void drawMap(int row, int column, List<String> attributes){
+        
 
-          
 
+
+        public void drawMap(int row, int column, List<String> attributes)
+        {
+           
+            int nrOfTiles = row*column;
+            Console.WriteLine("No of tiles: "+ nrOfTiles);
+            int height = 600/row; //pixel available per tile (600 absolute)
+            int width = 600/column;
+            Console.WriteLine("height/width: "+ height + ", " + width);
+
+            
+            for (int i = 0; i < nrOfTiles; i++ )
+            {
+                idLabel.Text = "HEY! button has been pressed!";
+                PictureBox pb = new PictureBox();
+                //pb.SizeMode = PictureBoxSizeMode.CenterImage;
+                pb.SizeMode = PictureBoxSizeMode.StretchImage;
+                              
+                
+                pb.Size = new System.Drawing.Size(height, width);
+                pb.Margin = new System.Windows.Forms.Padding(0);
+                  // pb.Location = new System.Drawing.Point(width * i); //starting point
+                  //  pb.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+
+                pb.Image = global::DragonsAndRabbits.Properties.Resources.forest;
+                mapViewPanel.Controls.Add(pb);
+                
+                
+                
+            }
+            
+            
+
+
+        }
+        /// <summary>
+        /// this method lists the recieved message in the chatrun of the Client-GUI.
+        /// </summary>
+        /// <param name="message"></param>
+        internal void setChatUpdate(string message)
+        {
+            chatTextBox.AppendText(message);
+        }
+    
+        //**************************************vv******EVENTS*****vv***************************************
+
+
+
+        /// <summary>
+        /// Button-Click-Event. This method adds a message 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void sendButton_Click(object sender, EventArgs e)
+        {
+
+            //for testing purposes only
+            drawMap(10,10,null);
+
+
+            if (sender == null)
+            {
+                throw new ArgumentNullException("GUI ButtonClick argument is null");
+            }
+
+            try{
+                if (chatTextBox.TextLength > 0)
+                {
+                    chatRun.AppendText (chatTextBox.Text + "\r\n");
+                    //then sendText to Server
+                }                    
+                
+                chatTextBox.ResetText();
+                              
+            }
+            catch (ArgumentNullException ae)
+            {
+                //do something
+            }
+             
         }
 
         /// <summary>
-        /// 
+        /// Key-Event. on 'return'-Key - the sendbutton_Click is activated.
         /// </summary>
-        /// <param name="s"></param>
-        public void transformTile(int tile)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void chatTextBox_on_return(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            switch (tile)
+            if (e.KeyCode == Keys.Enter)
             {
-                case 0:
-                    Console.WriteLine ("transformtile case 0");
-                    break;
-                case 1:
-                    Console.WriteLine ("transformtile case 1");
-                    break; 
-                case 2:
-                    Console.WriteLine ("transformtile case 2");
-                    break;
-                case 3:
-                    Console.WriteLine ("transformtile case 3");
-                    break;
-
-
-                
-                   
+                //MessageBox.Show("Enter");
+                if (chatTextBox.TextLength>0)
+                {
+                   this.sendButton_Click(sender, e);
+                }
+               
+            }
+         
         }
 
-        
+
+
+
+
+        //********************************************MAIN******************************************
+
+        static void Main(String[] args)
+        {
+            GUI gui= new GUI();
+        }
+
+
+
+       
     }
+
 }

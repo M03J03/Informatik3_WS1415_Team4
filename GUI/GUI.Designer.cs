@@ -7,8 +7,8 @@
         private System.Windows.Forms.TextBox chatTextBox;
         private System.Windows.Forms.TextBox chatRun;
         private System.Windows.Forms.Label idLabel;
-        private System.Windows.Forms.Panel mapViewPanel;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.FlowLayoutPanel mapViewPanel;
     }
          
 }
