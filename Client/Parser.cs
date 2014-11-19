@@ -283,7 +283,7 @@ namespace DragonsAndRabbits.Client
 
         public void sendAnswer(String ans, String info)
         {
-            Manager.Instance.anwerInfo(ans, info);
+            Manager.Instance.answerInfo(ans, info);
         }
 
         
