@@ -12,18 +12,18 @@ namespace DragonsAndRabbits.Client
     {
         private static Manager instance = null;
         private static readonly Object key = new Object();
-            //only for test reasons vv
-            private Dragon dragon = null;
-            private Player player = null;
-            private Rabbit rabbit = null;
-            private Parser parser = null;
-             //only for test reasons ^^
+        //only for test reasons vv
+        private Dragon dragon = null;
+        private Player player = null;
+        private Rabbit rabbit = null;
+        private Parser parser = null;
+        //only for test reasons ^^
 
-            private GUI.GUI gui;
+        private GUI.GUI gui;
         private List<Dragon> listDragon = null;
         private List<Player> listPlayer = null;
         private List<Rabbit> listRabbit = null;
-        private List<MapCell> listMapCell =null;
+        private List<MapCell> listMapCell = null;
 
 
         /// <summary>
@@ -37,6 +37,9 @@ namespace DragonsAndRabbits.Client
             //setRabbit();
             //setParser(buffer);
             gui = GUI.GUI.getGUI();
+
+            listPlayer = new List<Player>();
+            listDragon = new List<Dragon>();
         }
 
 
@@ -53,14 +56,14 @@ namespace DragonsAndRabbits.Client
             {
                 if (instance == null)
                 {
-                    lock(key)
+                    lock (key)
                     {
                         if (instance == null)
                         {
                             instance = new Manager();
                         }
                     }
-                    
+
                 }
                 return instance;
             }
@@ -98,12 +101,16 @@ namespace DragonsAndRabbits.Client
         /// <param name="id"></param>
         /// <param name="type"></param>
         /// <param name="busy"></param>
-        /// <param name="decission"></param>
+        /// <param name="name"></param>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public void dragonInfo(int id, String type, bool busy, String decission, int x, int y)
+        public void dragonInfo(int id, String type, bool busy, String name, int x, int y)
         {
-
+            if (listDragon != null)
+            {
+                Dragon dr = new Dragon(id, name, busy, x, y);
+                listDragon.Add(dr);
+            }
         }
 
         /// <summary>
@@ -118,7 +125,11 @@ namespace DragonsAndRabbits.Client
         /// <param name="points"></param>
         public void playerInfo(int id, String type, bool busy, String name, int x, int y, int points)
         {
-
+            if (listPlayer != null)
+            {
+                Player pl = new Player(id, name, busy, x, y, points);
+                listPlayer.Add(pl);
+            }
         }
 
         /// <summary>
@@ -154,28 +165,34 @@ namespace DragonsAndRabbits.Client
             else
             {
 
-                  foreach (String s in props){
-                //PROPERTY: "WALKABLE"|"WALL"|"FOREST"|"WATER"|"HUNTABLE"
+                foreach (String s in props)
+                {
+                    //PROPERTY: "WALKABLE"|"WALL"|"FOREST"|"WATER"|"HUNTABLE"
 
-                if(s.Equals ("WALKABLE")|| s.Equals("walkable")){
-                   // gui.transformTile(); //only a possibility to draw the map.
-                }
-                 if(s.Equals ("WALL")|| s.Equals("wall")){
-                     
-                }
-                 if(s.Equals ("FOREST")|| s.Equals("forest")){
-                   
-                }
-                 if(s.Equals ("WATER")|| s.Equals("water")){
-                   
-                }
-                 if(s.Equals ("HUNTABLE")|| s.Equals("huntable")){
-                    
-                }
+                    if (s.Equals("WALKABLE") || s.Equals("walkable"))
+                    {
+                        // gui.transformTile(); //only a possibility to draw the map.
+                    }
+                    if (s.Equals("WALL") || s.Equals("wall"))
+                    {
 
-                
+                    }
+                    if (s.Equals("FOREST") || s.Equals("forest"))
+                    {
 
-            }
+                    }
+                    if (s.Equals("WATER") || s.Equals("water"))
+                    {
+
+                    }
+                    if (s.Equals("HUNTABLE") || s.Equals("huntable"))
+                    {
+
+                    }
+
+
+
+                }
 
             }
         }
@@ -205,22 +222,97 @@ namespace DragonsAndRabbits.Client
         /// <summary>
         /// this method recieves information from the parser and delegates it to the concerning backend-methods.
         /// </summary>
-        /// <param name="d"></param>
         /// <param name="p"></param>
-        /// <param name="mc"></param>
-        public void update(Dragon d, Player p, MapCell mc)
+        public void updatePlayer(Player p)
         {
-
+            if (p != null)
+            {
+                if (listPlayer != null)
+                {
+                    foreach (Player pl in listPlayer)
+                    {
+                        if (pl.getID() == p.getID())
+                        {
+                            listPlayer.Remove(pl);
+                            listPlayer.Add(p);
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
         /// this method recieves information from the parser and delegates it to the concerning backend-methods.
         /// </summary>
         /// <param name="d"></param>
-        /// <param name="p"></param>
-        public void deleteInfo(Dragon d, Player p)
+        public void updateDragon(Dragon d)
+        {
+            if (d != null)
+            {
+                if (listDragon != null)
+                {
+                    foreach (Dragon dr in listDragon)
+                    {
+                        if (dr.getID() == d.getID())
+                        {
+                            listDragon.Remove(dr);
+                            listDragon.Add(d);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// this method recieves information from the parser and delegates it to the concerning backend-methods.
+        /// </summary>
+        /// <param name="mCell"></param>
+        public void updateMapCell(MapCell mCell)
         {
 
+        }
+
+
+        /// <summary>
+        /// this method recieves information from the parser and delegates it to the concerning backend-methods.
+        /// </summary>
+        /// <param name="p"></param>
+        public void deleteInfoPlayer(Player p)
+        {
+            if (p != null)
+            {
+                if (listPlayer != null)
+                {
+                    foreach (Player pl in listPlayer)
+                    {
+                        if (pl.getID() == p.getID())
+                        {
+                            listPlayer.Remove(pl);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// this method recieves information from the parser and delegates it to the concerning backend-methods.
+        /// </summary>
+        /// <param name="d"></param>
+        public void deleteInfoDragon(Dragon d)
+        {
+            if (d != null)
+            {
+                if (listDragon != null)
+                {
+                    foreach (Dragon dr in listDragon)
+                    {
+                        if (dr.getID() == d.getID())
+                        {
+                            listDragon.Remove(dr);
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -255,7 +347,7 @@ namespace DragonsAndRabbits.Client
         {
             if (player == null)
             {
-                this.player = new Player(22,"playersName",1,1);
+                this.player = new Player(22, "playersName", true, 1, 1, 10);
             }
             else
             {
@@ -285,12 +377,12 @@ namespace DragonsAndRabbits.Client
             if (listDragon == null)
             {
                 //this.dragon = new Dragon();
-                
+
             }
-           
+
             //listdragon.add(Dragon d);
-               
-            
+
+
 
         }
 
@@ -324,7 +416,7 @@ namespace DragonsAndRabbits.Client
             {
                 throw new ManagerInputException("Rabbit already exists!");
             }
-         
+
         }
 
 
@@ -344,16 +436,16 @@ namespace DragonsAndRabbits.Client
         /// gets the Parser Object.
         /// </summary>
         /// <returns></returns>
-        public Parser getParser() 
+        public Parser getParser()
         {
             return parser;
         }
 
         /// <summary>
-        /// sets the aprser object
+        /// sets the Parser object
         /// </summary>
         /// <param name="p"></param>
-        private void setParser(Buffer buffer) 
+        private void setParser(Buffer buffer)
         {
             if (parser == null)
             {
@@ -376,7 +468,7 @@ namespace DragonsAndRabbits.Client
             }
             else
             {
-               
+
 
             }
         }
@@ -388,7 +480,7 @@ namespace DragonsAndRabbits.Client
 
         //*****************************GUI*********************
 
-              
+
 
         /// <summary>
         /// this method sends a new Chatmessage to the server - called from the send-Event of the GUI
@@ -410,7 +502,8 @@ namespace DragonsAndRabbits.Client
             {
                 gui.setChatUpdate(message);
             }
-            catch(NullReferenceException ne){
+            catch (NullReferenceException ne)
+            {
 
             }
         }
@@ -419,19 +512,19 @@ namespace DragonsAndRabbits.Client
         /// <summary>
         /// this method is to send a movemend of Player with IDxy to the server and replaces him on the new tile -GUI-
         /// </summary>
-   
+
         /// <param name="direction"></param>
-        internal void movePlayer( String direction)
+        internal void movePlayer(String direction)
         {
             //display on the gui - only for test purposes
-                chatUpdateToClient(direction);
+            chatUpdateToClient(direction);
 
             //send movement to server:
             //........insert here.........
 
             //then replace/move Player icon on the GUI
-                updatePlayer(direction);
-            
+            updatePlayer(direction);
+
         }
 
         /// <summary>
@@ -440,7 +533,7 @@ namespace DragonsAndRabbits.Client
         /// <param name="row"></param>
         /// <param name="column"></param>
         /// <param name="attributes"></param>
-        internal void updateFullMap(int row, int column, List<String> attributes )
+        internal void updateFullMap(int row, int column, List<String> attributes)
         {
             try
             {
@@ -448,7 +541,7 @@ namespace DragonsAndRabbits.Client
             }
             catch (Exception)
             {
-              
+
             }
         }
 
@@ -459,7 +552,7 @@ namespace DragonsAndRabbits.Client
         /// <param name="direction"></param>
         internal void updatePlayer(String direction)
         {
-             
+
         }
 
 
@@ -469,7 +562,7 @@ namespace DragonsAndRabbits.Client
         /// <param name="id"></param>
         /// <param name="row"></param>
         /// <param name="col"></param>
-        internal void updateDragon( int rowOld, int colOld, int rowNew, int colNew)
+        internal void updateDragon(int rowOld, int colOld, int rowNew, int colNew)
         {
 
             gui.drawDragon(rowOld, colOld, rowNew, colNew);
@@ -477,7 +570,7 @@ namespace DragonsAndRabbits.Client
         }
 
 
-       
+
 
         //********************************************MAIN******************************************
         /*
