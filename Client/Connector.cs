@@ -31,9 +31,7 @@ namespace Connector
         /// Generates a Connector - Objekt and the two objects of Reciever and Sender, too.
         /// </summary>
         public Connector()
-        {
-            GUI gui = new GUI();
-           
+        {           
             rec = new Receiever();
             sender = new Sender();
             connected = true;
@@ -267,7 +265,7 @@ namespace Connector
         {
             Connector con = new Connector();
             con.start();
-
+            GUI gui = new GUI();
             System.Console.ReadLine();
 
         }
