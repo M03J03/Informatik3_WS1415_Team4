@@ -7,18 +7,26 @@ using DragonsAndRabbits.Exceptions;
 
 namespace DragonsAndRabbits.Client
 {
-    public class Player:Piece
+    public class Player : Piece
     {
 
-        private int score;
+        private int points;
+
 
 
         /// <summary>
         /// Generates an object of Player
         /// </summary>
-        public Player(int id,String name,int xCoordinate,int yCoordinate):base(id,name,xCoordinate,yCoordinate)
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        /// <param name="busy"></param>
+        /// <param name="xCoordinate"></param>
+        /// <param name="yCoordinate"></param>
+        /// <param name="points"></param>
+        public Player(int id, String name, bool busy, int xCoordinate, int yCoordinate, int points)
+            : base(id, name, busy, xCoordinate, yCoordinate)
         {
-
+            setPoints(points);
         }
 
 
@@ -26,18 +34,18 @@ namespace DragonsAndRabbits.Client
         /// This Method set the Score
         /// </summary>
         /// <param name="score"></param>
-        private void setScore(int score)
+        private void setPoints(int points)
         {
-            this.score = score;
+            this.points = points;
         }
 
         /// <summary>
         /// This Method get the actual Score
         /// </summary>
         /// <returns>the actual Score</returns>
-        public int getScore()
+        public int getPoints()
         {
-            return score;
+            return points;
         }
 
 
@@ -62,11 +70,11 @@ namespace DragonsAndRabbits.Client
         /// <param name="yCoordinate"></param>
         /// <param name="xCoordinate"></param>
         /// <returns></returns>
-        public void update(int id, int score)
+        public void update(int id, int points)
         {
             if (getID() == id)
             {
-                this.setScore(score);
+                this.setPoints(points);
 
             }
         }

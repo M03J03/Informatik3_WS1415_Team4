@@ -13,9 +13,10 @@ namespace DragonsAndRabbits.Client
         /// <summary>
         ///  Generates an object of Dragon.
         /// </summary>
-        public Dragon(int id, String name, int xCoordinate, int yCoordinate):base(id, name, xCoordinate, yCoordinate)
+        public Dragon(int id, String name, bool busy, int xCoordinate, int yCoordinate)
+            : base(id, name, busy, xCoordinate, yCoordinate)
         {
-    
+
         }
 
 
