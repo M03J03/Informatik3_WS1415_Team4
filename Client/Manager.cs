@@ -11,13 +11,15 @@ namespace DragonsAndRabbits.Client
     class Manager
     {
         private static Manager instance = null;
+        private static readonly Object key = new Object();
             //only for test reasons vv
             private Dragon dragon = null;
             private Player player = null;
             private Rabbit rabbit = null;
             private Parser parser = null;
              //only for test reasons ^^
-        private GUI.GUI gui = null;
+
+            private GUI.GUI gui;
         private List<Dragon> listDragon = null;
         private List<Player> listPlayer = null;
         private List<Rabbit> listRabbit = null;
@@ -29,12 +31,12 @@ namespace DragonsAndRabbits.Client
         /// </summary>
         private Manager()
         {
-            //Buffer buffer = Buffer.getBuffer();
+            //Buffer buffer = Buffer.Instance;
             //setDragon();
             //setPlayer();
             //setRabbit();
             //setParser(buffer);
-            //setGUI();
+            gui = GUI.GUI.getGUI();
         }
 
 
@@ -51,7 +53,14 @@ namespace DragonsAndRabbits.Client
             {
                 if (instance == null)
                 {
-                    instance = new Manager();
+                    lock(key)
+                    {
+                        if (instance == null)
+                        {
+                            instance = new Manager();
+                        }
+                    }
+                    
                 }
                 return instance;
             }
@@ -379,13 +388,7 @@ namespace DragonsAndRabbits.Client
 
         //*****************************GUI*********************
 
-        /// <summary>
-        /// initializes the GUI
-        /// </summary>
-        private void setGUI()
-        {
-           this.gui=new GUI.GUI();
-        }
+              
 
         /// <summary>
         /// this method sends a new Chatmessage to the server - called from the send-Event of the GUI
@@ -472,6 +475,18 @@ namespace DragonsAndRabbits.Client
             gui.drawDragon(rowOld, colOld, rowNew, colNew);
 
         }
+
+
+       
+
+        //********************************************MAIN******************************************
+        /*
+        static void Main(String[] args)
+        {
+           Manager mgr = Manager.Instance;
+        }
+        
+        */
 
 
     }

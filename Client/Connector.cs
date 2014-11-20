@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Threading;
+using DragonsAndRabbits.GUI;
+using DragonsAndRabbits.Client;
+using DragonsAndRabbits.Exceptions;
 
 namespace Connector
 {
@@ -29,6 +32,8 @@ namespace Connector
         /// </summary>
         public Connector()
         {
+            GUI gui = new GUI();
+           
             rec = new Receiever();
             sender = new Sender();
             connected = true;
@@ -253,7 +258,7 @@ namespace Connector
 
 
 
-        /*
+        
         /// <summary>
         /// Main - Method
         /// </summary>
@@ -266,6 +271,6 @@ namespace Connector
             System.Console.ReadLine();
 
         }
-         */
+         
     }
 }

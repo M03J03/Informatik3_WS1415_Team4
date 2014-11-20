@@ -15,6 +15,7 @@ namespace DragonsAndRabbits.GUI
     public partial class GUI : Form
     {
         private Manager mgr = Manager.Instance;
+        private static GUI gui;
        // private List<Dragons> dragons = new List<Dragons>();
         private List<PictureBox> picturelist = new List<PictureBox>();
         int height=0;
@@ -24,6 +25,7 @@ namespace DragonsAndRabbits.GUI
         public GUI()
         {
             Console.WriteLine("GUI activated!");
+            setGUI(this);
             InitializeComponent();
             this.ShowDialog();
         }
@@ -129,6 +131,22 @@ namespace DragonsAndRabbits.GUI
         }
 
         /// <summary>
+        /// this method returns the GUI
+        /// </summary>
+        /// <returns></returns>
+        public static GUI getGUI()
+        {
+            return gui;
+        }
+
+        private void setGUI(GUI g)
+        {
+            GUI.gui = g;
+        }
+
+
+        /*
+        /// <summary>
         /// this method redraws a field or any component
         /// </summary>
         /// <param name="e"></param>
@@ -139,7 +157,7 @@ namespace DragonsAndRabbits.GUI
                //draw image dragon
             }
         }
-
+        */
         
 
 
@@ -219,9 +237,9 @@ namespace DragonsAndRabbits.GUI
                      */
 
                     //the list provides indexes of the pictureboxes
-                    
+
                     picturelist.Add(pb);
-                    picturelist[i].Paint += new System.Windows.Forms.PaintEventHandler(this.OnPaint());
+                  //  picturelist[i].Paint += new System.Windows.Forms.PaintEventHandler(this.OnPaint());
                     mapViewPanel.Controls.Add(picturelist[i]);
                 
                 }
@@ -244,10 +262,10 @@ namespace DragonsAndRabbits.GUI
         internal void drawDragon(int rowOld, int colOld, int rowNew, int colNew)
         {
             //remove old icon
-            picturelist[rowOld * this.width + colOld].Paint;
+           // picturelist[rowOld * this.width + colOld].Paint;
 
             //add new icon
-            picturelist[rowNew * this.width + colNew].Paint;
+          //  picturelist[rowNew * this.width + colNew].Paint;
 
 
         }
@@ -298,11 +316,12 @@ namespace DragonsAndRabbits.GUI
         /// <param name="e"></param>
         private void sendButton_Click(object sender, EventArgs e)
         {
-            /*
+            
             //for testing purposes only
+            picturelist.Clear();
             List<String> attr = new List<string> { "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", };
             drawMap(10,10,attr);
-             */
+             
 
 
             if (sender == null)
@@ -405,6 +424,8 @@ namespace DragonsAndRabbits.GUI
             GUI gui = new GUI();
         }
         */
+
+
 
 
        
