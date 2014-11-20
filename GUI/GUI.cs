@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using DragonsAndRabbits.Client;
+using DragonsAndRabbits.Exceptions;
 
 
 namespace DragonsAndRabbits.GUI
@@ -14,7 +15,10 @@ namespace DragonsAndRabbits.GUI
     public partial class GUI : Form
     {
         private Manager mgr = Manager.Instance;
-
+       // private List<Dragons> dragons = new List<Dragons>();
+        private List<PictureBox> picturelist = new List<PictureBox>();
+        int height=0;
+        int width=0;
 
 
         public GUI()
@@ -42,6 +46,7 @@ namespace DragonsAndRabbits.GUI
             this.sendButton.Name = "sendButton";
             this.sendButton.Size = new System.Drawing.Size(75, 23);
             this.sendButton.TabIndex = 0;
+            this.sendButton.TabStop = false;
             this.sendButton.Text = "send...";
             this.sendButton.UseVisualStyleBackColor = true;
             this.sendButton.Click += new System.EventHandler(this.sendButton_Click);
@@ -123,7 +128,17 @@ namespace DragonsAndRabbits.GUI
 
         }
 
-       
+        /// <summary>
+        /// this method redraws a field or any component
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnPaint(Object source, PaintEventArgs e)
+        {
+            if (source is PictureBox)
+            {
+               //draw image dragon
+            }
+        }
 
         
 
@@ -133,36 +148,129 @@ namespace DragonsAndRabbits.GUI
         /// </summary>
         /// <param name="row"></param>
         /// <param name="column"></param>
-        /// <param name="attributes"></param>
+        /// <param name="attributes as List<String>"></param>
         public void drawMap(int row, int column, List<String> attributes)
         {
-           
+            this.height = row;
+            this.width = column;
+
             int nrOfTiles = row*column;
-            Console.WriteLine("No of tiles: "+ nrOfTiles);
             int height = 600/row; //pixel available per tile (600 absolute)
             int width = 600/column;
             Console.WriteLine("height/width: "+ height + ", " + width);
 
+            if(attributes.Count != nrOfTiles){
+                throw new WrongWidthOrHeigthException ("drawing of the map has missing arguments");
+            }
+
+
+            else{
+
+                for (int i = 0; i < nrOfTiles; i++ )
+                {
+                    PictureBox pb = setupPictureBox(height,width);
+
+                    switch(attributes[i]){
+                        case "walkable":
+                        case "WALKABLE":{
+                            pb.Image = global::DragonsAndRabbits.Properties.Resources.walkable;
+                                break;
+                        }
+                        case "huntable":
+                        case "HUNTABLE":{
+                            pb.Image = global::DragonsAndRabbits.Properties.Resources.huntable;
+                            break;
+                        }
+                        case "forest":
+                        case "FOREST":{
+                            pb.Image = global::DragonsAndRabbits.Properties.Resources.forest;
+                            break;
+                        }
+                        case "wall":
+                        case "WALL":{
+                            pb.Image = global::DragonsAndRabbits.Properties.Resources.stones;
+                            break;
+                        }
+                       
+                        case "sand":
+                        case "SAND":{
+                            pb.Image = global::DragonsAndRabbits.Properties.Resources.sand;
+                            break;
+                        }
+
+                        case "water":
+                        case "WATER":{
+                            pb.Image = global::DragonsAndRabbits.Properties.Resources.water;
+                            break;
+                        }
+                    }
+                    
+                    idLabel.Text = "HEY! button has been pressed!";
+                  
+                    /*
+                    PictureBox pb = new PictureBox();
+                    pb.SizeMode = PictureBoxSizeMode.StretchImage;
+                    pb.Size = new System.Drawing.Size(height, width);
+                    pb.Margin = new System.Windows.Forms.Padding(0);
+                      // pb.Location = new System.Drawing.Point(width * i); //starting point
+                    pb.BorderStyle = System.Windows.Forms.BorderStyle.None;
+
+                    pb.Image = global::DragonsAndRabbits.Properties.Resources.forest;
+                     */
+
+                    //the list provides indexes of the pictureboxes
+                    
+                    picturelist.Add(pb);
+                    picturelist[i].Paint += new System.Windows.Forms.PaintEventHandler(this.OnPaint());
+                    mapViewPanel.Controls.Add(picturelist[i]);
+                
+                }
+            }
+        }
+
+        /// <summary>
+        /// this method locates the player, resets his icon at the old tile and draws an icon on the new tile he is standing on
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="direction"></param>
+        internal void drawPlayer(int id, String direction){
+
+
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        internal void drawDragon(int rowOld, int colOld, int rowNew, int colNew)
+        {
+            //remove old icon
+            picturelist[rowOld * this.width + colOld].Paint;
+
+            //add new icon
+            picturelist[rowNew * this.width + colNew].Paint;
+
+
+        }
             
-            for (int i = 0; i < nrOfTiles; i++ )
-            {
-                idLabel.Text = "HEY! button has been pressed!";
+        /// <summary>
+        /// this method 
+        /// </summary>
+        /// <param name="height"></param>
+        /// <param name="width"></param>
+        /// <returns></returns>
+         private PictureBox setupPictureBox(int height, int width){
+
                 PictureBox pb = new PictureBox();
                 pb.SizeMode = PictureBoxSizeMode.StretchImage;
                 pb.Size = new System.Drawing.Size(height, width);
                 pb.Margin = new System.Windows.Forms.Padding(0);
-                  // pb.Location = new System.Drawing.Point(width * i); //starting point
                 pb.BorderStyle = System.Windows.Forms.BorderStyle.None;
-
-                pb.Image = global::DragonsAndRabbits.Properties.Resources.forest;
-                mapViewPanel.Controls.Add(pb);
-                
-            }
-            
-            
+             
+             return pb;
+         }
 
 
-        }
+        
         /// <summary>
         /// this method lists the recieved message in the chatrun of the Client-GUI.
         /// </summary>
@@ -190,9 +298,11 @@ namespace DragonsAndRabbits.GUI
         /// <param name="e"></param>
         private void sendButton_Click(object sender, EventArgs e)
         {
-
+            /*
             //for testing purposes only
-            drawMap(10,10,null);
+            List<String> attr = new List<string> { "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", };
+            drawMap(10,10,attr);
+             */
 
 
             if (sender == null)
@@ -246,25 +356,25 @@ namespace DragonsAndRabbits.GUI
                     case (Keys.Left):
                         {
                             chatRun.AppendText("left \r\n");
-                            //mgr.movePlayer("left");
+                            mgr.movePlayer("left");
                             break;
                         }
                     case (Keys.Right):
                         {
                             chatRun.AppendText("right \r\n");
-                           // mgr.movePlayer("right");
+                            mgr.movePlayer("right");
                             break;
                         }
                     case (Keys.Up):
                         {
                             chatRun.AppendText("up \r\n");
-                            //mgr.movePlayer("up");
+                            mgr.movePlayer("up");
                             break;
                         }
                     case (Keys.Down):
                         {
                             chatRun.AppendText("down \r\n");
-                           // mgr.movePlayer("down");
+                            mgr.movePlayer("down");
                             break;
                         }
                     default:{
@@ -289,12 +399,12 @@ namespace DragonsAndRabbits.GUI
 
 
         //********************************************MAIN******************************************
-
+        /*
         static void Main(String[] args)
         {
             GUI gui = new GUI();
         }
-
+        */
 
 
        

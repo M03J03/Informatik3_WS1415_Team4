@@ -379,17 +379,28 @@ namespace DragonsAndRabbits.Client
 
         //*****************************GUI*********************
 
+        /// <summary>
+        /// initializes the GUI
+        /// </summary>
         private void setGUI()
         {
            this.gui=new GUI.GUI();
         }
 
+        /// <summary>
+        /// this method sends a new Chatmessage to the server - called from the send-Event of the GUI
+        /// </summary>
+        /// <param name="message"></param>
         internal void chatUpdateToServer(String message)
         {
             //called from Send-Event out of the GUI
         }
 
 
+        /// <summary>
+        /// this method renews the chatrun in the GUI
+        /// </summary>
+        /// <param name="message"></param>
         internal void chatUpdateToClient(String message)
         {
             try
@@ -401,11 +412,67 @@ namespace DragonsAndRabbits.Client
             }
         }
 
-        internal void movePlayer(String direction)
+
+        /// <summary>
+        /// this method is to send a movemend of Player with IDxy to the server and replaces him on the new tile -GUI-
+        /// </summary>
+   
+        /// <param name="direction"></param>
+        internal void movePlayer( String direction)
         {
             //display on the gui - only for test purposes
                 chatUpdateToClient(direction);
+
+            //send movement to server:
+            //........insert here.........
+
+            //then replace/move Player icon on the GUI
+                updatePlayer(direction);
             
         }
+
+        /// <summary>
+        /// draws the complete map according to the list<String> of Attributes
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="attributes"></param>
+        internal void updateFullMap(int row, int column, List<String> attributes )
+        {
+            try
+            {
+                gui.drawMap(row, column, attributes);
+            }
+            catch (Exception)
+            {
+              
+            }
+        }
+
+        /// <summary>
+        /// this method places the player to a new tile and removes him from the previous tile
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="direction"></param>
+        internal void updatePlayer(String direction)
+        {
+             
+        }
+
+
+        /// <summary>
+        /// this method places the dragon to a new tile and removes him from the previous tile
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="row"></param>
+        /// <param name="col"></param>
+        internal void updateDragon( int rowOld, int colOld, int rowNew, int colNew)
+        {
+
+            gui.drawDragon(rowOld, colOld, rowNew, colNew);
+
+        }
+
+
     }
 }
