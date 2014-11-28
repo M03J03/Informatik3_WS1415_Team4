@@ -6,6 +6,7 @@ using System.Diagnostics.Contracts;
 using System.Threading;
 using DragonsAndRabbits.Exceptions;
 using DragonsAndRabbits.Client;
+using System.Text.RegularExpressions;
 
 namespace DragonsAndRabbits.Client
 {
@@ -13,36 +14,17 @@ namespace DragonsAndRabbits.Client
     {
         private Buffer refToBuffer;
         private Thread fred;
-        String[] stringArrayOfValidMsg;
-
-        String[] validPrompts = {   "upd",
-                                    "del",
-                                    "map",
-                                    "mes",
-                                    "result",
-                                    "challenge",
-                                    "players",
-                                    "yourid",
-                                    "time",
-                                    "online",
-                                    "ents",
-                                    "player",
-                                    "server",
-                                    "",
-                                    "opponent",
-                                    "dragon",
-                                    "cell",
-                                    "ok",
-                                    "unknown",
-                                    "no",
-                                    "invalid" };
-
-        public Parser(Buffer buffer)
+        private List<MapCell> cells;
+        private List<Player> players;
+      
+        public Parser()
         {
-            refToBuffer = buffer;
+            refToBuffer = Buffer.Instance;
+            Console.WriteLine("PARSER INIT");
             fred = new Thread(new ThreadStart(getInputFromBuffer));
-            fred.IsBackground = true;
+           // fred.IsBackground = true;
             fred.Start();
+          //  getInputFromBuffer();
         }
 
 
@@ -51,397 +33,637 @@ namespace DragonsAndRabbits.Client
         {
 
            // Contract.Requires(refToBuffer->Length > 0);
+            Console.WriteLine("PARSER TAKES MESSAGE");
+            if (!refToBuffer.isEmpty())
+            {
+                analyzeBuffer(refToBuffer.getMessage());
 
-            analyzeBuffer(refToBuffer.getMessage());
-            
+            }
+            else
+            {   Console.WriteLine("BUFFER EMPTY - PARSER SLEEPS");
+            Thread.CurrentThread.Abort();
+                
+                
+            }
           //  Contract.Ensures(inputFromBuffer.Length > 0);
         }
-
+        /// <summary>
+        /// Filter begin:<int> CONTENT> end:<int>
+        /// </summary>
+        /// <param name="bufferInput"></param>
         public void analyzeBuffer(String bufferInput)
         {
-            //OLD PRE / POST BUFFER
-
             Contract.Requires(bufferInput.Contains("begin:"));
             Contract.Requires(bufferInput.Contains("end:"));
             // Contract.Requires(bufferInput.LastIndexOf("begin:") < bufferInput.IndexOf("end:")); INCORRECT because begin:foo begin:fuu end:fuu begin:test end:test would be incorrect
 
-            // get the first begins to filter messagenumber
+         //   Console.WriteLine("DA MESSAGE -----> " + bufferInput);
+            string getMessageCode;
+            string endMessageCode;
+            int beginIndex = 0;
+            int newLineIndexOfBegin = 0;
 
-            // get the first begins to filter messagenumber
-            int foundBegin = 0;
-            int foundEnd = 0;
-            int found = 0;
-            int totFinds = 0;
-            int[] allIndexOfBegin = new int[100];   // This will be changed to List
-            int[] allIndexOfEnd = new int[100];     // This will be changed to List
-            int indexOfEnd = 0;
-            String checkForEnd = "end:";
-            String message;
+            // Enter after end:<number>
+            int newLineIndexOfEnd = 0;
+            // the position where end:number is
+            int endIndex = 0;
+            String result;
 
-            // get all "begin:"
-            for (int i = 0; i < bufferInput.Length; i++)
-            {
-                foundBegin = bufferInput.IndexOf("begin:", i);
+            // Analyze string and get the Messagenumber, to search for the corresponding "end:<MessageNumber>";
+            beginIndex = bufferInput.IndexOf("begin:", 0);
+            newLineIndexOfBegin = bufferInput.IndexOf(Environment.NewLine, beginIndex);
+            getMessageCode = bufferInput.Substring((beginIndex + 6), newLineIndexOfBegin - (beginIndex + 6)).Trim();
+            //Console.WriteLine("MOEBegin at:" + beginIndex);
+            //  Console.WriteLine("MOEMessageCode: " + getMessageCode);
+            endMessageCode = "end:" + getMessageCode;
+            endIndex = bufferInput.IndexOf(endMessageCode);
+            newLineIndexOfEnd = bufferInput.IndexOf(Environment.NewLine, endIndex);
 
-                if (foundBegin >= 0)
-                {
-                    allIndexOfBegin[totFinds] = foundBegin;
-                    totFinds++;
-                    i = foundBegin;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            totFinds = 0;
+            result = bufferInput.Substring(newLineIndexOfBegin + Environment.NewLine.Length, (bufferInput.Length - (newLineIndexOfBegin + Environment.NewLine.Length) - (endMessageCode.Length+Environment.NewLine.Length)));
+            //result = bufferInput.Substring(newLineIndexOfBegin + Environment.NewLine.Length,(bufferInput.Length - newLineIndexOfBegin + Environment.NewLine.Length - (endMessageCode.Length) - (Environment.NewLine.Length)));
 
-            //get all "end:"
-            for (int i = 0; i < bufferInput.Length; i++)
-            {
-                foundEnd = bufferInput.IndexOf("end:", i);
+            //Console.WriteLine("FILTERED MESSAGE -----> " + result);
 
-                if (foundEnd >= 0)
-                {
-                    allIndexOfEnd[totFinds] = foundEnd;
-                    totFinds++;
-                    i = foundEnd;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            // Contains the Messagnumber
-            String messagenumber = (bufferInput.Substring(allIndexOfBegin[0] + 6, allIndexOfBegin[1] - 6));
-
-            checkForEnd = string.Concat(checkForEnd, messagenumber).Trim();
-            found = 0;
-
-            for (int i = 6; i < bufferInput.Length; i++)
-            {
-                found = bufferInput.IndexOf(checkForEnd, i);
-
-                if (found >= 0)
-                {
-                    indexOfEnd = found;
-                    i = found;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            // Contains the remaining Message after filtering messageID
-            message = bufferInput.Substring(((allIndexOfBegin[1])), indexOfEnd - (allIndexOfBegin[1]));
-
-            //check if there is another "begin:" in the remaining message
-            if (message.Contains("begin:"))
-            {
+            checkMsg(result);
 
 
-
-
-            }
-
+            
 
             Contract.Ensures(bufferInput.LastIndexOf("begin:") < bufferInput.IndexOf("end:"));
         }
 
-        public void checkMsg(String[] msgs)
+        public void checkMsg(String msgs)
         {
             Contract.Requires(msgs.Length >= 0);
             Contract.Ensures(msgs.Length >= 0);
+            /*
+           begin:upd
+            begin:dragon
+            id:2
+            type:Dragon
+            busy:false
+            desc:Dragon
+            x:3
+            y:16
+            end:dragon
+            end:upd
+            */
+          
+              switchTheBegins(msgs);
 
-            bool goOn = true;
-            int counter = 0;
-            for (int i = 0; i < msgs.Length; i++)
-            {
+        }
 
-                // while there is no match && there are valid prompts left to compare with
-                while (goOn && (counter < validPrompts.Length))
-                {
-                    if (msgs[i].Contains(validPrompts[counter]))
-                    {
-                        goOn = false;
 
-                        // Call one method listed below and parse this MESSAGE to the corresponding Class
-                    }
-                    else
-                    {
-                        counter++;
-                    }
+        public void switchTheBegins(String msgs)
+        {
+            string tmp = GetInstanceVar(msgs);
 
-                } // end while
+             switch(tmp){
+                case "server": {  doServer(msgs.Substring(6+tmp.Length+Environment.NewLine.Length,msgs.Length-(6+tmp.Length+Environment.NewLine.Length))); break; }
+                case "result": { doResult(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                case "opponent": {  doOpponent(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                case "challenge": { doChallenge(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                case "dragon": {  doDragon(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                case "player": { doPlayer(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                case "players": { doPlayers(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                case "ents": { doEntities(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }  
+                case "cell": { doCell(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                case "map": {  doMap(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }        
+                case "mes": {  doMessage(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                case "upd": {  doUpdate(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                case "del": {  doUpdate(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                case "yourid": {  doYourId(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                case "time": {  doTime(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                case "online": {  doOnline(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                case "failure": { Console.WriteLine("ATTENTION - Something went wrong");break; }
             }
-        }
-
-        //***************************CONTROL*MANAGEMENT********************
-
-        /// <summary>
-        /// this method sends the extracted information
-        /// </summary>
-        public void opponentInfo(String type, String oppInfo)
-        {
-            //Manager.Instance.opponentInfo(type, oppInfo);
-        }
-
-        /// <summary>
-        /// this method sends the extracted information
-        /// </summary>
-
-        public void sendChallengeInfo(String type, String chInfo)
-        {
-            //Manager.Instance.challengeInfo(type, chInfo);
-        }
-
-        /// <summary>
-        /// this method sends the extracted information
-        /// </summary>
-
-        public void sendDragonInfo(String type, String dragonInfo)
-        {
-            //Manager.Instance.dragonInfo(type, dragonInfo);
-        }
-
-        /// <summary>
-        /// this method sends the extracted information
-        /// </summary>
-
-        public void sendPlayerInfo(String type, String playerInf)
-        {
-            //Manager.Instance.playerInfo(type, playerInf);
-        }
-
-        /// <summary>
-        /// this method sends the extracted entity
-        /// </summary>
-
-        public void sendEntitys(String type, String entity)
-        {
-            //Manager.Instance.dragonInfo(type, entity);
 
         }
 
-        /// <summary>
-        /// this method sends the extracted information
-        /// </summary>
 
-        public void sendMapCell(String type, String mapcells)
+        public String GetInstanceVar(String msg)
         {
-            //Manager.Instance.mapCellInfo(type, mapcells);
-        }
+            int beginIndex = 0;
+            int newLineIndexOfBegin;
+            String getInstanceVar;
 
-        /// <summary>
-        /// this method sends the extracted information
-        /// </summary>
+            // get the First MessageCode
+            beginIndex = msg.IndexOf("begin:", 0);
 
-        public void sendMap(String type, String map)
-        {
-            //Manager.Instance.mapInfo(type, map);
-        }
-
-        /// <summary>
-        /// this method sends the extracted information
-        /// </summary>
-
-        public void sendMsg(String type, String message)
-        {
-            //Manager.Instance.msg(type, message);
-        }
-
-        /// <summary>
-        /// this method sends the extracted information
-        /// </summary>
-
-        public void sendUpdate(String type, String update)
-        {
-            //Manager.Instance.update(type, update);
-        }
-
-        /// <summary>
-        /// this method sends the extracted information
-        /// </summary>
-
-        public void sendDelete(String type, Object o)
-        {
-            if (!(o is Dragon) || !(o is Player))
+            if (beginIndex >= 0)
             {
-                throw new Exception("invalid object type for this method");
+
+                newLineIndexOfBegin = msg.IndexOf(Environment.NewLine, beginIndex);
+
+                getInstanceVar = msg.Substring(beginIndex + 6, newLineIndexOfBegin - (beginIndex + 6));
             }
             else
             {
-               // Manager.Instance.deleteInfo(d);
+                getInstanceVar = "failure";
             }
+
+            return getInstanceVar;
+
         }
 
-        /// <summary>
-        /// this method sends the extracted information
-        /// </summary>
-
-        public void sendAnswer(String ans, String info)
+        private void doServer(String msg)
         {
-            Manager.Instance.answerInfo(ans, info);
+            Console.WriteLine("I AM IN SERVER");
+            Console.WriteLine("GOT FOLLOWING MESSAGE: " + msg);
+            int theVerIndex = 0;
+            int theVerNewLineIndex = 0;
+            theVerIndex = msg.IndexOf("ver:")+4;
+            theVerNewLineIndex = msg.IndexOf(Environment.NewLine,theVerIndex);
+
+                // Call the equivalent Method from Manager
+           // Manager.getManger().server(Convert.ToInt32(msg.Substring(theVerIndex,theVerNewLineIndex - theVerIndex)));
+
+       
         }
+
+        private void doResult(String msg)
+        {
+            Console.WriteLine("I AM IN RESULT");
+            // RESULT: "begin:result","round:",INT,"running:",BOOLEAN,"delay:",INT,"begin:opponents",OPPONENT,OPPONENT","end:opponents","end:result"
+            int round = 0;
+            bool running = false;
+            int delay = 0;
+
+            int myVarIndex;
+            int myNewLineIndex;
+
+
+            myVarIndex = msg.IndexOf("round:") + "round:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            round = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("running:",myNewLineIndex) + "running:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            running = Convert.ToBoolean(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("delay:") + "delay:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            delay = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            //INIT  2 OPPONENTS
+
+
+
+        }
+
+        private void doOpponent(String msg)
+        {
+            Console.WriteLine("I AM IN OPPONENT");
+            int id = 0;
+            string decision = "";
+            int points = 0;
+            int total = 0;
+
+            int myVarIndex;
+            int myNewLineIndex;
+
+
+            myVarIndex = msg.IndexOf("id:") + "id:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            id = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("decision:", myNewLineIndex) + "decision:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            decision = msg.Substring(myVarIndex, myNewLineIndex - myVarIndex);
+
+            myVarIndex = msg.IndexOf("points:", myNewLineIndex) + "points:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            points = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("total:", myNewLineIndex) + "total:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            total = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            // Call the equivalent Method from Manager
+            //Manager.getManager().opponent(id, decision, points, total)
+
+        }
+
+        private void doChallenge(String msg)
+        {
+            Console.WriteLine("I AM IN CHALLENGE");
+
+            int id = 0;
+            String type = "";
+            bool accepted = false;
+
+            int myVarIndex;
+            int myNewLineIndex;
+
+
+            myVarIndex = msg.IndexOf("id:") + "id:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            id = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("type:", myNewLineIndex) + "type:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            type = msg.Substring(myVarIndex, myNewLineIndex - myVarIndex);
+
+            myVarIndex = msg.IndexOf("accepted:", myNewLineIndex) + "accepted:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            accepted = Convert.ToBoolean(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+
+            // Call the equivalent Method from Manager
+            //Manager.getManager().challenge(id, type, accepted)
+
+        }
+
+        private void doDragon(String msg)
+        {
+            Console.WriteLine("I AM IN DRAGON");
+
+            // begin:dragon", "id:",INT,"type:Dragon","busy:"BOOLEAN,"desc:"STRING,"x:",INT,"y:",INT,"end:dragon"
+            int id = 0;
+            String type = "";
+            bool busy = false;
+            String desc = "";
+            int x = 0;
+            int y = 0;
+
+            int myVarIndex;
+            int myNewLineIndex;
+
+            myVarIndex = msg.IndexOf("id:") + "id:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            id = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("type:", myNewLineIndex) + "type:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            type = msg.Substring(myVarIndex, myNewLineIndex - myVarIndex);
+
+            myVarIndex = msg.IndexOf("busy:", myNewLineIndex) + "busy:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            busy = Convert.ToBoolean(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("desc:", myNewLineIndex) + "desc:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            desc = msg.Substring(myVarIndex, myNewLineIndex - myVarIndex);
+
+            myVarIndex = msg.IndexOf("x:", myNewLineIndex) + "x:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            x = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("y:", myNewLineIndex) + "y:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            y = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+
+            // Call the equivalent Method from Manager
+            //Manager.getManager().dragon(id,  type, busy, desc, x, y)
+
+            Console.WriteLine("Creating Dragon with id:" + id + " type:" + type + " busy:" + busy.ToString() + " desc:" + desc + " X:" + x + " Y:" + y );
+
+       
+        }
+
+        private void doPlayer(String msg)
+        {
+            //"begin:player","id:",INT,"type:Player","busy:"BOOLEAN,"desc:"STRING,"x:",INT,"y:",INT,"points:",INT"end:player"
+            Console.WriteLine("I AM IN PLAYER");
+            int id = 0;
+            String type = "";
+            Boolean busy = false;
+            String desc = "";
+            int x = 0;
+            int y = 0;
+            int points = 0;
+
+            int myVarIndex;
+            int myNewLineIndex;
+
+
+
+            myVarIndex = msg.IndexOf("id:") + "id:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            id = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("type:", myNewLineIndex) + "type:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            type = msg.Substring(myVarIndex, myNewLineIndex - myVarIndex);
+
+            myVarIndex = msg.IndexOf("busy:", myNewLineIndex) + "busy:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            busy = Convert.ToBoolean(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("desc:", myNewLineIndex) + "desc:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            desc = msg.Substring(myVarIndex, myNewLineIndex - myVarIndex);
+
+            myVarIndex = msg.IndexOf("x:", myNewLineIndex) + "x:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            x = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("y:",myNewLineIndex) + "y:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            y = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("points:", myNewLineIndex) + "points:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            points = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            // Call the equivalent Method from Manager
+            //Manager.getManager().player(id, type, busy, desc, x, y, points);
+
+            Console.WriteLine("Creatin Player with id:" + id + " type:" + type + " busy:" + busy.ToString() + " desc:" + desc + " X:" + x + " Y:" + y + " Points: " + points);
+
+    
+        }
+
+        private void doPlayers(String msg)
+        {
+            Console.WriteLine("I AM IN PLAYERS");
+
+            players = new List<Player>();
+            while (msg.Length > 0)
+            {
+
+                doPlayerInPlayers(msg);
+                //msg.Remove() The send message to doPlayerInPlayers
+            }
+            // Call the equivalent Method from Manager
+            //Manager.getManager().players(players);
+
+    
+        }
+
+        private void doEntities(String msg)
+        {
+            Console.WriteLine("I AM IN ENTITIES");
+            switchTheBegins(msg);
+          
+        }
+
+        private void doCell(String msg)
+        {
+            Console.WriteLine("I AM IN CELL");
+            // MAPCELL: "begin:cell","row:",INT,"col:",INT,"begin:props",{PROPERTY},"end:props","end:cell"
+
+            int row = 0;
+            int col = 0;
+            List<String> props;
+
+            int myVarIndex;
+            int myNewLineIndex;
+
+            myVarIndex = msg.IndexOf("row:") + "row:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            row = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("col:") + "col:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            col = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            // Sends all properties to the property handler so we get a List of properties returned
+           props = doProperties(msg.Substring(msg.IndexOf("begin:props"+"begin:props".Length+Environment.NewLine.Length),msg.IndexOf("end:props",msg.IndexOf("begin:props"))-("begin:props".Length+Environment.NewLine.Length))) ;
+
+           // Call the equivalent Method from Manager
+           //Manager.getManager().mapcell(row, col, props)    // !!! WARNING THIS IS A LIST AND NOT CONFORM WITH MANAGER CLASS, GOTTA BE CHANGED IN MANAGER
+
+       
+        }
+
+        private void doMap(String msg)
+        {
+            Console.WriteLine("I AM IN MAP");
+            // MAP: "begin:map","width:"INT,"height:",INT,"begin:cells",{MAPCELL},"end:cells","end:map"
+            int width = 0;
+            int height = 0;
+            cells = new List<MapCell>();
+
+            int myVarIndex;
+            int myNewLineIndex;
+
+            myVarIndex = msg.IndexOf("width:") + "width:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            width = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("height:",myNewLineIndex) + "height:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            height = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            doCellInMap(msg);
+
+            // Call the equivalent Method from Manager
+            //Manager.getManager().map( width, heigth, cells)
 
         
+        }
 
-        //public void sendMsgToListener(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+        private void doMessage(String msg)
+        {
+            Console.WriteLine("I AM IN MESSAGE");
+            // "begin:mes","srcid:",INT,"src:",STRING,"txt:",STRING,"end:mes"
 
-        ////Message begin:upd
-        //public void sendMsgToUpdater(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+            int srcId = 0;
+            string src = "";
+            string txt = "";
 
-        //// Message begin:del
-        //public void sendMsgToBackend(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
 
-        ////Message begin:map
-        //public void sendMsgToMap(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+            int myVarIndex;
+            int myNewLineIndex;
 
-        ////Message begin:mes
-        //public void sendMsgToMessenger(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+            myVarIndex = msg.IndexOf("srcid:") + "srcid:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            srcId = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
 
-        ////Message begin:result
-        //public void sendMsgToResulter(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+            myVarIndex = msg.IndexOf("src:", myNewLineIndex) + "src:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            src = msg.Substring(myVarIndex, myNewLineIndex - myVarIndex);
 
-        ////Message begin:challenge
-        //public void sendMsgToChallenger(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+            myVarIndex = msg.IndexOf("txt:", myNewLineIndex) + "txt:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            txt = msg.Substring(myVarIndex, myNewLineIndex - myVarIndex);
 
-        //// Message begin:players
-        //public void sendMsgToPlayers(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+            // Call the equivalent Method from Manager
+            //Manager.getManager().message(srcId, src , txt)    // !!! WARNING THIS IS NOT CONFORM WITH MANAGER CLASS, GOTTA BE CHANGED IN MANAGER -> 3 PARAMS!
 
-        //// Message begin:yourid
-        //public void sendMsgToPlayer(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+        }
 
-        //// Message begin:time
-        //public void sendMsgToBackend(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+        private void doUpdate(String msg)
+        {
+            Console.WriteLine("I AM IN UPDATE");
+            switchTheBegins(msg);
 
-        //// Message begin:online
-        //public void sendMsgToBackend(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+          
 
-        //// Message begin:ents
-        //public void sendMsgToBackend(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+            // GOTTA CHECK WHY THIS WONT WORK
+  //int endUpdIndex = msg.IndexOf("end:upd")+ "end:upd".Length;
+   //         int newLineAtEnd = 0;
+           // if ((msg.IndexOf(Environment.NewLine, endUpdIndex-1)) >= 0)
+           // {
+           //     newLineAtEnd = Environment.NewLine.Length;
+           // }
 
-        //// Message begin:player
-        //public void sendMsgToPlayer(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+        //    return msg.Remove(0, (msg.IndexOf("end:upd") + "end:upd".Length + newLineAtEnd ));
+        }
 
-        //// Message begin:server
-        //public void sendMsgToUNKNOWN(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+        private void doDelete(String msg)
+        {
+            Console.WriteLine("I AM IN DELETE");
+           //switchTheBegins(msg);
+          
+        }
 
-        //// Message begin:<empty>
-        //public void sendMsgToIGNORE(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+        private void doYourId(String msg)
+        {
+            Console.WriteLine("I AM IN YOURID");
+            // "begin:yourid",INT,"end:yourid"
+            int yourId = 0;
 
-        //// Message begin:opponent
-        //public void sendMsgToChallenger(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+            int myVarIndex;
+            int myNewLineIndex;
 
-        //// Message begin:dragon
-        //public void sendMsgToDragon(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+            myVarIndex = msg.IndexOf("yourid:") + "yourid:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            yourId = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
 
-        //// Message begin:cell
-        //public void sendMsgToMap(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+            // Call the equivalent Method from Manager
+            //Manager.getManager().yourID(yourid);
 
-        //// Message begin:ok
-        //public void sendMsgToMessenger(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+          
+        }
 
-        //// Message begin:unknown
-        //public void sendMsgToUNKNOWN(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+        private void doTime(String msg)
+        {
+            Console.WriteLine("I AM IN TIME");
+            // TIME: "begin:time",LONG,"end:time"
+            long time;
+            int myVarIndex;
+            int myNewLineIndex;
 
-        //// Message begin:no
-        //public void sendMsgToMessenger(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+            myVarIndex = msg.IndexOf("time:") + "time:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            time = Convert.ToInt64(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
 
-        //// Message begin:invalid
-        //public void sendMsgToBackend(String Msg, bool isValid)
-        //{
-        //    Contract.Ensures(Msg.Length > 0);
-        //    Contract.Ensures(isValid);
-        //}
+            // Call the equivalent Method from Manager
+            //Manager.getManager().time(time);
+   
+        }
 
-        // Kommentar Test
-        // Kommentar 2 Test
+        private void doOnline(String msg)
+        {
+            Console.WriteLine("I AM IN ONLINE");
+            // ONLINE: "begin:online",INT,"end:online"
+            int online = 0;
+            int myVarIndex;
+            int myNewLineIndex;
+
+            myVarIndex = msg.IndexOf("online:") + "online:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            online= Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            // Call the equivalent Method from Manager
+            //Manager.getManager().online (online);
+        }
+
+        private List<String> doProperties(String msg)
+        {
+            Console.WriteLine("I AM IN PROPS");
+            
+            int myVarIndex;
+            int myNewLineIndex;
+            List <String> propList = new List<string>();
+
+            string message = msg;
+
+            myVarIndex = 0;
+
+            do
+            {
+                myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+                propList.Add(msg.Substring(myVarIndex, myNewLineIndex));
+
+                message = msg.Remove(myVarIndex, myNewLineIndex+Environment.NewLine.Length);
+            } while (message.Length > 0);
+
+            return propList; ;
+        }
+
+
+        private void doCellInMap(String msg)
+        {
+            Console.WriteLine("I AM IN CELL");
+            // MAPCELL: "begin:cell","row:",INT,"col:",INT,"begin:props",{PROPERTY},"end:props","end:cell"
+
+            int row = 0;
+            int col = 0;
+            List<String> props;
+
+            int myVarIndex = 0 ;
+            int myNewLineIndex = 0;
+
+            while (msg.IndexOf("row:",myVarIndex) >= 0) {
+            myVarIndex = msg.IndexOf("row:") + "row:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            row = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("col:") + "col:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            col = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            // Sends all properties to the property handler so we get a List of properties returned
+            props = doProperties(msg.Substring(msg.IndexOf("begin:props" + "begin:props".Length + Environment.NewLine.Length), msg.IndexOf("end:props", msg.IndexOf("begin:props")) - ("begin:props".Length + Environment.NewLine.Length)));
+
+            cells.Add(new MapCell(row,col,props));
+            }
+
+        }
+
+        private void doPlayerInPlayers(String msg)
+        {
+            Console.WriteLine("I AM IN PLAYER");
+            int id = 0;
+            String type = "";
+            Boolean busy = false;
+            String desc = "";
+            int x = 0;
+            int y = 0;
+            int points = 0;
+
+            int myVarIndex;
+            int myNewLineIndex;
+
+
+
+            myVarIndex = msg.IndexOf("id:") + "id:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            id = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("type:", myNewLineIndex) + "type:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            type = msg.Substring(myVarIndex, myNewLineIndex - myVarIndex);
+
+            myVarIndex = msg.IndexOf("busy:", myNewLineIndex) + "busy:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            busy = Convert.ToBoolean(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("desc:", myNewLineIndex) + "desc:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            desc = msg.Substring(myVarIndex, myNewLineIndex - myVarIndex);
+
+            myVarIndex = msg.IndexOf("x:", myNewLineIndex) + "x:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            x = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("y:", myNewLineIndex) + "y:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            y = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            myVarIndex = msg.IndexOf("points:", myNewLineIndex) + "points:".Length;
+            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+            points = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+
+            
+            players.Add(new Player(id,type,busy,x,y,points));
+
+        }
+
+
     }
 }
