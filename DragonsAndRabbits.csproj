@@ -108,6 +108,7 @@
     <Compile Include="Exceptions\NoValidMessageExcecption.cs" />
     <Compile Include="Exceptions\PlayerException.cs" />
     <Compile Include="Exceptions\PlayerIsBusyException.cs" />
+    <Compile Include="Exceptions\WrongNumberException.cs" />
     <Compile Include="Exceptions\WrongWidthOrHeigthException.cs" />
     <Compile Include="GUI\GUI.cs">
       <SubType>Form</SubType>
@@ -115,6 +116,7 @@
     <Compile Include="GUI\GUI.Designer.cs">
       <DependentUpon>GUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="Manager\Entity.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
