@@ -122,6 +122,56 @@ namespace DragonsAndRabbits.Manager
             return row;
         }
 
+        /// <summary>
+        /// Sets the column of the entity.
+        /// </summary>
+        /// <param name="column"></param>
+        private void setColumn(int column)
+        {
+            if (column < 0)
+            {
+                throw new WrongWidthOrHeigthException("Please insert a number bigger than 0!");
+            }
+            this.column = column;
+        }
 
+        /// <summary>
+        /// Returns the column of the entity.
+        /// </summary>
+        /// <returns></returns>
+        protected int getColumn()
+        {
+            return column;
+        }
+
+        /// <summary>
+        /// Method to update the entity.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="busy"></param>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        protected void update(int id, bool busy, int row, int column)
+        {
+            if (this.id == id)
+            {
+                setBusy(busy);
+                setRow(row);
+                setColumn(column);
+            }
+        }
+
+        /// <summary>
+        /// Method to update the status of the entity.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="column"></param>
+        public void update(int id, int column)
+        {
+            if(this.id == id)
+            {
+                setBusy(busy);
+            }
+        }
     }
 }
