@@ -40,5 +40,14 @@ namespace DragonsAndRabbits.Manager
         {
             return dragon;
         }
+
+        /// <summary>
+        /// This method deletes a dragon.
+        /// </summary>
+        /// <param name="dragon"></param>
+        protected void deleteDragon(Dragon dragon)
+        {
+            setDragon(null);
+        }
     }
 }

@@ -165,8 +165,8 @@ namespace DragonsAndRabbits.Manager
         /// Method to update the status of the entity.
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="column"></param>
-        public void update(int id, int column)
+        /// <param name="busy"></param>
+        protected void update(int id, bool busy)
         {
             if(this.id == id)
             {

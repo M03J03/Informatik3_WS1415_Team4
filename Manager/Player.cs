@@ -116,7 +116,7 @@ namespace DragonsAndRabbits.Manager
         /// Deletesthe player object.
         /// </summary>
         /// <param name="player"></param>
-        public void deletePlayer(Player player)
+        protected void deletePlayer(Player player)
         {
             if (player == null)
             {
