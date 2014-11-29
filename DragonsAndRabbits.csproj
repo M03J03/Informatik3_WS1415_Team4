@@ -116,7 +116,9 @@
     <Compile Include="GUI\GUI.Designer.cs">
       <DependentUpon>GUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="Manager\Decision.cs" />
     <Compile Include="Manager\Entity.cs" />
+    <Compile Include="Manager\Player.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
