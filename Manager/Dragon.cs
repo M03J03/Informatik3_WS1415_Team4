@@ -17,7 +17,7 @@ namespace DragonsAndRabbits.Manager
         /// <param name="busy"></param>
         /// <param name="row"></param>
         /// <param name="column"></param>
-        protected Dragon(int id, String name, bool busy, int row, int column)
+        public Dragon(int id, String name, bool busy, int row, int column)
             : base(id, name, busy, row,column)
         {
             setDragon(this);
