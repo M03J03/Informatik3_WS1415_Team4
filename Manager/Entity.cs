@@ -45,7 +45,7 @@ namespace DragonsAndRabbits.Manager
         /// Returns the id.
         /// </summary>
         /// <returns></returns>
-        protected int getID()
+        public int getID()
         {
             return id;
         }
@@ -63,7 +63,7 @@ namespace DragonsAndRabbits.Manager
         /// Returns if the entity is busy or not.
         /// </summary>
         /// <returns></returns>
-        protected bool isBusy()
+        public bool isBusy()
         {
             return busy;
         }
@@ -92,7 +92,7 @@ namespace DragonsAndRabbits.Manager
         /// Gets the name of the entity.
         /// </summary>
         /// <returns></returns>
-        protected String getName()
+        public String getName()
         {
             return name;
         }
@@ -117,7 +117,7 @@ namespace DragonsAndRabbits.Manager
         /// Returns the rowof the entity.
         /// </summary>
         /// <returns></returns>
-        protected int getRow()
+        public int getRow()
         {
             return row;
         }
@@ -139,7 +139,7 @@ namespace DragonsAndRabbits.Manager
         /// Returns the column of the entity.
         /// </summary>
         /// <returns></returns>
-        protected int getColumn()
+        public int getColumn()
         {
             return column;
         }
@@ -151,7 +151,7 @@ namespace DragonsAndRabbits.Manager
         /// <param name="busy"></param>
         /// <param name="row"></param>
         /// <param name="column"></param>
-        protected void update(int id, bool busy, int row, int column)
+        public void update(int id, bool busy, int row, int column)
         {
             if (this.id == id)
             {
@@ -166,7 +166,7 @@ namespace DragonsAndRabbits.Manager
         /// </summary>
         /// <param name="id"></param>
         /// <param name="busy"></param>
-        protected void update(int id, bool busy)
+        public void update(int id, bool busy)
         {
             if(this.id == id)
             {

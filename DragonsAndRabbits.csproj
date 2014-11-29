@@ -119,6 +119,7 @@
     <Compile Include="Manager\Decision.cs" />
     <Compile Include="Manager\Dragon.cs" />
     <Compile Include="Manager\Entity.cs" />
+    <Compile Include="Manager\MiniGames.cs" />
     <Compile Include="Manager\Player.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
