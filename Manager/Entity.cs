@@ -113,9 +113,15 @@ namespace DragonsAndRabbits.Manager
             }
         }
 
+        /// <summary>
+        /// Returns the rowof the entity.
+        /// </summary>
+        /// <returns></returns>
         protected int getRow()
         {
             return row;
         }
+
+
     }
 }
