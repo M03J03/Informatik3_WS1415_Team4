@@ -13,6 +13,7 @@ namespace DragonsAndRabbits.Manager
         private Entity enity;
         private MapCell mapCell;
         private List<MapCell> mapCells;
+        private List<Dragon> dragons = new List<Dragon>();
 
         /// <summary>
         /// Generates an manager object.
@@ -52,9 +53,28 @@ namespace DragonsAndRabbits.Manager
             //Need some time to make an idea what to do.
         }
 
+        /// <summary>
+        /// This method updates the dragon
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="busy"></param>
+        /// <param name="description"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public void dragon(int id, bool busy, String description, int x, int y)
         {
+
+            //Still not ready
+            foreach (Dragon d in dragons)
+            {
+                if (d.getID() == id)
+                {
+
+                }
+            }
+            
             Entity dragon = new Dragon(id, description, busy, x, y);
+
         }
     }
 }
