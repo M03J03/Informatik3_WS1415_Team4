@@ -54,7 +54,7 @@ namespace DragonsAndRabbits.Manager
         }
 
         /// <summary>
-        /// This method updates the dragon
+        /// This method updates an existing dragon or creates a new one.
         /// </summary>
         /// <param name="id"></param>
         /// <param name="busy"></param>
@@ -63,18 +63,21 @@ namespace DragonsAndRabbits.Manager
         /// <param name="y"></param>
         public void dragon(int id, bool busy, String description, int x, int y)
         {
-
-            //Still not ready
+            bool exists = false;
             foreach (Dragon d in dragons)
             {
                 if (d.getID() == id)
                 {
-
+                    exists = true;
+                    d.update(id, description, busy, x, y);
                 }
             }
-            
-            Entity dragon = new Dragon(id, description, busy, x, y);
 
+            if (!exists)
+            {
+                Dragon drag = new Dragon(id, description, busy, x, y);
+                dragons.Add(drag);
+            }                  
         }
     }
 }

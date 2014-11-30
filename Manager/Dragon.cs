@@ -49,5 +49,18 @@ namespace DragonsAndRabbits.Manager
         {
             setDragon(null);
         }
+
+        /// <summary>
+        /// Updates the dragon object
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="busy"></param>
+        /// <param name="description"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        protected void updateDragon(int id, bool busy, String description, int x, int y)
+        {
+            update(id, description, busy, x, y);
+        }
     }
 }

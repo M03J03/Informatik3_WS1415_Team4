@@ -151,10 +151,11 @@ namespace DragonsAndRabbits.Manager
         /// <param name="busy"></param>
         /// <param name="row"></param>
         /// <param name="column"></param>
-        public void update(int id, bool busy, int row, int column)
+        public void update(int id, String name, bool busy, int row, int column)
         {
             if (this.id == id)
             {
+                setName(name);
                 setBusy(busy);
                 setRow(row);
                 setColumn(column);
