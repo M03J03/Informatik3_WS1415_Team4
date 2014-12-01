@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using DragonsAndRabbits.Client;
+using DragonsAndRabbits.Exceptions;
 
 namespace DragonsAndRabbits.Manager
 {
@@ -77,7 +78,29 @@ namespace DragonsAndRabbits.Manager
             {
                 Dragon drag = new Dragon(id, description, busy, x, y);
                 dragons.Add(drag);
+                
             }                  
         }
+
+        /**********************************************GUI-Server-Communication*************************************************************/
+
+        /// <summary>
+        /// this method sends a chatmessage towards the server
+        /// </summary>
+        /// <param name="chatMessage"></param>
+        /// <returns></returns>
+        public String sendChatUpdateToServer(String chatMessage)
+        {
+            if (chatMessage.Length == 0 || chatMessage == null)
+            {
+                throw new NoMessageException("No valid chatmessage in Manager!");
+            }
+
+            //send to parser (void method) - not yet implemented....
+            return chatMessage;
+        }
+
+
+        
     }
 }
