@@ -116,11 +116,13 @@
       <DependentUpon>GUI.cs</DependentUpon>
     </Compile>
     <Compile Include="Manager\Decision.cs" />
+    <Compile Include="Manager\Direction.cs" />
     <Compile Include="Manager\Dragon.cs" />
     <Compile Include="Manager\Entity.cs" />
     <Compile Include="Manager\Manager.cs" />
     <Compile Include="Manager\MiniGames.cs" />
     <Compile Include="Manager\Player.cs" />
+    <Compile Include="Manager\Property.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
