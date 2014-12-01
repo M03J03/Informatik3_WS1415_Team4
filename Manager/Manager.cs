@@ -14,8 +14,8 @@ namespace DragonsAndRabbits.Manager
         private Entity enity;
         private MapCell mapCell;
         private List<MapCell> mapCells;
-        private List<Dragon> dragons = new List<Dragon>();
-        private List<Player> players = new List<Player>();
+        internal List<Dragon> dragons = new List<Dragon>();
+        internal List<Player> players = new List<Player>();
 
         /// <summary>
         /// Generates an manager object.
@@ -85,15 +85,15 @@ namespace DragonsAndRabbits.Manager
 
 
         /**********************************************providing information to GUI*********************************************************/
-        public List<MapCell> getMapCells(){
+            public List<MapCell> getMapCells(){
             return mapCells;
         }
-
-        public List<Player> getPlayers(){
+     
+        internal List<Player> getPlayers(){
             return this.players;
         }
 
-        public List<Dragon> getDragons()
+        internal List<Dragon> getDragons()
         {
             return this.dragons;
         }

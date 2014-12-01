@@ -10,6 +10,6 @@ namespace DragonsAndRabbits.Manager
     /// </summary>
     /// 
     ///
-    internal enum Direction {up, down, left, right};
+    public enum Direction {up, down, left, right};
   
 }

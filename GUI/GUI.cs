@@ -19,6 +19,7 @@ namespace DragonsAndRabbits.GUI
         private static GUI gui;
         private int rows=0;
         private int cols=0;
+        private int tileSizeInPx = 0;
         
         
 
@@ -39,6 +40,7 @@ namespace DragonsAndRabbits.GUI
             this.idLabel = new System.Windows.Forms.Label();
             this.mapViewPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.mouseLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -89,8 +91,8 @@ namespace DragonsAndRabbits.GUI
             // mapViewPanel
             // 
             this.mapViewPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.mapViewPanel.BackColor = System.Drawing.Color.Silver;
-            this.mapViewPanel.Cursor = System.Windows.Forms.Cursors.No;
+            this.mapViewPanel.BackColor = System.Drawing.Color.Transparent;
+            this.mapViewPanel.Cursor = System.Windows.Forms.Cursors.Cross;
             this.mapViewPanel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.mapViewPanel.Location = new System.Drawing.Point(46, 32);
             this.mapViewPanel.Margin = new System.Windows.Forms.Padding(0);
@@ -99,6 +101,9 @@ namespace DragonsAndRabbits.GUI
             this.mapViewPanel.Name = "mapViewPanel";
             this.mapViewPanel.Size = new System.Drawing.Size(600, 600);
             this.mapViewPanel.TabIndex = 6;
+            this.mapViewPanel.MouseClick += OnMouseClick;
+            this.mapViewPanel.MouseHover += mapViewPanel_MouseHover;
+            
             // 
             // pictureBox1
             // 
@@ -111,10 +116,21 @@ namespace DragonsAndRabbits.GUI
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
             // 
+            // mouseLabel
+            // 
+            this.mouseLabel.AutoSize = true;
+            this.mouseLabel.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.mouseLabel.Location = new System.Drawing.Point(12, 650);
+            this.mouseLabel.Name = "mouseLabel";
+            this.mouseLabel.Size = new System.Drawing.Size(75, 13);
+            this.mouseLabel.TabIndex = 7;
+            this.mouseLabel.Text = "Mouseposition";
+            // 
             // GUI
             // 
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ClientSize = new System.Drawing.Size(995, 672);
+            this.Controls.Add(this.mouseLabel);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.mapViewPanel);
             this.Controls.Add(this.idLabel);
@@ -128,9 +144,14 @@ namespace DragonsAndRabbits.GUI
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+            
 
         }
 
+           
+
+
+                    
         /// <summary>
         /// this method returns the GUI
         /// </summary>
@@ -199,7 +220,8 @@ namespace DragonsAndRabbits.GUI
         {
             int fieldSize = attributes.Count;
             int currentRow = 0, currentCol = 0;
-            int tileSizeInPx = 0;
+            
+
             Graphics g = mapViewPanel.CreateGraphics();
 
             //requests the needed mapDimensions for the following operations
@@ -212,16 +234,13 @@ namespace DragonsAndRabbits.GUI
                  throw new WrongWidthOrHeigthException("missing properties to draw the map!");
             }
 
-            //change size according to the relative dimensions of the map
+            //change size according to the relative dimensions -600px total- of the map
             if(rows>cols){
                 tileSizeInPx = 600/rows;
             }
             else{
                 tileSizeInPx = 600/cols;
             }
-
-            
-
 
             foreach (Manager.Properties props in attributes)
             {
@@ -236,31 +255,30 @@ namespace DragonsAndRabbits.GUI
                 switch (props)
                 {   
                     case Manager.Properties.walkable:
-                        g.DrawImage(global::DragonsAndRabbits.Properties.Resources.walkable, new Rectangle(currentRow * tileSizeInPx, currentCol * tileSizeInPx, tileSizeInPx, tileSizeInPx));
+                        g.DrawImage(global::DragonsAndRabbits.Properties.Resources.walkable, new Rectangle(currentCol * tileSizeInPx, currentRow * tileSizeInPx, tileSizeInPx, tileSizeInPx));
                         break;
 
                     case Manager.Properties.wall:
-                         g.DrawImage(global::DragonsAndRabbits.Properties.Resources.stones, new Rectangle(currentRow * tileSizeInPx, currentCol * tileSizeInPx, tileSizeInPx, tileSizeInPx));
+                        g.DrawImage(global::DragonsAndRabbits.Properties.Resources.stones, new Rectangle(currentCol * tileSizeInPx, currentRow * tileSizeInPx, tileSizeInPx, tileSizeInPx));
                         break;
 
                     case Manager.Properties.forest:
-                         g.DrawImage(global::DragonsAndRabbits.Properties.Resources.forest, new Rectangle(currentRow * tileSizeInPx, currentCol * tileSizeInPx, tileSizeInPx, tileSizeInPx));
+                         g.DrawImage(global::DragonsAndRabbits.Properties.Resources.forest, new Rectangle(currentCol * tileSizeInPx, currentRow * tileSizeInPx, tileSizeInPx, tileSizeInPx));
                         break;
 
                     case Manager.Properties.water:
-                         g.DrawImage(global::DragonsAndRabbits.Properties.Resources.water, new Rectangle(currentRow * tileSizeInPx, currentCol * tileSizeInPx, tileSizeInPx, tileSizeInPx));
+                         g.DrawImage(global::DragonsAndRabbits.Properties.Resources.water, new Rectangle(currentCol * tileSizeInPx, currentRow * tileSizeInPx, tileSizeInPx, tileSizeInPx));
                         break;
 
                     case Manager.Properties.huntable:
-                         g.DrawImage(global::DragonsAndRabbits.Properties.Resources.huntable, new Rectangle(currentRow * tileSizeInPx, currentCol * tileSizeInPx, tileSizeInPx, tileSizeInPx));
+                        g.DrawImage(global::DragonsAndRabbits.Properties.Resources.huntable, new Rectangle(currentCol * tileSizeInPx, currentRow * tileSizeInPx, tileSizeInPx, tileSizeInPx));
                         break;
 
                 }
 
-               
-                g.DrawLine(new Pen(Color.Beige),new Point(currentRow * tileSizeInPx,tileSizeInPx),new Point(400,400));
 
-
+                g.DrawImage(global::DragonsAndRabbits.Properties.Resources.player_female_2, new Rectangle(0, 3*tileSizeInPx, tileSizeInPx, tileSizeInPx));
+                //one tile ahead
                 currentCol++;
             }
             
@@ -272,28 +290,31 @@ namespace DragonsAndRabbits.GUI
         /// <param name="id"></param>
         /// <param name="direction"></param>
         internal void drawPlayer(int id, int row, int col){
-
+            
             foreach (Player p in mgr.getPlayers())
             {
-
-
+            Graphics g = mapViewPanel.CreateGraphics();
+            g.DrawImage(global::DragonsAndRabbits.Properties.Resources.player_female_2, new Rectangle((col-1) * tileSizeInPx, (row-1) * tileSizeInPx, tileSizeInPx, tileSizeInPx));
             }
+            
 
         }
         /// <summary>
         /// 
         /// </summary>
+        /// 
         internal void drawDragon(int id, int row, int col)
         {
 
             foreach (Dragon d in mgr.getDragons())
             {
-
-
+            Graphics g = mapViewPanel.CreateGraphics();
+            g.DrawImage(global::DragonsAndRabbits.Properties.Resources.dragon, new Rectangle((col-1) * tileSizeInPx, (row-1) * tileSizeInPx, tileSizeInPx, tileSizeInPx));
             }
 
         }
-           
+        
+
         /*DEPRECATED
         /// <summary>
         /// this method 
@@ -341,7 +362,8 @@ namespace DragonsAndRabbits.GUI
         /// <param name="e"></param>
         private void sendButton_Click(object sender, EventArgs e)
         {
-            
+            //mapViewPanel.Invalidate();
+
             if (sender == null)
             {
                 throw new ArgumentNullException("GUI ButtonClick argument is null");
@@ -355,7 +377,7 @@ namespace DragonsAndRabbits.GUI
                     //IMPORTANT:showText on Chatrun ONLY IF THE PARSER SENT AN 'OK':
                     chatRun.AppendText (chatTextBox.Text + "\r\n");
                 }
-
+           
             chatTextBox.ResetText();
              
         }
@@ -381,13 +403,13 @@ namespace DragonsAndRabbits.GUI
                     //for testing purposes only
 
                     List<Manager.Properties> attr = new List<Manager.Properties> { 
-                     Manager.Properties.huntable, Manager.Properties.wall, Manager.Properties.walkable, Manager.Properties.water, Manager.Properties.huntable, Manager.Properties.wall, Manager.Properties.walkable, Manager.Properties.water,Manager.Properties.huntable, Manager.Properties.wall, Manager.Properties.walkable, Manager.Properties.water,Manager.Properties.huntable, Manager.Properties.wall, Manager.Properties.walkable, Manager.Properties.water
-                     };
-                    rows = 4; cols = 4;
+                     Manager.Properties.huntable, Manager.Properties.wall, Manager.Properties.walkable, Manager.Properties.water, Manager.Properties.huntable, Manager.Properties.wall, Manager.Properties.walkable, Manager.Properties.water,Manager.Properties.huntable, Manager.Properties.wall, Manager.Properties.walkable, Manager.Properties.water,Manager.Properties.huntable, Manager.Properties.wall, Manager.Properties.walkable, Manager.Properties.water,
+                    Manager.Properties.forest, Manager.Properties.walkable, Manager.Properties.forest, Manager.Properties.huntable, };
+                    rows = 4; cols = 5;
 
                     drawMap(attr);
-                    drawPlayer(1,1,4);
-                    drawDragon(1,3,3);
+                   // drawPlayer(1,1,4);
+                    //drawDragon(1,3,3);
 
                 }
                
@@ -432,6 +454,30 @@ namespace DragonsAndRabbits.GUI
             
         }
 
+        private void OnMouseClick(Object source, MouseEventArgs e)
+        {
+            Point location = e.Location;
+
+            idLabel.Text = ("Mouseposition: " + e.Location.ToString());
+            //
+            
+           // base.OnMouseClick(e);
+        }
+
+        void mapViewPanel_MouseHover(object sender, EventArgs e)
+        {
+            Point location = MousePosition;
+
+            int x = location.X;
+            int y = location.Y;
+            
+            mouseLabel.Invalidate();
+            mouseLabel.Text = "Mouseposition" + x + ", " + y;
+            mouseLabel.Refresh();
+           
+        }
+
+      
 
 
         //********************************************MAIN******************************************

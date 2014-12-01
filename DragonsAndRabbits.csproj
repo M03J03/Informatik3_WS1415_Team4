@@ -54,6 +54,10 @@
     <Content Include="GUI\resources\stones.jpg" />
     <Content Include="GUI\resources\walkable.jpg" />
     <Content Include="GUI\resources\water.jpg" />
+    <None Include="Resources\player_female_2.png" />
+    <None Include="Resources\player_male.png" />
+    <None Include="Resources\player_female.png" />
+    <None Include="Resources\Bildhöhö.bmp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".git\config" />
