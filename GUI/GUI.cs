@@ -273,7 +273,11 @@ namespace DragonsAndRabbits.GUI
         /// <param name="direction"></param>
         internal void drawPlayer(int id, int row, int col){
 
+            foreach (Player p in mgr.getPlayers())
+            {
 
+
+            }
 
         }
         /// <summary>
@@ -281,7 +285,12 @@ namespace DragonsAndRabbits.GUI
         /// </summary>
         internal void drawDragon(int id, int row, int col)
         {
-  
+
+            foreach (Dragon d in mgr.getDragons())
+            {
+
+
+            }
 
         }
            

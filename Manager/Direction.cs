@@ -8,6 +8,8 @@ namespace DragonsAndRabbits.Manager
     /// <summary>
     /// enumeration of the directions 
     /// </summary>
+    /// 
+    ///
     internal enum Direction {up, down, left, right};
   
 }

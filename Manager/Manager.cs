@@ -15,6 +15,7 @@ namespace DragonsAndRabbits.Manager
         private MapCell mapCell;
         private List<MapCell> mapCells;
         private List<Dragon> dragons = new List<Dragon>();
+        private List<Player> players = new List<Player>();
 
         /// <summary>
         /// Generates an manager object.
@@ -82,6 +83,21 @@ namespace DragonsAndRabbits.Manager
             }                  
         }
 
+
+        /**********************************************providing information to GUI*********************************************************/
+        public List<MapCell> getMapCells(){
+            return mapCells;
+        }
+
+        public List<Player> getPlayers(){
+            return this.players;
+        }
+
+        public List<Dragon> getDragons()
+        {
+            return this.dragons;
+        }
+
         /**********************************************GUI-Server-Communication*************************************************************/
 
         /// <summary>
@@ -103,6 +119,15 @@ namespace DragonsAndRabbits.Manager
         //internal
 
 
-        
+
+        /// <summary>
+        /// this method recieves the changed direction of the player and sends it towards the server
+        /// </summary>
+        /// <param name="direction"></param>
+        public void movePlayer(Direction direction)
+        {
+            //send movement towards the server
+            throw new NotImplementedException();
+        }
     }
 }
