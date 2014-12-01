@@ -96,7 +96,6 @@
   <ItemGroup>
     <Compile Include="Client\Buffer.cs" />
     <Compile Include="Client\Connector.cs" />
-    <Compile Include="Client\Controler.cs" />
     <Compile Include="Client\Map.cs" />
     <Compile Include="Client\MapCell.cs" />
     <Compile Include="Client\Parser.cs" />

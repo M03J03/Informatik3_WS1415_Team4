@@ -6,6 +6,7 @@ using System.Diagnostics.Contracts;
 using System.Threading;
 using DragonsAndRabbits.Exceptions;
 using DragonsAndRabbits.Client;
+using DragonsAndRabbits.Manager;
 using System.Text.RegularExpressions;
 
 namespace DragonsAndRabbits.Client
@@ -659,8 +660,8 @@ namespace DragonsAndRabbits.Client
             myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
             points = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
 
-            
-            players.Add(new Player(id,type,busy,x,y,points));
+            //Player: int id, String name, bool busy, int row, int column
+           // players.Add(new Manager.Player(id,type,busy,x,y,points));
 
         }
 

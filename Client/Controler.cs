@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using DragonsAndRabbits.Client;
+using DragonsAndRabbits.Manager;
 using System.Diagnostics.Contracts;
 using DragonsAndRabbits.Exceptions;
 //using DragonsAndRabbits.Client;
@@ -14,7 +15,7 @@ namespace DragonsAndRabbits.Client
 
         //private GUI gui = null;
         private Map map;
-        private Player player = null;
+        private Manager.Player player = null;
         private string message;
 
         /// <summary>

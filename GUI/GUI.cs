@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using DragonsAndRabbits.Manager;
 using DragonsAndRabbits.Client;
 using DragonsAndRabbits.Exceptions;
 
@@ -14,9 +15,8 @@ namespace DragonsAndRabbits.GUI
 {
     public partial class GUI : Form
     {
-        private Manager mgr = Manager.Instance;
+        private static Manager.Manager mgr = Manager.Manager.getManger();
         private static GUI gui;
-       // private List<Dragons> dragons = new List<Dragons>();
         private List<PictureBox> picturelist = new List<PictureBox>();
         int height=0;
         int width=0;
@@ -318,9 +318,10 @@ namespace DragonsAndRabbits.GUI
         {
             
             //for testing purposes only
-            picturelist.Clear();
+           /* picturelist.Clear();
             List<String> attr = new List<string> { "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", };
             drawMap(10,10,attr);
+            */
              
 
 
@@ -331,10 +332,11 @@ namespace DragonsAndRabbits.GUI
 
             if (chatTextBox.TextLength > 0)
                 {
-                    //showText on Chatrun:
-                    chatRun.AppendText (chatTextBox.Text + "\r\n");
+                    
                     //then sendText to Server:
-                    mgr.chatUpdateToServer(chatTextBox.Text);
+                    mgr.sendChatUpdateToServer(chatTextBox.Text);
+                    //IMPORTANT:showText on Chatrun ONLY IF THE PARSER SENT AN 'OK':
+                    chatRun.AppendText (chatTextBox.Text + "\r\n");
                 }
 
             chatTextBox.ResetText();
@@ -374,26 +376,26 @@ namespace DragonsAndRabbits.GUI
                 {
                     case (Keys.Left):
                         {
-                            chatRun.AppendText("left \r\n");
-                            mgr.movePlayer("left");
+                          //  chatRun.AppendText("left \r\n");
+                           // mgr.movePlayer("left");
                             break;
                         }
                     case (Keys.Right):
                         {
-                            chatRun.AppendText("right \r\n");
-                            mgr.movePlayer("right");
+                           // chatRun.AppendText("right \r\n");
+                            //mgr.movePlayer("right");
                             break;
                         }
                     case (Keys.Up):
                         {
-                            chatRun.AppendText("up \r\n");
-                            mgr.movePlayer("up");
+                            //chatRun.AppendText("up \r\n");
+                           // mgr.movePlayer("up");
                             break;
                         }
                     case (Keys.Down):
                         {
-                            chatRun.AppendText("down \r\n");
-                            mgr.movePlayer("down");
+                           // chatRun.AppendText("down \r\n");
+                           // mgr.movePlayer("down");
                             break;
                         }
                     default:{

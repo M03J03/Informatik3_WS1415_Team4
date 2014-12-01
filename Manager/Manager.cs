@@ -100,6 +100,8 @@ namespace DragonsAndRabbits.Manager
             return chatMessage;
         }
 
+        //internal
+
 
         
     }
