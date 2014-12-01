@@ -17,9 +17,10 @@ namespace DragonsAndRabbits.GUI
     {
         private static Manager.Manager mgr = Manager.Manager.getManger();
         private static GUI gui;
-        private List<PictureBox> picturelist = new List<PictureBox>();
-        int height=0;
-        int width=0;
+        private int rows=0;
+        private int cols=0;
+        
+        
 
 
         public GUI()
@@ -158,8 +159,35 @@ namespace DragonsAndRabbits.GUI
             }
         }
         */
-        
+        /// <summary>
+        /// evaluates wheter the current row is come to an end
+        /// </summary>
+        /// <param name="length"></param>
+        /// <param name="rows"></param>
+        /// <param name="cols"></param>
+        /// <param name="tileSize"></param>
+        /// <returns></returns>
+        private bool endOfLine(int col)
+        {
+            //diese methode wird wegen felhendem globalen column-wert nie aufgerufen
+            bool b = false;
+            
+            if(col == this.cols){
+                b = true;
+            }
+            Console.WriteLine("end of the line reached: "+b);
+            return b;
 
+        }
+
+
+        /// <summary>
+        /// sets the dimensions of the map global accessible
+        /// </summary>
+        private void setMapDimensions()
+        {
+            
+        }
 
         /// <summary>
         /// this method is to dynamically draw the different tiles to the GUI
@@ -167,83 +195,75 @@ namespace DragonsAndRabbits.GUI
         /// <param name="row"></param>
         /// <param name="column"></param>
         /// <param name="attributes as List<String>"></param>
-        public void drawMap(int row, int column, List<String> attributes)
+        public void drawMap(List<Manager.Properties> attributes)
         {
-            this.height = row;
-            this.width = column;
+            int fieldSize = attributes.Count;
+            int currentRow = 0, currentCol = 0;
+            int tileSizeInPx = 0;
+            Graphics g = mapViewPanel.CreateGraphics();
 
-            int nrOfTiles = row*column;
-            int height = 600/row; //pixel available per tile (600 absolute)
-            int width = 600/column;
-            Console.WriteLine("height/width: "+ height + ", " + width);
+            //requests the needed mapDimensions for the following operations
+            setMapDimensions();
 
-            if(attributes.Count != nrOfTiles){
-                throw new WrongWidthOrHeigthException ("drawing of the map has missing arguments");
+            if(this.rows == 0 || this.cols == 0){
+                throw new ManagerInputException ("no valid map to draw!");
+            }
+            if(fieldSize != (this.rows*this.cols)){
+                 throw new WrongWidthOrHeigthException("missing properties to draw the map!");
             }
 
-
+            //change size according to the relative dimensions of the map
+            if(rows>cols){
+                tileSizeInPx = 600/rows;
+            }
             else{
-
-                for (int i = 0; i < nrOfTiles; i++ )
-                {
-                    PictureBox pb = setupPictureBox(height,width);
-
-                    switch(attributes[i]){
-                        case "walkable":
-                        case "WALKABLE":{
-                            pb.Image = global::DragonsAndRabbits.Properties.Resources.walkable;
-                                break;
-                        }
-                        case "huntable":
-                        case "HUNTABLE":{
-                            pb.Image = global::DragonsAndRabbits.Properties.Resources.huntable;
-                            break;
-                        }
-                        case "forest":
-                        case "FOREST":{
-                            pb.Image = global::DragonsAndRabbits.Properties.Resources.forest;
-                            break;
-                        }
-                        case "wall":
-                        case "WALL":{
-                            pb.Image = global::DragonsAndRabbits.Properties.Resources.stones;
-                            break;
-                        }
-                       
-                        case "sand":
-                        case "SAND":{
-                            pb.Image = global::DragonsAndRabbits.Properties.Resources.sand;
-                            break;
-                        }
-
-                        case "water":
-                        case "WATER":{
-                            pb.Image = global::DragonsAndRabbits.Properties.Resources.water;
-                            break;
-                        }
-                    }
-                    
-                    idLabel.Text = "HEY! button has been pressed!";
-                  
-                    /*
-                    PictureBox pb = new PictureBox();
-                    pb.SizeMode = PictureBoxSizeMode.StretchImage;
-                    pb.Size = new System.Drawing.Size(height, width);
-                    pb.Margin = new System.Windows.Forms.Padding(0);
-                      // pb.Location = new System.Drawing.Point(width * i); //starting point
-                    pb.BorderStyle = System.Windows.Forms.BorderStyle.None;
-
-                    pb.Image = global::DragonsAndRabbits.Properties.Resources.forest;
-                     */
-
-                    //the list provides indexes of the pictureboxes
-
-                    picturelist.Add(pb);
-                  //  picturelist[i].Paint += new System.Windows.Forms.PaintEventHandler(this.OnPaint());
-                    mapViewPanel.Controls.Add(picturelist[i]);
-                
-                }
+                tileSizeInPx = 600/cols;
             }
+
+            
+
+
+            foreach (Manager.Properties props in attributes)
+            {
+                //maps are shaped like a rectangle but not nescessarily a square
+                if(endOfLine(currentCol)){
+                    Console.WriteLine("new Line!");
+                    currentRow++;
+                    currentCol = 0;
+                }
+
+                //PROPERTY: "WALKABLE"|"WALL"|"FOREST"|"WATER"|"HUNTABLE"
+                switch (props)
+                {   
+                    case Manager.Properties.walkable:
+                        g.DrawImage(global::DragonsAndRabbits.Properties.Resources.walkable, new Rectangle(currentRow * tileSizeInPx, currentCol * tileSizeInPx, tileSizeInPx, tileSizeInPx));
+                        break;
+
+                    case Manager.Properties.wall:
+                         g.DrawImage(global::DragonsAndRabbits.Properties.Resources.stones, new Rectangle(currentRow * tileSizeInPx, currentCol * tileSizeInPx, tileSizeInPx, tileSizeInPx));
+                        break;
+
+                    case Manager.Properties.forest:
+                         g.DrawImage(global::DragonsAndRabbits.Properties.Resources.forest, new Rectangle(currentRow * tileSizeInPx, currentCol * tileSizeInPx, tileSizeInPx, tileSizeInPx));
+                        break;
+
+                    case Manager.Properties.water:
+                         g.DrawImage(global::DragonsAndRabbits.Properties.Resources.water, new Rectangle(currentRow * tileSizeInPx, currentCol * tileSizeInPx, tileSizeInPx, tileSizeInPx));
+                        break;
+
+                    case Manager.Properties.huntable:
+                         g.DrawImage(global::DragonsAndRabbits.Properties.Resources.huntable, new Rectangle(currentRow * tileSizeInPx, currentCol * tileSizeInPx, tileSizeInPx, tileSizeInPx));
+                        break;
+
+                }
+
+               
+                g.DrawLine(new Pen(Color.Beige),new Point(currentRow * tileSizeInPx,tileSizeInPx),new Point(400,400));
+
+
+                currentCol++;
+            }
+            
         }
 
         /// <summary>
@@ -251,7 +271,7 @@ namespace DragonsAndRabbits.GUI
         /// </summary>
         /// <param name="id"></param>
         /// <param name="direction"></param>
-        internal void drawPlayer(int id, String direction){
+        internal void drawPlayer(int id, int row, int col){
 
 
 
@@ -259,17 +279,13 @@ namespace DragonsAndRabbits.GUI
         /// <summary>
         /// 
         /// </summary>
-        internal void drawDragon(int rowOld, int colOld, int rowNew, int colNew)
+        internal void drawDragon(int id, int row, int col)
         {
-            //remove old icon
-           // picturelist[rowOld * this.width + colOld].Paint;
-
-            //add new icon
-          //  picturelist[rowNew * this.width + colNew].Paint;
-
+  
 
         }
-            
+           
+        /*DEPRECATED
         /// <summary>
         /// this method 
         /// </summary>
@@ -286,7 +302,7 @@ namespace DragonsAndRabbits.GUI
              
              return pb;
          }
-
+        */
 
         
         /// <summary>
@@ -317,14 +333,6 @@ namespace DragonsAndRabbits.GUI
         private void sendButton_Click(object sender, EventArgs e)
         {
             
-            //for testing purposes only
-           /* picturelist.Clear();
-            List<String> attr = new List<string> { "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "WALKABLE", "HUNTABLE", "FOREST", "SAND", "WALL", "WATER", "HUNTABLE", "WALKABLE", };
-            drawMap(10,10,attr);
-            */
-             
-
-
             if (sender == null)
             {
                 throw new ArgumentNullException("GUI ButtonClick argument is null");
@@ -358,6 +366,22 @@ namespace DragonsAndRabbits.GUI
                    this.sendButton_Click(sender, e);
                 }
                
+                    //draw map testcase - for testpurposes only
+                else
+                {
+                    //for testing purposes only
+
+                    List<Manager.Properties> attr = new List<Manager.Properties> { 
+                     Manager.Properties.huntable, Manager.Properties.wall, Manager.Properties.walkable, Manager.Properties.water, Manager.Properties.huntable, Manager.Properties.wall, Manager.Properties.walkable, Manager.Properties.water,Manager.Properties.huntable, Manager.Properties.wall, Manager.Properties.walkable, Manager.Properties.water,Manager.Properties.huntable, Manager.Properties.wall, Manager.Properties.walkable, Manager.Properties.water
+                     };
+                    rows = 4; cols = 4;
+
+                    drawMap(attr);
+                    drawPlayer(1,1,4);
+                    drawDragon(1,3,3);
+
+                }
+               
             }
          
         }
@@ -375,33 +399,20 @@ namespace DragonsAndRabbits.GUI
                 switch (e.KeyCode)
                 {
                     case (Keys.Left):
-                        {
-                          //  chatRun.AppendText("left \r\n");
-                           // mgr.movePlayer("left");
+                            mgr.movePlayer(Manager.Direction.left);
                             break;
-                        }
+                        
                     case (Keys.Right):
-                        {
-                           // chatRun.AppendText("right \r\n");
-                            //mgr.movePlayer("right");
+                            mgr.movePlayer(Manager.Direction.right);
                             break;
-                        }
+                        
                     case (Keys.Up):
-                        {
-                            //chatRun.AppendText("up \r\n");
-                           // mgr.movePlayer("up");
+                            mgr.movePlayer(Manager.Direction.up);
                             break;
-                        }
+                        
                     case (Keys.Down):
-                        {
-                           // chatRun.AppendText("down \r\n");
-                           // mgr.movePlayer("down");
+                            mgr.movePlayer(Manager.Direction.down);
                             break;
-                        }
-                    default:{
-
-                        break;
-                        }
                    }
                 
 
@@ -409,11 +420,6 @@ namespace DragonsAndRabbits.GUI
                 
                 Console.WriteLine(e.KeyCode.ToString());
             }
-             else
-                    {
-                        //chatRun.AppendText("fail!");
-                    }
-      
             
         }
 
@@ -426,6 +432,7 @@ namespace DragonsAndRabbits.GUI
             GUI gui = new GUI();
         }
         */
+        /*******/
 
 
 
