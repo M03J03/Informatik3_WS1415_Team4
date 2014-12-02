@@ -19,7 +19,7 @@ namespace DragonsAndRabbits.Manager
         /// <param name="busy"></param>
         /// <param name="row"></param>
         /// <param name="column"></param>
-        protected Player(int id, String name, bool busy, int row, int column)
+        public Player(int id, String name, bool busy, int row, int column)
             : base(id, name, busy, row, column)
         { 
             setPoints(0);
@@ -94,6 +94,12 @@ namespace DragonsAndRabbits.Manager
             }
         }
 
+        //int id, String type, bool busy, String name, int x, int y, int points
+        public void updatePlayer(int id, String type, bool busy, String name, int x, int y)
+        {
+            update(id, name, busy, x, y);
+        }
+
         /// <summary>
         /// Sets the player
         /// </summary>
@@ -107,7 +113,7 @@ namespace DragonsAndRabbits.Manager
         /// Returns the player
         /// </summary>
         /// <returns></returns>
-        protected Player getPlayer()
+        public Player getPlayer()
         {
             return player;
         }
@@ -116,7 +122,7 @@ namespace DragonsAndRabbits.Manager
         /// Deletesthe player object.
         /// </summary>
         /// <param name="player"></param>
-        protected void deletePlayer(Player player)
+        public void deletePlayer(Player player)
         {
             if (player == null)
             {

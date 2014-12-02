@@ -83,6 +83,36 @@ namespace DragonsAndRabbits.Manager
             }                  
         }
 
+        /// <summary>
+        /// This method updates the player.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="busy"></param>
+        /// <param name="description"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="points"></param>
+        public void player(int id, bool busy, String description, int x, int y, int points)
+        {
+            bool exists = false;
+
+            foreach (Player p in players)
+            {
+                if (p.getID() == id)
+                {
+                    exists = true;
+                    p.update(id, description, busy, x, y);
+                    p.updatePoints(id, points);
+                }
+            }
+
+            if (!exists)
+            {           
+                Player player = new Player(id, description,busy,  x, y);
+                players.Add(player);
+            }
+        }
+
 
         /**********************************************providing information to GUI*********************************************************/
             public List<MapCell> getMapCells(){
