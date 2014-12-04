@@ -16,6 +16,8 @@ namespace DragonsAndRabbits.Manager
         private List<MapCell> mapCells;
         internal List<Dragon> dragons = new List<Dragon>();
         internal List<Player> players = new List<Player>();
+        private int width;
+        private int height;
 
         /// <summary>
         /// Generates an manager object.
@@ -113,9 +115,71 @@ namespace DragonsAndRabbits.Manager
             }
         }
 
+        /// <summary>
+        /// This method is for the challange.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="typeOfFigth"></param>
+        /// <param name="accepted"></param>
+        public void challenge(int id, String typeOfFigth, bool accepted)
+        {
+
+        }
+
+        /// <summary>
+        /// Thsi method genrates and returns the new MapCell
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="status"></param>
+        public MapCell mapCell(int x, int y, List<String> status)
+        {
+            MapCell mp = new MapCell(x, y, status);
+            return mp;
+        }
+
+        /// <summary>
+        /// This method sets the width, height and the list of the mapcells
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="mapCell"></param>
+        public void map(int width, int height, List<MapCell> mapCell)
+        {
+            setWidth(width);
+            setHeight(height);
+            setMapCell(mapCell);
+        }
+
+        /// <summary>
+        /// Sets the width of the map.
+        /// </summary>
+        /// <param name="width"></param>
+        private void setWidth(int width)
+        {
+            this.width = width;
+        }
+
+        /// <summary>
+        /// Sets the heigth of the map.
+        /// </summary>
+        /// <param name="height"></param>
+        private void setHeight(int height)
+        {
+            this.height = height;
+        }
+
+        /// <summary>
+        /// Sets the list of mapcells of the map.
+        /// </summary>
+        /// <param name="mapCells"></param>
+        private void setMapCell(List<MapCell> mapCells)
+        {
+            this.mapCells = mapCells;
+        }
 
         /**********************************************providing information to GUI*********************************************************/
-            public List<MapCell> getMapCells(){
+        public List<MapCell> getMapCells(){
             return mapCells;
         }
      

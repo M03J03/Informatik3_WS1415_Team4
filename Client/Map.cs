@@ -12,7 +12,7 @@ namespace DragonsAndRabbits.Client
         private int height;
         private int width;
         private List<MapCell> mapCell;
-        private int[,] map;
+        private Properties[,] map;
 
         
 
@@ -36,7 +36,7 @@ namespace DragonsAndRabbits.Client
         /// <param name="height"></param>
         private void setHeight(int height)
         {
-            if (width <= 0)
+            if (height <= 0)
             {
                 throw new WrongWidthOrHeigthException("The heigth is smaller or equals 0!");
             }
