@@ -376,7 +376,10 @@ namespace DragonsAndRabbits.Manager
 
         }
 
-
+        /// <summary>
+        /// Sets the player list
+        /// </summary>
+        /// <param name="p"></param>
         public void setPlayers(List<Player> p)
         {
             this.players = p;
