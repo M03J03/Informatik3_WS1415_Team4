@@ -9,6 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestDragonsAndRabbits",
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Pathfinder", "..\Pathfinder\Pathfinder.vcxproj", "{791ECFA7-15E6-4EB1-BE79-724EC3ED920C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7E5F39B7-C4FE-492B-963D-315F5847263C} = {7E5F39B7-C4FE-492B-963D-315F5847263C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
