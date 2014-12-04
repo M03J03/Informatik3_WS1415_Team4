@@ -15,9 +15,13 @@ namespace DragonsAndRabbits.Manager
         private MapCell mapCell;
         private List<MapCell> mapCells;
         internal List<Dragon> dragons = new List<Dragon>();
-        internal List<Player> players = new List<Player>();
+        internal List<Player> players;
         private int width;
         private int height;
+        private int id;
+        private long time;
+        private bool online;
+        private int server;
 
         /// <summary>
         /// Generates an manager object.
@@ -222,6 +226,160 @@ namespace DragonsAndRabbits.Manager
         {
             //send movement towards the server
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Returns the heigth of the map.
+        /// </summary>
+        /// <returns></returns>
+        public int getHeight()
+        {
+            return height;
+        }
+
+        /// <summary>
+        /// Returns the width of the map
+        /// </summary>
+        /// <returns></returns>
+        public int getWidth()
+        {
+            return width;
+        }
+
+        /// <summary>
+        /// Still no idea what to do
+        /// </summary>
+        /// <param name="dragonOrPlayer"></param>
+        /// <param name="mapCell"></param>
+        public void update(String dragonOrPlayer, MapCell mapCell)
+        {
+            
+        }
+
+        /// <summary>
+        /// Deletes the dragon or the player objects wich commited id is the same
+        /// </summary>
+        /// <param name="dragonOrPlayer"></param>
+        /// <param name="id"></param>
+        public void delete(String dragonOrPlayer, int id)
+        {
+            if (dragonOrPlayer.Equals("Player"))
+            {
+                foreach (Player p in players)
+                {
+                    if (p.getID() == id)
+                    {
+                        players.Remove(p);
+                    }
+                }
+            }
+            else
+            {
+                foreach (Dragon d in dragons)
+                {
+                    if (d.getID() == id)
+                    {
+                        dragons.Remove(d);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the id of the player
+        /// </summary>
+        /// <param name="id"></param>
+        public void yourID(int id)
+        {
+            this.id = id;
+        }
+
+        /// <summary>
+        /// Setsthe time of the server
+        /// </summary>
+        /// <param name="time"></param>
+        public void setTime(long time)
+        {
+            this.time = time;
+        }
+
+        /// <summary>
+        /// Sets if the client is online or not
+        /// </summary>
+        /// <param name="id"></param>
+        public void isOnline(int id)
+        {
+            if (id == 0)
+            {
+                online = false;
+            }
+            else if (id == 1)
+            {
+                online = true;
+            }
+        }
+
+        /// <summary>
+        /// returns the id of the client
+        /// </summary>
+        /// <returns></returns>
+        public int getYourID()
+        {
+            return id;
+        }
+
+        /// <summary>
+        /// Return the time
+        /// </summary>
+        /// <returns></returns>
+        public long getTime()
+        {
+            return time;
+        }
+
+        /// <summary>
+        /// Returns weather the client is online or not
+        /// </summary>
+        /// <returns></returns>
+        public bool idOnline()
+        {
+            return online;
+        }
+
+        /// <summary>
+        /// Sets the server number
+        /// </summary>
+        /// <param name="server"></param>
+        public void setServer(int server)
+        {
+            this.server = server;
+        }
+
+        /// <summary>
+        /// Gets the server number
+        /// </summary>
+        /// <returns></returns>
+        public int getServer()
+        {
+            return server;
+        }
+
+        /// <summary>
+        /// Well....no idea
+        /// </summary>
+        /// <param name="round"></param>
+        /// <param name="running"></param>
+        /// <param name="delay"></param>
+        /// <param name="opponent"></param>
+        public void result(int round, bool running, int delay, String opponent)
+        {
+
+        }
+
+
+        public void setPlayers(List<Player> p)
+        {
+            this.players = p;
         }
     }
 }
