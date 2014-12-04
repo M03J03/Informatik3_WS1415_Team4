@@ -63,9 +63,9 @@ namespace Connector
         /// <summary>
         /// Sends a message to the server
         /// </summary>
-        private void sendToServer(/* Buffer b*/)
+        private void sendToServer()
         {
-            sender.send("Somebody there????");
+            sender.send("get:map");
         }
 
         /// <summary>
@@ -74,8 +74,11 @@ namespace Connector
         public void start()
         {
             Thread recieveThread;
+            Thread sendThread;
             try
             {
+                sendThread = new Thread(new ThreadStart(sendToServer));
+                sendThread.Start();
                 recieveThread = new Thread(new ThreadStart(recieveFromServer));
                 recieveThread.Start();
             }
@@ -128,26 +131,26 @@ namespace Connector
             public void send(string message)
             {
 
-                while (isConnected())
+                try
                 {
-                    try
+                    if (message == null)
                     {
-                        Byte[] data = System.Text.Encoding.UTF8.GetBytes(message);
-                        NetworkStream stream = client.GetStream();
-                        stream.Write(data, 0, data.Length);
-                        Console.WriteLine("Sends: {0}", message);
+                        throw new System.ArgumentNullException("parameter cannot be null");
                     }
-                    catch (ArgumentNullException e)
+                    else if (message.Length < 1)
                     {
-                        Console.WriteLine("ArgumentNullException: {0}", e);
+                        throw new System.ArgumentException("parameter length cannot be < 1");
                     }
-                    catch (SocketException e)
+                    else
                     {
-                        Console.WriteLine("SocketException: {0}", e);
+                        Byte[] data = Encoding.UTF8.GetBytes(message + "\r\n");
+                        client.GetStream().Write(data, 0, data.Length);
                     }
                 }
-
-
+                catch(Exception exception)
+                {
+                    Console.WriteLine(exception.Message);
+                }            
             }
 
             /// <summary>

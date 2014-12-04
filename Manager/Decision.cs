@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DragonsAndRabbits.Manager
 {
-    enum Decision
+    public enum Decision
     {
         UNDEFINED,STAG,BUNNY,FIGTH,REST,SWORD,MAGIC,ALCHEMY
     }

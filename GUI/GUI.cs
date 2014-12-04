@@ -202,8 +202,8 @@ namespace DragonsAndRabbits.GUI
         /// </summary>
         private void setMapDimensions()
         {
-            this.rows = mgr.getHeight();
-            this.cols = mgr.getWidth();
+            //this.rows = mgr.getHeight();
+            //this.cols = mgr.getWidth();
         }
 
 

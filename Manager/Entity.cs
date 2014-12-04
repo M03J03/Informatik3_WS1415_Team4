@@ -6,7 +6,7 @@ using DragonsAndRabbits.Exceptions;
 
 namespace DragonsAndRabbits.Manager
 {
-    abstract class Entity
+    public abstract class Entity
     {
         private int id;
         private bool busy = false;

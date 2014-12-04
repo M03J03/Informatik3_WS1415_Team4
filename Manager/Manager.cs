@@ -136,10 +136,10 @@ namespace DragonsAndRabbits.Manager
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="status"></param>
-        public MapCell mapCell(int x, int y, List<String> status)
+        public MapCell getMapCell(int x, int y, List<String> status)
         {
-            MapCell mp = new MapCell(x, y, status);
-            return mp;
+            mapCell = new MapCell(x, y, status);
+            return mapCell;
         }
 
         /// <summary>

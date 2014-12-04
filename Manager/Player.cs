@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DragonsAndRabbits.Manager
 {
-    class Player : Entity
+    public class Player : Entity
     {
         private int points = 0;
         private Decision decision;
