@@ -28,6 +28,7 @@ namespace DragonsAndRabbits.GUI
         {
             Console.WriteLine("GUI activated!");
             setGUI(this);
+            setMapDimensions();
             InitializeComponent();
             this.ShowDialog();
         }
@@ -101,9 +102,6 @@ namespace DragonsAndRabbits.GUI
             this.mapViewPanel.Name = "mapViewPanel";
             this.mapViewPanel.Size = new System.Drawing.Size(600, 600);
             this.mapViewPanel.TabIndex = 6;
-            this.mapViewPanel.MouseClick += OnMouseClick;
-            this.mapViewPanel.MouseHover += mapViewPanel_MouseHover;
-            
             // 
             // pictureBox1
             // 
@@ -140,17 +138,15 @@ namespace DragonsAndRabbits.GUI
             this.KeyPreview = true;
             this.Name = "GUI";
             this.Text = "DragonsAndRabbits";
+            this.Load += new System.EventHandler(this.GUI_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.control_keys);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-            
 
         }
 
-           
-
-
+          
                     
         /// <summary>
         /// this method returns the GUI
@@ -166,20 +162,19 @@ namespace DragonsAndRabbits.GUI
             GUI.gui = g;
         }
 
-
-        /*
         /// <summary>
-        /// this method redraws a field or any component
+        /// this method is to update the GUI/Map at once.
         /// </summary>
-        /// <param name="e"></param>
-        protected override void OnPaint(Object source, PaintEventArgs e)
+        internal void updateGUI()
         {
-            if (source is PictureBox)
-            {
-               //draw image dragon
-            }
+            setMapDimensions();
+            mapViewPanel.Invalidate();
+            drawMap(mgr.getMapCells());
+            drawPlayer();
+            drawDragon();
         }
-        */
+
+      
         /// <summary>
         /// evaluates wheter the current row is come to an end
         /// </summary>
@@ -207,43 +202,79 @@ namespace DragonsAndRabbits.GUI
         /// </summary>
         private void setMapDimensions()
         {
-            
+            this.rows = mgr.getHeight();
+            this.cols = mgr.getWidth();
         }
 
+
+        
         /// <summary>
         /// this method is to dynamically draw the different tiles to the GUI
         /// </summary>
         /// <param name="row"></param>
         /// <param name="column"></param>
         /// <param name="attributes as List<String>"></param>
-        public void drawMap(List<Manager.Properties> attributes)
+        public void drawMap(List<MapCell> cells)
         {
-            int fieldSize = attributes.Count;
+            int fieldSize = cells.Count;
             int currentRow = 0, currentCol = 0;
-            
+
 
             Graphics g = mapViewPanel.CreateGraphics();
 
             //requests the needed mapDimensions for the following operations
             setMapDimensions();
 
-            if(this.rows == 0 || this.cols == 0){
-                throw new ManagerInputException ("no valid map to draw!");
+            if (this.rows == 0 || this.cols == 0)
+            {
+                throw new ManagerInputException("no valid map to draw!");
             }
-            if(fieldSize != (this.rows*this.cols)){
-                 throw new WrongWidthOrHeigthException("missing properties to draw the map!");
+            if (fieldSize != (this.rows * this.cols))
+            {
+                throw new WrongWidthOrHeigthException("missing properties to draw the map!");
             }
 
             //change size according to the relative dimensions -600px total- of the map
-            if(rows>cols){
-                tileSizeInPx = 600/rows;
+            if (rows > cols)
+            {
+                tileSizeInPx = 600 / rows;
             }
-            else{
-                tileSizeInPx = 600/cols;
+            else
+            {
+                tileSizeInPx = 600 / cols;
             }
 
-            foreach (Manager.Properties props in attributes)
+            //list of Mapcells
+            foreach (MapCell mc in cells)
             {
+                Manager.Properties selectedIcon = Manager.Properties.huntable;
+              
+                //list of Properties
+                foreach (Manager.Properties prop in mc.propList())
+                {
+
+                    switch (prop) //switch the properties of the current Mapcell
+                    {
+                    //PROPERTY: "WALKABLE"|"WALL"|"FOREST"|"WATER"|"HUNTABLE"
+                            //huntable needs no icon !!! VALID BY ORDER !!!  - only the last prop will really be painted.
+                        case Manager.Properties.walkable:
+                            selectedIcon = Manager.Properties.walkable;
+                            break;
+                        case Manager.Properties.wall:
+                            selectedIcon = Manager.Properties.wall;
+                            break;
+                        case Manager.Properties.water:
+                            selectedIcon = Manager.Properties.water;
+                            break;
+                        case Manager.Properties.forest:
+                            selectedIcon = Manager.Properties.forest;
+                            break;
+                    }
+                }
+
+                //now to draw the tile with the selected property
+
+
                 //maps are shaped like a rectangle but not nescessarily a square
                 if(endOfLine(currentCol)){
                     Console.WriteLine("new Line!");
@@ -252,7 +283,7 @@ namespace DragonsAndRabbits.GUI
                 }
 
                 //PROPERTY: "WALKABLE"|"WALL"|"FOREST"|"WATER"|"HUNTABLE"
-                switch (props)
+                switch (selectedIcon)
                 {   
                     case Manager.Properties.walkable:
                         g.DrawImage(global::DragonsAndRabbits.Properties.Resources.walkable, new Rectangle(currentCol * tileSizeInPx, currentRow * tileSizeInPx, tileSizeInPx, tileSizeInPx));
@@ -270,6 +301,7 @@ namespace DragonsAndRabbits.GUI
                          g.DrawImage(global::DragonsAndRabbits.Properties.Resources.water, new Rectangle(currentCol * tileSizeInPx, currentRow * tileSizeInPx, tileSizeInPx, tileSizeInPx));
                         break;
 
+                        //not necessarily needed - but default ;)
                     case Manager.Properties.huntable:
                         g.DrawImage(global::DragonsAndRabbits.Properties.Resources.huntable, new Rectangle(currentCol * tileSizeInPx, currentRow * tileSizeInPx, tileSizeInPx, tileSizeInPx));
                         break;
@@ -277,24 +309,27 @@ namespace DragonsAndRabbits.GUI
                 }
 
 
-                g.DrawImage(global::DragonsAndRabbits.Properties.Resources.player_female_2, new Rectangle(0, 3*tileSizeInPx, tileSizeInPx, tileSizeInPx));
                 //one tile ahead
                 currentCol++;
-            }
-            
+
+            }//End foreach mapcells
+         
         }
+         
 
         /// <summary>
         /// this method locates the player, resets his icon at the old tile and draws an icon on the new tile he is standing on
         /// </summary>
         /// <param name="id"></param>
         /// <param name="direction"></param>
-        internal void drawPlayer(int id, int row, int col){
+        internal void drawPlayer(){
             
             foreach (Player p in mgr.getPlayers())
             {
             Graphics g = mapViewPanel.CreateGraphics();
-            g.DrawImage(global::DragonsAndRabbits.Properties.Resources.player_female_2, new Rectangle((col-1) * tileSizeInPx, (row-1) * tileSizeInPx, tileSizeInPx, tileSizeInPx));
+            g.DrawImage(global::DragonsAndRabbits.Properties.Resources.player_female_2, new Rectangle((p.getColumn()-1) * tileSizeInPx, (p.getRow()-1) * tileSizeInPx, tileSizeInPx, tileSizeInPx));
+            // g.DrawImage(global::DragonsAndRabbits.Properties.Resources.player_female_2, new Rectangle(0, 3*tileSizeInPx, tileSizeInPx, tileSizeInPx));
+
             }
             
 
@@ -303,38 +338,19 @@ namespace DragonsAndRabbits.GUI
         /// 
         /// </summary>
         /// 
-        internal void drawDragon(int id, int row, int col)
+        internal void drawDragon()
         {
 
             foreach (Dragon d in mgr.getDragons())
             {
             Graphics g = mapViewPanel.CreateGraphics();
-            g.DrawImage(global::DragonsAndRabbits.Properties.Resources.dragon, new Rectangle((col-1) * tileSizeInPx, (row-1) * tileSizeInPx, tileSizeInPx, tileSizeInPx));
+            g.DrawImage(global::DragonsAndRabbits.Properties.Resources.dragon, new Rectangle((d.getColumn()-1) * tileSizeInPx, (d.getRow()-1) * tileSizeInPx, tileSizeInPx, tileSizeInPx));
             }
 
         }
         
 
-        /*DEPRECATED
-        /// <summary>
-        /// this method 
-        /// </summary>
-        /// <param name="height"></param>
-        /// <param name="width"></param>
-        /// <returns></returns>
-         private PictureBox setupPictureBox(int height, int width){
-
-                PictureBox pb = new PictureBox();
-                pb.SizeMode = PictureBoxSizeMode.StretchImage;
-                pb.Size = new System.Drawing.Size(height, width);
-                pb.Margin = new System.Windows.Forms.Padding(0);
-                pb.BorderStyle = System.Windows.Forms.BorderStyle.None;
-             
-             return pb;
-         }
-        */
-
-        
+              
         /// <summary>
         /// this method lists the recieved message in the chatrun of the Client-GUI.
         /// </summary>
@@ -353,7 +369,7 @@ namespace DragonsAndRabbits.GUI
     
         //**************************************vv******EVENTS*****vv***************************************
 
-
+        /*/////////////////////////Form-Events//////////////////////////////////*/
 
         /// <summary>
         /// Button-Click-Event. This method adds a message to the chatrun and sends an update towards the manager
@@ -363,17 +379,22 @@ namespace DragonsAndRabbits.GUI
         private void sendButton_Click(object sender, EventArgs e)
         {
             //mapViewPanel.Invalidate();
-
-            if (sender == null)
+           if (sender == null)
             {
                 throw new ArgumentNullException("GUI ButtonClick argument is null");
             }
 
             if (chatTextBox.TextLength > 0)
                 {
-                    
                     //then sendText to Server:
-                    mgr.sendChatUpdateToServer(chatTextBox.Text);
+                    try
+                    {
+                        mgr.sendChatUpdateToServer(chatTextBox.Text);
+                    }
+                    catch (NullReferenceException)
+                    {
+                        Console.WriteLine("Missing Manager in GUI");
+                    }
                     //IMPORTANT:showText on Chatrun ONLY IF THE PARSER SENT AN 'OK':
                     chatRun.AppendText (chatTextBox.Text + "\r\n");
                 }
@@ -381,6 +402,8 @@ namespace DragonsAndRabbits.GUI
             chatTextBox.ResetText();
              
         }
+
+        /*/////////////////////////KEY-Events//////////////////////////////////*/
 
         /// <summary>
         /// Key-Event. on 'return'-Key - the sendbutton_Click is activated.
@@ -398,7 +421,8 @@ namespace DragonsAndRabbits.GUI
                 }
                
                     //draw map testcase - for testpurposes only
-                else
+              
+                /*else
                 {
                     //for testing purposes only
 
@@ -407,11 +431,9 @@ namespace DragonsAndRabbits.GUI
                     Manager.Properties.forest, Manager.Properties.walkable, Manager.Properties.forest, Manager.Properties.huntable, };
                     rows = 4; cols = 5;
 
-                    drawMap(attr);
-                   // drawPlayer(1,1,4);
-                    //drawDragon(1,3,3);
-
-                }
+                    drawMap();
+                 }
+                 */
                
             }
          
@@ -453,31 +475,29 @@ namespace DragonsAndRabbits.GUI
             }
             
         }
+        /*/////////////////////////MOUSE-Events//////////////////////////////////*/
 
         private void OnMouseClick(Object source, MouseEventArgs e)
         {
             Point location = e.Location;
 
             idLabel.Text = ("Mouseposition: " + e.Location.ToString());
-            //
-            
-           // base.OnMouseClick(e);
+            mouseLabel.Text = "current tile: (" + e.Location.X/tileSizeInPx + ", " + e.Location.Y/tileSizeInPx + ")";
+       
         }
 
-        void mapViewPanel_MouseHover(object sender, EventArgs e)
+
+        /// <summary>
+        /// GUI-Form events
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GUI_Load(object sender, EventArgs e)
         {
-            Point location = MousePosition;
-
-            int x = location.X;
-            int y = location.Y;
             
-            mouseLabel.Invalidate();
-            mouseLabel.Text = "Mouseposition" + x + ", " + y;
-            mouseLabel.Refresh();
-           
         }
 
-      
+            
 
 
         //********************************************MAIN******************************************
