@@ -13,6 +13,7 @@ namespace DragonsAndRabbits.Client
 {
     public class Parser
     {
+        private Manager.Manager mgr = Manager.Manager.getManger();
         private Buffer refToBuffer;
         private Thread fred;
         private List<MapCell> cells;
@@ -420,11 +421,12 @@ namespace DragonsAndRabbits.Client
             myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
             col = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
 
+            Console.WriteLine("DOCELL ->  " + msg);
             // Sends all properties to the property handler so we get a List of properties returned
-           props = doProperties(msg.Substring(msg.IndexOf("begin:props"+"begin:props".Length+Environment.NewLine.Length),msg.IndexOf("end:props",msg.IndexOf("begin:props"))-("begin:props".Length+Environment.NewLine.Length))) ;
+           props = doProperties(msg.Substring(msg.IndexOf("begin:props"+"begin:props".Length+Environment.NewLine.Length),msg.IndexOf("end:props",msg.IndexOf("begin:props"))-("begin:props".Length+Environment.NewLine.Length+"col:".Length+col.ToString().Length+Environment.NewLine.Length+"row:".Length+row.ToString().Length+Environment.NewLine.Length))) ;
 
            // Call the equivalent Method from Manager
-           //Manager.getManager().mapcell(row, col, props)    // !!! WARNING THIS IS A LIST AND NOT CONFORM WITH MANAGER CLASS, GOTTA BE CHANGED IN MANAGER
+          mgr.getMapCell(row, col, props);    // !!! WARNING THIS IS A LIST AND NOT CONFORM WITH MANAGER CLASS, GOTTA BE CHANGED IN MANAGER
 
        
         }
@@ -572,9 +574,9 @@ namespace DragonsAndRabbits.Client
             List <String> propList = new List<string>();
 
             string message = msg;
-
+           
             myVarIndex = 0;
-
+            Console.WriteLine("PROPS MSG  " + msg);
             do
             {
                 myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
@@ -583,7 +585,7 @@ namespace DragonsAndRabbits.Client
                 message = msg.Remove(myVarIndex, myNewLineIndex+Environment.NewLine.Length);
             } while (message.Length > 0);
 
-            return propList; ;
+            return propList; 
         }
 
 

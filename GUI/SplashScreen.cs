@@ -11,9 +11,10 @@ namespace DragonsAndRabbits.GUI
 {
     public partial class SplashScreen : Form
     {
-        
+        Manager.Manager mgr;
         public SplashScreen()
         {
+            mgr = Manager.Manager.getManger();
             InitializeComponent();
             timer1.Interval = 5000;
             timer1.Start();
@@ -24,16 +25,27 @@ namespace DragonsAndRabbits.GUI
                        
         }
 
+        /// <summary>
+        /// ticks the splashscreen
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void timer1_Tick(object sender, EventArgs e)
         {
             Console.WriteLine("tick1");
-            if (Manager.Manager.getManger() != null)
+            if (mgr != null)
             {
+            
             timer1.Stop();
             timer2.Stop();
-            Manager.Manager mgr = Manager.Manager.getManger();
-            mgr.setGUI();
+
+            this.Invalidate();
+            this.Hide();
             this.Close();
+            Console.WriteLine("form closed");
+
+            GUI gui = new GUI();
+           
             Console.WriteLine("Splash timer ended");
             }
                 //makes the tick go faster.
@@ -42,22 +54,30 @@ namespace DragonsAndRabbits.GUI
                 Console.WriteLine("else");
                 timer1.Interval = 500;
                 this.Close();
+               
             }
             
             //initialize GUI
             //mgr.setGUI();
             
         }
-       
+       /// <summary>
+       /// ticks the progressbar
+       /// </summary>
+       /// <param name="sender"></param>
+       /// <param name="e"></param>
         private void timer2_Tick_1(object sender, EventArgs e)
         {
             progressBar1.Increment(11);
         }
 
+        /*
         static void Main(String[] args)
         {
             SplashScreen splash = new SplashScreen();
         }
+         * */
+       
     }
 
 }

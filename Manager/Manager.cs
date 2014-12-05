@@ -140,6 +140,7 @@ namespace DragonsAndRabbits.Manager
         {
             mapCell = new MapCell(x, y, status);
             return mapCell;
+
         }
 
         /// <summary>
@@ -153,6 +154,7 @@ namespace DragonsAndRabbits.Manager
             setWidth(width);
             setHeight(height);
             setMapCell(mapCell);
+            gui.updateGUI();
         }
 
         /// <summary>
@@ -384,5 +386,12 @@ namespace DragonsAndRabbits.Manager
         {
             this.players = p;
         }
+
+        /*
+        internal void setGUI()
+        {
+            this.gui = new GUI.GUI();
+        }
+         */
     }
 }

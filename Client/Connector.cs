@@ -8,6 +8,7 @@ using System.Threading;
 using DragonsAndRabbits.GUI;
 using DragonsAndRabbits.Client;
 using DragonsAndRabbits.Exceptions;
+using DragonsAndRabbits.Manager;
 
 namespace Connector
 {
@@ -77,10 +78,11 @@ namespace Connector
             Thread sendThread;
             try
             {
-                sendThread = new Thread(new ThreadStart(sendToServer));
-                sendThread.Start();
+               
                 recieveThread = new Thread(new ThreadStart(recieveFromServer));
                 recieveThread.Start();
+                sendThread = new Thread(new ThreadStart(sendToServer));
+                sendThread.Start();
             }
             catch (ArgumentNullException er)
             {
@@ -237,7 +239,7 @@ namespace Connector
                         Int32 bytes = stream.Read(data, 0, data.Length);
                         responseData = System.Text.Encoding.UTF8.GetString(data, 0, bytes);
 
-                        responseData = responseData.Trim();
+                       // responseData = responseData.Trim();
 
 
                         Console.WriteLine("Received: {0}", responseData);
@@ -266,12 +268,16 @@ namespace Connector
         /// <param name="args"></param>
         static void Main(String[] args)
         {
+            Manager mgr = new Manager();
             Connector con = new Connector();
             con.start();
+            //SplashScreen splash = new SplashScreen();
+            //System.Console.ReadLine();
             GUI gui = new GUI();
-            System.Console.ReadLine();
 
         }
+        
+        
          
     }
 }

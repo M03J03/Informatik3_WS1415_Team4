@@ -18,6 +18,8 @@ namespace DragonsAndRabbits.Client
         private List<String> bufferList = null;
         private List<String> queueList = null;
         private static readonly Object logObj = new Object();
+        static int buffercounter = 0;
+        //   bool locked = false;
 
         /// <summary>
         /// This constructor only initializes a single (singleton) instance of Buffer. Called from the Singleton procedure -'Instance'
@@ -28,6 +30,8 @@ namespace DragonsAndRabbits.Client
             Console.WriteLine("Buffer Instance set up!");
             bufferList = new List<String>();
             queueList = new List<string>();
+            queueList.Add("");
+
         }
 
         /// <summary>
@@ -44,14 +48,14 @@ namespace DragonsAndRabbits.Client
                     //double checked thread savety. NOT only one Thread can get here.
                     //try
                     //{
-                        lock (logObj)
+                    lock (logObj)
+                    {
+                        if (instance == null)
                         {
-                            if (instance == null)
-                            {
-                                //only ONE Thread can get here.
-                                instance = new Buffer();
-                            }
+                            //only ONE Thread can get here.
+                            instance = new Buffer();
                         }
+                    }
                     //}
                     //catch (ThreadInterruptedException te)
                     //{
@@ -77,14 +81,18 @@ namespace DragonsAndRabbits.Client
         {
             Contract.Requires(queueList != null); //is met, because this method is called via the getter of the instance which initiates a queueList
 
-                Console.WriteLine("queueList count before add: " + queueList.Count);
-                Console.WriteLine("GOT THIS: ->" + messagetoBuffer);
+            //         Console.WriteLine("queueList count before add: " + queueList.Count);
+            //         Console.WriteLine("GOT THIS: ->" + messagetoBuffer);
 
-                this.queueList.Add(messagetoBuffer);
 
-                Console.WriteLine("queueList count after add: " + queueList.Count);
+            //this.queueList.Add(messagetoBuffer);
+            this.queueList[0] += messagetoBuffer;
 
-                          
+            handleQueue();
+
+            //       Console.WriteLine("queueList count after add: " + queueList.Count);
+
+
 
             Contract.Ensures(queueList.Count > 0, "nothing sent to the recieveList");
             Contract.Ensures(queueList.Count == Contract.OldValue(queueList.Count) + 1);
@@ -105,7 +113,7 @@ namespace DragonsAndRabbits.Client
             bool locked = false;
 
             try
-            {   
+            {
                 //locks the bufferList exclusively for the following task(s)
                 Monitor.Enter(bufferList, ref locked);
 
@@ -116,27 +124,32 @@ namespace DragonsAndRabbits.Client
                 }
                 else
                 {
-                    Console.WriteLine("Buffer needs to be refilled!");
-                    refillBuffer();
-                    tmp = (String)bufferList[0];
-                    removeMessage();
+                    //  Console.WriteLine("Buffer needs to be refilled!");
+                    //  refillBuffer();
+                    //  tmp = (String)bufferList[0];
+                    //  removeMessage();
                 }
+
+
+
+
             }
 
-            catch(Exception e)
+          /*  catch(Exception e)
             {
                 throw new BufferException("could not lock the bufferList", e);
             }
-
+            */
             finally
             {
                 if (locked)
                 {
                     Monitor.Exit(bufferList);
+
                 }
-                Monitor.Pulse(bufferList);
+                // Monitor.Pulse(bufferList);
             }
-         
+
             Contract.Ensures(bufferList.Count == Contract.OldValue(bufferList.Count) - 1);
             return tmp;
 
@@ -197,7 +210,7 @@ namespace DragonsAndRabbits.Client
             {
                 condition = false;
             }
-            
+
             return condition;
         }
 
@@ -222,17 +235,69 @@ namespace DragonsAndRabbits.Client
         /// </summary>
         private void refillBuffer()
         {
-          while (!hasLimitReached() && queueList.Count > 0)
+            while (!hasLimitReached() && queueList.Count > 0)
             {
                 Console.WriteLine("buffer refill capacity: " + bufferList.Count);
                 Console.WriteLine("queue delete capacity: " + queueList.Count);
 
-                bufferList.Add(queueList[0]);
-                queueList.RemoveAt(0);
+                handleQueue();
+
+                //  bufferList.Add(queueList[0]);
+                //  queueList.RemoveAt(0);
             }
-        
+
         }
 
+        private void handleQueue()
+        {
+            string firstIncome = queueList[0].ToString();
+            string getMessageCode;
+            string endMessageCode;
+
+
+            int beginIndex = 0;
+            int newLineIndexOfBegin = 0;
+
+            // Enter after end:<number>
+            int newLineIndexOfEnd = 0;
+            // the position where end:number is
+            int endIndex = 0;
+            String result;
+
+            // Analyze string and get the Messagenumber, to search for the corresponding "end:<MessageNumber>";
+            beginIndex = firstIncome.IndexOf("begin:", 0);
+            newLineIndexOfBegin = firstIncome.IndexOf(Environment.NewLine, beginIndex);
+            if (newLineIndexOfBegin == 0 && firstIncome.Length > 2)
+            {
+                firstIncome.Substring(Environment.NewLine.Length, firstIncome.Length - Environment.NewLine.Length);
+            }
+
+            getMessageCode = firstIncome.Substring((beginIndex + 6), newLineIndexOfBegin - (beginIndex + 6)).Trim();
+            //Console.WriteLine("MOEBegin at:" + beginIndex);
+            //  Console.WriteLine("MOEMessageCode: " + getMessageCode);
+            endMessageCode = "end:" + getMessageCode;
+            endIndex = firstIncome.IndexOf(endMessageCode);
+
+            if (endIndex > 0)
+            {
+                // Valid message is now between "beginIndex" and "newLineIndexOfEnd"
+                // newLineIndexOfEnd = firstIncome.IndexOf(Environment.NewLine, endIndex);
+                result = firstIncome.Substring(beginIndex, (endIndex + (endMessageCode.Length)));
+                bufferList.Add(result);
+                // Console.WriteLine("MOE-RESULT:" + result);
+                this.queueList[0] = this.queueList[0].Substring(endIndex + (endMessageCode.Length));
+                // Console.WriteLine("MOE -> REST OF QUEUE: " + this.queueList[0]);
+                Parser Pars = new Parser();
+
+                /*           if (this.queueList[0].Length > 2)
+                           {
+                               handleQueue();
+                           }
+                 */
+
+            }
+
+        }
 
     }
 }
