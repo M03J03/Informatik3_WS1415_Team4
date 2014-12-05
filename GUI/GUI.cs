@@ -10,6 +10,11 @@ using DragonsAndRabbits.Manager;
 using DragonsAndRabbits.Client;
 using DragonsAndRabbits.Exceptions;
 
+/*
+ * 
+ * Version 1.0512
+ *  
+ */
 
 namespace DragonsAndRabbits.GUI
 {
@@ -22,12 +27,15 @@ namespace DragonsAndRabbits.GUI
         private int tileSizeInPx = 0;
         
         
-
+        /// <summary>
+        /// this method initializes a WinForm - our GZU
+        /// </summary>
 
         public GUI()
         {
             Console.WriteLine("GUI activated!");
             setGUI(this);
+            //requests the needed mapDimensions for the following operations
             setMapDimensions();
             InitializeComponent();
             this.ShowDialog();
@@ -138,7 +146,7 @@ namespace DragonsAndRabbits.GUI
             this.KeyPreview = true;
             this.Name = "GUI";
             this.Text = "DragonsAndRabbits";
-            this.Load += new System.EventHandler(this.GUI_Load);
+            //this.Load += new System.EventHandler(this.GUI_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.control_keys);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
@@ -167,6 +175,7 @@ namespace DragonsAndRabbits.GUI
         /// </summary>
         internal void updateGUI()
         {
+            //requests the needed mapDimensions for the following operations
             setMapDimensions();
             mapViewPanel.Invalidate();
             drawMap(mgr.getMapCells());
@@ -202,8 +211,37 @@ namespace DragonsAndRabbits.GUI
         /// </summary>
         private void setMapDimensions()
         {
-            //this.rows = mgr.getHeight();
-            //this.cols = mgr.getWidth();
+            this.rows = mgr.getHeight();
+            this.cols = mgr.getWidth();
+        }
+
+        /// <summary>
+        /// this method is to find out, which icon according to the properties of a mapcell needs to be painted 
+        /// so it's only for painting-reasons, ignoring attributes like huntable
+        /// </summary>
+        /// <param name="mc"></param>
+        /// <returns></returns>
+        private Manager.Properties selectPropertyIcon(MapCell mc)
+        {
+            Manager.Properties iconProp = Manager.Properties.walkable; //default
+
+
+            if(mc.propList().Contains(Manager.Properties.forest)){
+                iconProp = Manager.Properties.forest;
+            }
+
+            if (mc.propList().Contains(Manager.Properties.wall))
+            {
+                iconProp = Manager.Properties.wall;
+            }
+
+            if (mc.propList().Contains(Manager.Properties.water))
+            {
+                iconProp = Manager.Properties.water;
+            }
+
+
+            return iconProp;
         }
 
 
@@ -214,6 +252,7 @@ namespace DragonsAndRabbits.GUI
         /// <param name="row"></param>
         /// <param name="column"></param>
         /// <param name="attributes as List<String>"></param>
+        /// 
         public void drawMap(List<MapCell> cells)
         {
             int fieldSize = cells.Count;
@@ -221,9 +260,6 @@ namespace DragonsAndRabbits.GUI
 
 
             Graphics g = mapViewPanel.CreateGraphics();
-
-            //requests the needed mapDimensions for the following operations
-            setMapDimensions();
 
             if (this.rows == 0 || this.cols == 0)
             {
@@ -247,34 +283,10 @@ namespace DragonsAndRabbits.GUI
             //list of Mapcells
             foreach (MapCell mc in cells)
             {
-                Manager.Properties selectedIcon = Manager.Properties.huntable;
-              
-                //list of Properties
-                foreach (Manager.Properties prop in mc.propList())
-                {
-
-                    switch (prop) //switch the properties of the current Mapcell
-                    {
-                    //PROPERTY: "WALKABLE"|"WALL"|"FOREST"|"WATER"|"HUNTABLE"
-                            //huntable needs no icon !!! VALID BY ORDER !!!  - only the last prop will really be painted.
-                        case Manager.Properties.walkable:
-                            selectedIcon = Manager.Properties.walkable;
-                            break;
-                        case Manager.Properties.wall:
-                            selectedIcon = Manager.Properties.wall;
-                            break;
-                        case Manager.Properties.water:
-                            selectedIcon = Manager.Properties.water;
-                            break;
-                        case Manager.Properties.forest:
-                            selectedIcon = Manager.Properties.forest;
-                            break;
-                    }
-                }
-
                 //now to draw the tile with the selected property
+                Manager.Properties toDraw = selectPropertyIcon(mc);
 
-
+             
                 //maps are shaped like a rectangle but not nescessarily a square
                 if(endOfLine(currentCol)){
                     Console.WriteLine("new Line!");
@@ -282,8 +294,9 @@ namespace DragonsAndRabbits.GUI
                     currentCol = 0;
                 }
 
-                //PROPERTY: "WALKABLE"|"WALL"|"FOREST"|"WATER"|"HUNTABLE"
-                switch (selectedIcon)
+
+                //PROPERTY: "WALKABLE"|"WALL"|"FOREST"|"WATER"|(ignoring "HUNTABLE")
+                switch (toDraw)
                 {   
                     case Manager.Properties.walkable:
                         g.DrawImage(global::DragonsAndRabbits.Properties.Resources.walkable, new Rectangle(currentCol * tileSizeInPx, currentRow * tileSizeInPx, tileSizeInPx, tileSizeInPx));
@@ -307,8 +320,7 @@ namespace DragonsAndRabbits.GUI
                         break;
 
                 }
-
-
+                
                 //one tile ahead
                 currentCol++;
 
@@ -329,16 +341,15 @@ namespace DragonsAndRabbits.GUI
             Graphics g = mapViewPanel.CreateGraphics();
             g.DrawImage(global::DragonsAndRabbits.Properties.Resources.player_female_2, new Rectangle((p.getColumn()-1) * tileSizeInPx, (p.getRow()-1) * tileSizeInPx, tileSizeInPx, tileSizeInPx));
             // g.DrawImage(global::DragonsAndRabbits.Properties.Resources.player_female_2, new Rectangle(0, 3*tileSizeInPx, tileSizeInPx, tileSizeInPx));
-
             }
             
 
         }
         /// <summary>
-        /// 
+        /// this method paints the playerIcon to the map according to its coordinates
         /// </summary>
         /// 
-        internal void drawDragon()
+        private void drawDragon()
         {
 
             foreach (Dragon d in mgr.getDragons())
@@ -355,7 +366,7 @@ namespace DragonsAndRabbits.GUI
         /// this method lists the recieved message in the chatrun of the Client-GUI.
         /// </summary>
         /// <param name="message"></param>
-        internal void setChatUpdate(string message)
+        public void setChatUpdate(string message)
         {
             if (message != null && message != "")
             {
@@ -365,9 +376,10 @@ namespace DragonsAndRabbits.GUI
         }
 
 
-
-    
         //**************************************vv******EVENTS*****vv***************************************
+
+
+
 
         /*/////////////////////////Form-Events//////////////////////////////////*/
 
@@ -403,7 +415,11 @@ namespace DragonsAndRabbits.GUI
              
         }
 
+
+
         /*/////////////////////////KEY-Events//////////////////////////////////*/
+
+
 
         /// <summary>
         /// Key-Event. on 'return'-Key - the sendbutton_Click is activated.
@@ -439,6 +455,12 @@ namespace DragonsAndRabbits.GUI
          
         }
 
+
+        /// <summary>
+        /// this method generates an Key-Object according to the Arrowkey, that has been pressed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void control_keys(object sender, KeyEventArgs e)
         {
 
@@ -475,8 +497,17 @@ namespace DragonsAndRabbits.GUI
             }
             
         }
+
+
         /*/////////////////////////MOUSE-Events//////////////////////////////////*/
 
+
+
+        /// <summary>
+        /// this method recieves a mouseclick and sends the coordinates to the Backend
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
         private void OnMouseClick(Object source, MouseEventArgs e)
         {
             Point location = e.Location;
@@ -486,7 +517,7 @@ namespace DragonsAndRabbits.GUI
        
         }
 
-
+        /*
         /// <summary>
         /// GUI-Form events
         /// </summary>
@@ -496,6 +527,7 @@ namespace DragonsAndRabbits.GUI
         {
             
         }
+         */
 
             
 

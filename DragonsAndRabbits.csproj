@@ -118,6 +118,8 @@
     <Compile Include="GUI\GUI.Designer.cs">
       <DependentUpon>GUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\SplashScreen.cs" />
+    <Compile Include="GUI\SplashScreen.Designer.cs" />
     <Compile Include="Manager\Decision.cs" />
     <Compile Include="Manager\Direction.cs" />
     <Compile Include="Manager\Dragon.cs" />
@@ -140,6 +142,7 @@
     <EmbeddedResource Include="GUI\GUI.resx">
       <DependentUpon>GUI.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\SplashScreen.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
