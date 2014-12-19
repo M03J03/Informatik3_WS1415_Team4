@@ -334,7 +334,8 @@ namespace DragonsAndRabbits.GUI
                                 this.mapViewPanel.Controls.Add(PB[tmpCounter]);tmpCounter++;break;
 
                              case Manager.Properties.wall:
-                                        PB[tmpCounter] = new System.Windows.Forms.PictureBox();
+                                PB[tmpCounter] = new System.Windows.Forms.PictureBox();
+                                PB[tmpCounter].Click += new System.EventHandler(this.OnClick);
                                 PB[tmpCounter].Size = new Size(30, 30);
                                 PB[tmpCounter].Margin = new System.Windows.Forms.Padding(0);
                                 PB[tmpCounter].Image = (Image)(global::DragonsAndRabbits.Properties.Resources.stones);
@@ -344,7 +345,8 @@ namespace DragonsAndRabbits.GUI
                                 this.mapViewPanel.Controls.Add(PB[tmpCounter]);tmpCounter++;break;
 
                              case Manager.Properties.forest:
-                                        PB[tmpCounter] = new System.Windows.Forms.PictureBox();
+                                PB[tmpCounter] = new System.Windows.Forms.PictureBox();
+                                PB[tmpCounter].Click += new System.EventHandler(this.OnClick);
                                 PB[tmpCounter].Size = new Size(30, 30);
                                 PB[tmpCounter].Margin = new System.Windows.Forms.Padding(0);
                                 PB[tmpCounter].Image = (Image)(global::DragonsAndRabbits.Properties.Resources.forest);
@@ -354,7 +356,8 @@ namespace DragonsAndRabbits.GUI
                                this.mapViewPanel.Controls.Add(PB[tmpCounter]); tmpCounter++;break;
 
                              case Manager.Properties.water:
-                                           PB[tmpCounter] = new System.Windows.Forms.PictureBox();
+                                PB[tmpCounter] = new System.Windows.Forms.PictureBox();
+                                PB[tmpCounter].Click += new System.EventHandler(this.OnClick);
                                 PB[tmpCounter].Size = new Size(30, 30);
                                 PB[tmpCounter].Margin = new System.Windows.Forms.Padding(0);
                                 PB[tmpCounter].Image = (Image)(global::DragonsAndRabbits.Properties.Resources.water);
@@ -365,7 +368,9 @@ namespace DragonsAndRabbits.GUI
 
                              //not necessarily needed - but default ;)
                              case Manager.Properties.huntable:
-                                           PB[tmpCounter] = new System.Windows.Forms.PictureBox();
+    
+                                 PB[tmpCounter] = new System.Windows.Forms.PictureBox();
+                                 PB[tmpCounter].Click += new System.EventHandler(this.OnClick);
                                 PB[tmpCounter].Size = new Size(30, 30);
                                 PB[tmpCounter].Margin = new System.Windows.Forms.Padding(0);
                                 PB[tmpCounter].Image = (Image)(global::DragonsAndRabbits.Properties.Resources.huntable);
