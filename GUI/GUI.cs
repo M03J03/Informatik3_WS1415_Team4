@@ -383,10 +383,6 @@ namespace DragonsAndRabbits.GUI
             
         }
 
-        private void OnClick(object sender, EventArgs e)
-        {
-            mouseLabel.Text= ("Picturebox clicked.");
-        }
 
 
         /// <summary>
@@ -651,6 +647,13 @@ namespace DragonsAndRabbits.GUI
             idLabel.Text = ("Mouseposition: " + e.Location.ToString());
             mouseLabel.Text = "current tile: (" + e.Location.X / tileSizeInPx + ", " + e.Location.Y / tileSizeInPx + ")";
 
+        }
+
+
+        private void OnClick(object sender, EventArgs e)
+        {
+            int x= MousePosition.X % 20;
+            mouseLabel.Text = ("Picturebox clicked. at " + MousePosition.X+ "," + MousePosition.Y) ;
         }
 
         /*
