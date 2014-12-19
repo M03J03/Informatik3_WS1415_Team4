@@ -23,7 +23,7 @@ namespace Connector
         private static TcpClient client = null;
 
         private Receiever rec;
-        private Sender sender;
+        public static Sender sender;
 
         private static bool connected = false;
 
@@ -32,10 +32,13 @@ namespace Connector
         /// Generates a Connector - Objekt and the two objects of Reciever and Sender, too.
         /// </summary>
         public Connector()
-        {           
-            rec = new Receiever();
-            sender = new Sender();
-            connected = true;
+        {
+            client = new TcpClient(server, port);
+
+            rec = new Receiever(client);
+            sender = new Sender(client);
+            connected = true; 
+         
         }
 
         /// <summary>
@@ -64,9 +67,16 @@ namespace Connector
         /// <summary>
         /// Sends a message to the server
         /// </summary>
-        private void sendToServer()
+         private void sendToServer()
         {
             sender.send("get:map");
+           
+        }
+
+        public static void sendToServer(String msg)
+        {
+            sender.send(msg);
+
         }
 
         /// <summary>
@@ -86,7 +96,7 @@ namespace Connector
             }
             catch (ArgumentNullException er)
             {
-                Console.WriteLine("Thread ist tod");
+                Console.WriteLine("Thread is Death");
             }
 
             //Console.WriteLine("RecieveThread is Running");
@@ -114,16 +124,18 @@ namespace Connector
         /// <summary>
         /// This class sends to the Server via a TCP connection
         /// </summary>
-        class Sender
+       public class Sender
         {
             private TcpClient client;
 
             /// <summary>
             /// Generates a sender object.
             /// </summary>
-            public Sender()
+            public Sender(TcpClient clientIn)
             {
-                setTcpClient(server, port);
+                client = clientIn;
+                
+
             }
 
             /// <summary>
@@ -182,9 +194,9 @@ namespace Connector
         {
             private TcpClient client;
 
-            public Receiever()
+            public Receiever(TcpClient clientIn)
             {
-                setTcpClient(server, port);
+                client = clientIn;
             }
 
             /// <summary>
@@ -223,6 +235,7 @@ namespace Connector
                 while (isConnected())
                 {
                     Console.WriteLine("method recieve is running");
+
                     try
                     {
                         // Receive the TcpServer.response. 
@@ -242,7 +255,7 @@ namespace Connector
                        // responseData = responseData.Trim();
 
 
-                        Console.WriteLine("Received: {0}", responseData);
+                     //   Console.WriteLine("Received: {0}", responseData);
 
                         DragonsAndRabbits.Client.Buffer.Instance.addMessage(responseData);
                     }
@@ -268,12 +281,17 @@ namespace Connector
         /// <param name="args"></param>
         static void Main(String[] args)
         {
-            Manager mgr = new Manager();
+            
             Connector con = new Connector();
             con.start();
+            //Manager mgr = new Manager();
+          //  GUI gui = new GUI();            
+           // Console.WriteLine("GUI BLOCKS");
+            Manager mgr = new Manager();
+            Console.WriteLine("Manager Started");
             //SplashScreen splash = new SplashScreen();
             //System.Console.ReadLine();
-            GUI gui = new GUI();
+            
 
         }
         

@@ -18,6 +18,8 @@ namespace DragonsAndRabbits.Client
         private Thread fred;
         private List<MapCell> cells;
         private List<Player> players;
+        private Thread lastChance;
+        private bool firstNeedMap = true;
       
         public Parser()
         {
@@ -42,7 +44,7 @@ namespace DragonsAndRabbits.Client
 
             }
             else
-            {   Console.WriteLine("BUFFER EMPTY - PARSER SLEEPS");
+            {  
             Thread.CurrentThread.Abort();
                 
                 
@@ -120,26 +122,29 @@ namespace DragonsAndRabbits.Client
         {
             string tmp = GetInstanceVar(msgs);
 
-             switch(tmp){
-                case "server": {  doServer(msgs.Substring(6+tmp.Length+Environment.NewLine.Length,msgs.Length-(6+tmp.Length+Environment.NewLine.Length))); break; }
-                case "result": { doResult(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
-                case "opponent": {  doOpponent(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
-                case "challenge": { doChallenge(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
-                case "dragon": {  doDragon(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
-                case "player": { doPlayer(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
-                case "players": { doPlayers(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
-                case "ents": { doEntities(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }  
-                case "cell": { doCell(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
-                case "map": {  doMap(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }        
-                case "mes": {  doMessage(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
-                case "upd": {  doUpdate(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
-                case "del": {  doUpdate(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
-                case "yourid": {  doYourId(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
-                case "time": {  doTime(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
-                case "online": {  doOnline(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
-                case "failure": { Console.WriteLine("ATTENTION - Something went wrong");break; }
-            }
 
+
+                switch (tmp)
+                {
+                    case "server": { doServer(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                    case "result": { doResult(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                    case "opponent": { doOpponent(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                    case "challenge": { doChallenge(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                    case "dragon": { doDragon(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                    case "players": { doPlayers(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                    case "player": { doPlayer(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                    case "ents": { doEntities(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                    case "cell": { doCell(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                    case "map": { doMap(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                    case "mes": { doMessage(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                    case "upd": { doUpdate(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                    case "del": { doUpdate(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                    case "yourid": { doYourId(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                    case "time": { doTime(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                    case "online": { doOnline(msgs.Substring(6 + tmp.Length + Environment.NewLine.Length, msgs.Length - (6 + tmp.Length + Environment.NewLine.Length))); break; }
+                    case "failure": { Console.WriteLine("ATTENTION - Something went wrong"); break; }
+                }
+           
         }
 
 
@@ -318,7 +323,7 @@ namespace DragonsAndRabbits.Client
 
             // Call the equivalent Method from Manager
             //Manager.getManager().dragon(id,  type, busy, desc, x, y)
-
+            mgr.dragon(id, busy, desc, x, y);
             Console.WriteLine("Creating Dragon with id:" + id + " type:" + type + " busy:" + busy.ToString() + " desc:" + desc + " X:" + x + " Y:" + y );
 
        
@@ -328,6 +333,7 @@ namespace DragonsAndRabbits.Client
         {
             //"begin:player","id:",INT,"type:Player","busy:"BOOLEAN,"desc:"STRING,"x:",INT,"y:",INT,"points:",INT"end:player"
             Console.WriteLine("I AM IN PLAYER");
+            mgr = Manager.Manager.getManger();
             int id = 0;
             String type = "";
             Boolean busy = false;
@@ -371,7 +377,7 @@ namespace DragonsAndRabbits.Client
 
             // Call the equivalent Method from Manager
             //Manager.getManager().player(id, type, busy, desc, x, y, points);
-
+            mgr.player(id, busy, desc, x, y, points);
             Console.WriteLine("Creatin Player with id:" + id + " type:" + type + " busy:" + busy.ToString() + " desc:" + desc + " X:" + x + " Y:" + y + " Points: " + points);
 
     
@@ -382,14 +388,13 @@ namespace DragonsAndRabbits.Client
             Console.WriteLine("I AM IN PLAYERS");
 
             players = new List<Player>();
-            while (msg.Length > 0)
-            {
 
-                doPlayerInPlayers(msg);
-                //msg.Remove() The send message to doPlayerInPlayers
-            }
+
+            doPlayerInPlayers(msg);
+
+            mgr = Manager.Manager.getManger();
             // Call the equivalent Method from Manager
-            //Manager.getManager().players(players);
+            mgr.setPlayers(players);
 
     
         }
@@ -397,7 +402,37 @@ namespace DragonsAndRabbits.Client
         private void doEntities(String msg)
         {
             Console.WriteLine("I AM IN ENTITIES");
-            switchTheBegins(msg);
+
+            int myVarIndex;
+            int myVarIndex2;
+            
+
+            while (msg.Length > 10)
+            {
+
+                if (msg.IndexOf("player") > 0 && (msg.IndexOf("player")) < (msg.IndexOf("dragon")))
+                {
+
+                    myVarIndex = msg.IndexOf("begin:player") + "begin:player".Length + Environment.NewLine.Length;
+                    myVarIndex2 = msg.IndexOf("end:player", myVarIndex);
+                    doPlayer(msg.Substring(myVarIndex, myVarIndex2 - myVarIndex));
+                    msg = msg.Remove(0, myVarIndex2 + "end:player".Length + Environment.NewLine.Length);
+                }
+
+                else if (msg.IndexOf("dragon") > 0)
+                {
+                    myVarIndex = msg.IndexOf("begin:dragon") + "begin:dragon".Length + Environment.NewLine.Length;
+                    myVarIndex2 = msg.IndexOf("end:dragon", myVarIndex);
+                    doDragon(msg.Substring(myVarIndex, myVarIndex2 - myVarIndex));
+                   msg =  msg.Remove(0, myVarIndex2 + "end:dragon".Length + Environment.NewLine.Length);
+                }
+
+                else
+                {
+                    msg = "";
+                }
+
+            }
           
         }
 
@@ -423,7 +458,7 @@ namespace DragonsAndRabbits.Client
 
             Console.WriteLine("DOCELL ->  " + msg);
             // Sends all properties to the property handler so we get a List of properties returned
-           props = doProperties(msg.Substring(msg.IndexOf("begin:props"+"begin:props".Length+Environment.NewLine.Length),msg.IndexOf("end:props",msg.IndexOf("begin:props"))-("begin:props".Length+Environment.NewLine.Length+"col:".Length+col.ToString().Length+Environment.NewLine.Length+"row:".Length+row.ToString().Length+Environment.NewLine.Length))) ;
+            props = doProperties(msg.Substring(msg.IndexOf("begin:props", myVarIndex) + ("begin:props".Length + Environment.NewLine.Length), msg.IndexOf("end:props", msg.IndexOf("begin:props", myVarIndex)) - (msg.IndexOf("begin:props", myVarIndex) + "begin:props".Length + Environment.NewLine.Length + Environment.NewLine.Length)));
 
            // Call the equivalent Method from Manager
           mgr.getMapCell(row, col, props);    // !!! WARNING THIS IS A LIST AND NOT CONFORM WITH MANAGER CLASS, GOTTA BE CHANGED IN MANAGER
@@ -450,12 +485,27 @@ namespace DragonsAndRabbits.Client
             myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
             height = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
 
-            doCellInMap(msg);
+            doCellInMap(msg.Substring(myNewLineIndex+Environment.NewLine.Length));
 
             // Call the equivalent Method from Manager
-            //Manager.getManager().map( width, heigth, cells)
+            this.firstNeedMap = false;
+            mgr.map(width, height, cells); 
+            Connector.Connector.sendToServer("get:ents");
+            lastChance = new Thread(new ThreadStart(startGUI));
+            lastChance.Start();
+
+            
+
+            
 
         
+        }
+
+        private void startGUI()
+        {
+            
+            GUI.GUI g = new GUI.GUI();
+            mgr.setGui(g);
         }
 
         private void doMessage(String msg)
@@ -567,7 +617,7 @@ namespace DragonsAndRabbits.Client
 
         private List<String> doProperties(String msg)
         {
-            Console.WriteLine("I AM IN PROPS");
+        //    Console.WriteLine("I AM IN PROPS");
             
             int myVarIndex;
             int myNewLineIndex;
@@ -576,14 +626,24 @@ namespace DragonsAndRabbits.Client
             string message = msg;
            
             myVarIndex = 0;
-            Console.WriteLine("PROPS MSG  " + msg);
+           // Console.WriteLine("PROPS MSG  " + msg);
             do
             {
-                myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
-                propList.Add(msg.Substring(myVarIndex, myNewLineIndex));
-
-                message = msg.Remove(myVarIndex, myNewLineIndex+Environment.NewLine.Length);
-            } while (message.Length > 0);
+                if (msg.IndexOf(Environment.NewLine) > 0)
+                {
+                    myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+                    propList.Add(msg.Substring(myVarIndex, myNewLineIndex));
+                 //   Console.WriteLine("THIS IS FILTERED PROPS -> " + msg.Substring(myVarIndex, myNewLineIndex));
+                    msg = msg.Remove(myVarIndex, msg.Substring(myVarIndex, myNewLineIndex).Length+Environment.NewLine.Length);
+                }
+                else
+                {
+                    propList.Add(msg);
+                 //   Console.WriteLine("THIS IS FILTERED PROPS -> " + msg);
+                    msg = "";
+                }
+             //   message = msg.Remove(myVarIndex, myNewLineIndex+Environment.NewLine.Length);
+            } while (msg.Length > 0);
 
             return propList; 
         }
@@ -600,19 +660,20 @@ namespace DragonsAndRabbits.Client
 
             int myVarIndex = 0 ;
             int myNewLineIndex = 0;
+            int debugCounter = 0;
 
             while (msg.IndexOf("row:",myVarIndex) >= 0) {
-            myVarIndex = msg.IndexOf("row:") + "row:".Length;
+            myVarIndex = msg.IndexOf("row:",myVarIndex) + "row:".Length;
             myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
             row = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
 
-            myVarIndex = msg.IndexOf("col:") + "col:".Length;
+            myVarIndex = msg.IndexOf("col:", myVarIndex) + "col:".Length;
             myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
             col = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
 
             // Sends all properties to the property handler so we get a List of properties returned
-            props = doProperties(msg.Substring(msg.IndexOf("begin:props" + "begin:props".Length + Environment.NewLine.Length), msg.IndexOf("end:props", msg.IndexOf("begin:props")) - ("begin:props".Length + Environment.NewLine.Length)));
-
+            props = doProperties(msg.Substring(msg.IndexOf("begin:props",myVarIndex) + ("begin:props".Length + Environment.NewLine.Length), msg.IndexOf("end:props", msg.IndexOf("begin:props",myVarIndex)) - (msg.IndexOf("begin:props",myVarIndex) + "begin:props".Length + Environment.NewLine.Length + Environment.NewLine.Length)));
+            debugCounter++;
             cells.Add(new MapCell(row,col,props));
             }
 
@@ -620,7 +681,7 @@ namespace DragonsAndRabbits.Client
 
         private void doPlayerInPlayers(String msg)
         {
-            Console.WriteLine("I AM IN PLAYER");
+            Console.WriteLine("I AM IN PLAYER in PLAYERS");
             int id = 0;
             String type = "";
             Boolean busy = false;
@@ -632,39 +693,43 @@ namespace DragonsAndRabbits.Client
             int myVarIndex;
             int myNewLineIndex;
 
+            while (msg.Length > 13)
+            {
 
+                myVarIndex = msg.IndexOf("id:") + "id:".Length;
+                myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+                id = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
 
-            myVarIndex = msg.IndexOf("id:") + "id:".Length;
-            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
-            id = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+                myVarIndex = msg.IndexOf("type:", myNewLineIndex) + "type:".Length;
+                myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+                type = msg.Substring(myVarIndex, myNewLineIndex - myVarIndex);
 
-            myVarIndex = msg.IndexOf("type:", myNewLineIndex) + "type:".Length;
-            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
-            type = msg.Substring(myVarIndex, myNewLineIndex - myVarIndex);
+                myVarIndex = msg.IndexOf("busy:", myNewLineIndex) + "busy:".Length;
+                myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+                busy = Convert.ToBoolean(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
 
-            myVarIndex = msg.IndexOf("busy:", myNewLineIndex) + "busy:".Length;
-            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
-            busy = Convert.ToBoolean(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+                myVarIndex = msg.IndexOf("desc:", myNewLineIndex) + "desc:".Length;
+                myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+                desc = msg.Substring(myVarIndex, myNewLineIndex - myVarIndex);
 
-            myVarIndex = msg.IndexOf("desc:", myNewLineIndex) + "desc:".Length;
-            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
-            desc = msg.Substring(myVarIndex, myNewLineIndex - myVarIndex);
+                myVarIndex = msg.IndexOf("x:", myNewLineIndex) + "x:".Length;
+                myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+                x = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
 
-            myVarIndex = msg.IndexOf("x:", myNewLineIndex) + "x:".Length;
-            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
-            x = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+                myVarIndex = msg.IndexOf("y:", myNewLineIndex) + "y:".Length;
+                myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+                y = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
 
-            myVarIndex = msg.IndexOf("y:", myNewLineIndex) + "y:".Length;
-            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
-            y = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+                myVarIndex = msg.IndexOf("points:", myNewLineIndex) + "points:".Length;
+                myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
+                points = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
 
-            myVarIndex = msg.IndexOf("points:", myNewLineIndex) + "points:".Length;
-            myNewLineIndex = msg.IndexOf(Environment.NewLine, myVarIndex);
-            points = Convert.ToInt32(msg.Substring(myVarIndex, myNewLineIndex - myVarIndex));
+                //Player: int id, String name, bool busy, int row, int column
+                players.Add(new Player(id, busy, desc, x, y, points));
 
-            //Player: int id, String name, bool busy, int row, int column
-           // players.Add(new Manager.Player(id,type,busy,x,y,points));
-
+                msg = msg.Remove(0, myNewLineIndex + Environment.NewLine.Length+"end:player".Length+Environment.NewLine.Length);
+            }
+            
         }
 
 

@@ -19,10 +19,11 @@ namespace DragonsAndRabbits.Manager
         /// <param name="busy"></param>
         /// <param name="row"></param>
         /// <param name="column"></param>
-        public Player(int id, String name, bool busy, int row, int column)
+        ///  players.Add(new Player(id, busy, desc, x, y, points));
+        public Player(int id, bool busy,String name, int row, int column, int points)
             : base(id, name, busy, row, column)
         { 
-            setPoints(0);
+            setPoints(points);
             setDecision(Decision.UNDEFINED);
             setPlayer(this);
         }

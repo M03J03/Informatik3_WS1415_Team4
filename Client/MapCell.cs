@@ -20,6 +20,7 @@ namespace DragonsAndRabbits.Client
         /// <param name="props"></param>
         public MapCell(int row, int column, List<String> props)
         {
+            propsList = new List<Manager.Properties>();
             setRow(row);
             setColumn(column);
             foreach (String s in props)

@@ -15,7 +15,7 @@ namespace DragonsAndRabbits.Manager
         private MapCell mapCell;
         private List<MapCell> mapCells;
         internal List<Dragon> dragons = new List<Dragon>();
-        internal List<Player> players;
+        internal List<Player> players =  new List<Player>();
         private int width;
         private int height;
         private int id;
@@ -29,6 +29,18 @@ namespace DragonsAndRabbits.Manager
         public Manager()
         {
             setManager(this);
+         //   GUI.GUI gui = new GUI.GUI();
+        }
+
+        public Manager(GUI.GUI g)
+        {
+
+            setManager(this);
+
+            gui = g;
+           // gui.ShowDialog();
+            
+            //   GUI.GUI gui = new GUI.GUI();
         }
 
         /// <summary>
@@ -100,22 +112,32 @@ namespace DragonsAndRabbits.Manager
         /// <param name="points"></param>
         public void player(int id, bool busy, String description, int x, int y, int points)
         {
+    
             bool exists = false;
 
-            foreach (Player p in players)
+            if (players.Count == 0)
             {
-                if (p.getID() == id)
-                {
-                    exists = true;
-                    p.update(id, description, busy, x, y);
-                    p.updatePoints(id, points);
-                }
-            }
-
-            if (!exists)
-            {           
-                Player player = new Player(id, description,busy,  x, y);
+                Console.WriteLine("Ist leer");
+                Player player = new Player(id, busy, description, x, y, points);
                 players.Add(player);
+            }
+            else
+            {
+                foreach (Player p in players)
+                {
+                    if (p.getID() == id)
+                    {
+                        exists = true;
+                        p.update(id, description, busy, x, y);
+                        p.updatePoints(id, points);
+                    }
+                }
+
+                if (!exists)
+                {
+                    Player player = new Player(id, busy, description, x, y, points);
+                    players.Add(player);
+                }
             }
         }
 
@@ -154,7 +176,9 @@ namespace DragonsAndRabbits.Manager
             setWidth(width);
             setHeight(height);
             setMapCell(mapCell);
-            gui.updateGUI();
+         //   gui = new GUI.GUI();
+           // gui.setMapDimensions();
+           // gui.updateGUI();
         }
 
         /// <summary>
@@ -393,5 +417,10 @@ namespace DragonsAndRabbits.Manager
             this.gui = new GUI.GUI();
         }
          */
+
+        internal void setGui(GUI.GUI g)
+        {
+            this.gui = g;
+        }
     }
 }

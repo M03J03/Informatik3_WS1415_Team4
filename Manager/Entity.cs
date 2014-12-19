@@ -34,7 +34,7 @@ namespace DragonsAndRabbits.Manager
 
         private void setID(int id)
         {
-            if (id < 1)
+            if (id < 0)
             {
                 throw new WrongNumberException("Please insert an number bigger than 0!");
             }
