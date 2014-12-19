@@ -317,6 +317,7 @@ namespace DragonsAndRabbits.GUI
 
                 //PROPERTY: "WALKABLE"|"WALL"|"FOREST"|"WATER"|(ignoring "HUNTABLE")
             //    if (!stop)
+                //
                 
                         switch (toDraw)
                          {
