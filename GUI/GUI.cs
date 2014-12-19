@@ -113,6 +113,7 @@ namespace DragonsAndRabbits.GUI
             this.mapViewPanel.Size = new System.Drawing.Size(600, 600);
             this.mapViewPanel.TabIndex = 4;
             this.mapViewPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnMouseClick);
+            
             // 
             // pictureBox1
             // 
@@ -156,6 +157,8 @@ namespace DragonsAndRabbits.GUI
             this.PerformLayout();
 
         }
+
+        
 
 
 
@@ -405,6 +408,7 @@ namespace DragonsAndRabbits.GUI
              //   g.DrawImage(global::DragonsAndRabbits.Properties.Resources.player_female_2, new Rectangle((p.getColumn() - 1) * tileSizeInPx, (p.getRow() - 1) * tileSizeInPx, tileSizeInPx, tileSizeInPx));
                 PictureBox PB = new PictureBox();
                 PB.Size = new Size(30, 30);
+                PB.Click += new System.EventHandler(this.OnClick);
                 PB.Margin = new System.Windows.Forms.Padding(0);
                 PB.Image = (Image)(global::DragonsAndRabbits.Properties.Resources.player_male);
                 PB.Parent = this.mapViewPanel;
@@ -455,6 +459,7 @@ namespace DragonsAndRabbits.GUI
                 //   g.DrawImage(global::DragonsAndRabbits.Properties.Resources.player_female_2, new Rectangle((p.getColumn() - 1) * tileSizeInPx, (p.getRow() - 1) * tileSizeInPx, tileSizeInPx, tileSizeInPx));
                 PictureBox PB = new PictureBox();
                 PB.Size = new Size(30, 30);
+                PB.Click += new System.EventHandler(this.OnClick);
                 PB.Margin = new System.Windows.Forms.Padding(0);
                 PB.Image = (Image)(global::DragonsAndRabbits.Properties.Resources.dragon);
                 PB.Parent = this.mapViewPanel;
@@ -655,13 +660,23 @@ namespace DragonsAndRabbits.GUI
 
         }
 
-
         private void OnClick(object sender, EventArgs e)
         {
             int x= MousePosition.X % 20;
             mouseLabel.Text = ("Picturebox clicked. at " + MousePosition.X+ "," + MousePosition.Y) ;
+            // Width Pixels of Mapviewpanel ~ 270 x 870
+
+
+            var locationInForm = this.mapViewPanel.Location;
+            var locationOnScreen = this.PointToScreen(locationInForm);
+
+ 
+            mouseLabel.Text = ("X: " + (MousePosition.X - locationOnScreen.X) / 30 + "Y: " + (MousePosition.Y - locationOnScreen.Y) / 30);
+            // Height Pixels of Mapviewpanel ~ 180 x 780
         }
 
+
+        
         /*
         /// <summary>
         /// GUI-Form events
