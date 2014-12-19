@@ -28,7 +28,7 @@ namespace DragonsAndRabbits.Manager
         /// </summary>
         public Manager()
         {
-            setManager(this);
+            setManager(this);            
          //   GUI.GUI gui = new GUI.GUI();
         }
 
@@ -117,7 +117,7 @@ namespace DragonsAndRabbits.Manager
 
             if (players.Count == 0)
             {
-                Console.WriteLine("Ist leer");
+                Console.WriteLine("is Empty");
                 Player player = new Player(id, busy, description, x, y, points);
                 players.Add(player);
             }

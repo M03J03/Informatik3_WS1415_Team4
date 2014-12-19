@@ -400,8 +400,8 @@ namespace DragonsAndRabbits.GUI
                 PB.Parent = this.mapViewPanel;
                 PB.SizeMode = PictureBoxSizeMode.Zoom;
 
-                int X = p.getRow();  // Zeile
-                int Y = p.getColumn(); // Spalte
+                int X = p.getRow();  
+                int Y = p.getColumn(); 
 
                 int Result = X * mgr.getWidth() + Y;
 
@@ -450,8 +450,8 @@ namespace DragonsAndRabbits.GUI
                 PB.Parent = this.mapViewPanel;
                 PB.SizeMode = PictureBoxSizeMode.Zoom;
 
-                int X = d.getRow();  // Zeile
-                int Y = d.getColumn(); // Spalte
+                int X = d.getRow();  
+                int Y = d.getColumn();
 
                 int Result = X * mgr.getWidth() + Y;
 

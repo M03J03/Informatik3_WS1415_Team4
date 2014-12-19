@@ -7,6 +7,11 @@ namespace DragonsAndRabbits.Manager
 {
     public class Player : Entity
     {
+        public event EventHandler<EventArgs> playerGenerated;
+        public event EventHandler<EventArgs> playerDecision;
+        public event EventHandler<EventArgs> playerPoints;
+        public event EventHandler<EventArgs> playerDelete;
+
         private int points = 0;
         private Decision decision;
         private Player player;
@@ -22,10 +27,28 @@ namespace DragonsAndRabbits.Manager
         ///  players.Add(new Player(id, busy, desc, x, y, points));
         public Player(int id, bool busy,String name, int row, int column, int points)
             : base(id, name, busy, row, column)
-        { 
-            setPoints(points);
-            setDecision(Decision.UNDEFINED);
-            setPlayer(this);
+        {
+
+            if (playerGenerated != null)
+            {   
+                playerGenerated(this, new EventArgs());
+                setPoints(points);
+                setDecision(Decision.UNDEFINED);
+                setPlayer(this);
+                
+            }
+        }
+
+
+        public Player() : base()
+        {
+            if (playerGenerated != null)
+            {
+                setPoints(points);
+                setDecision(Decision.UNDEFINED);
+                setPlayer(this);
+                playerGenerated(this, new EventArgs());
+            }
         }
 
         /// <summary>
@@ -40,7 +63,11 @@ namespace DragonsAndRabbits.Manager
             }
             else
             {
-                this.decision = decision;
+                if (playerDecision != null)
+                {
+                    this.decision = decision;
+                    playerDecision(this, new EventArgs());
+                }
             }
         }
 
@@ -57,9 +84,14 @@ namespace DragonsAndRabbits.Manager
         /// Sets the points
         /// </summary>
         /// <param name="points"></param>
-        private void setPoints(int points)
+        public void setPoints(int points)
         {
-            this.points = points;
+            if (playerPoints != null)
+            {
+                this.points = points;
+                playerPoints(this, new EventArgs());
+                Console.WriteLine("Im in Points!!!!!!!!!!!");
+            }
         }
 
         /// <summary>
@@ -131,7 +163,11 @@ namespace DragonsAndRabbits.Manager
             }
             else
             {
-                setPlayer(null);
+                if (playerDelete != null)
+                {
+                    setPlayer(null);
+                    playerDelete(this, new EventArgs());
+                }
             }
         }
     }

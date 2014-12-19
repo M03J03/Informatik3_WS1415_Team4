@@ -32,6 +32,10 @@ namespace DragonsAndRabbits.Manager
             setColumn(column);
         }
 
+        public Entity()
+        {
+        }
+
         private void setID(int id)
         {
             if (id < 0)

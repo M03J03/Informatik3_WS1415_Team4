@@ -102,6 +102,7 @@
     <Compile Include="Client\Connector.cs" />
     <Compile Include="Client\MapCell.cs" />
     <Compile Include="Client\Parser.cs" />
+    <Compile Include="Client\PathWalker.cs" />
     <Compile Include="Exceptions\BufferException.cs" />
     <Compile Include="Exceptions\ManagerInputException.cs" />
     <Compile Include="Exceptions\NoMessageException.cs" />

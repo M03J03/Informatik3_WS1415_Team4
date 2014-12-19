@@ -291,7 +291,7 @@ namespace Connector
             Console.WriteLine("Manager Started");
             //SplashScreen splash = new SplashScreen();
             //System.Console.ReadLine();
-            
+            PathWalker pw = new PathWalker();
 
         }
         
