@@ -112,6 +112,7 @@ namespace DragonsAndRabbits.GUI
             this.mapViewPanel.Name = "mapViewPanel";
             this.mapViewPanel.Size = new System.Drawing.Size(600, 600);
             this.mapViewPanel.TabIndex = 4;
+            this.mapViewPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnMouseClick);
             // 
             // pictureBox1
             // 
@@ -266,8 +267,9 @@ namespace DragonsAndRabbits.GUI
             bool stop = false;
 
             PictureBox[] PB = new PictureBox[this.rows * this.cols];
+            
 
-            Graphics g = mapViewPanel.CreateGraphics();
+            //Graphics g = mapViewPanel.CreateGraphics();
 
             if (this.rows == 0 || this.cols == 0)
             {
@@ -321,6 +323,7 @@ namespace DragonsAndRabbits.GUI
                              case Manager.Properties.walkable:
                                  //g.DrawImage(global::DragonsAndRabbits.Properties.Resources.stones, new Rectangle(currentCol * tileSizeInPx, currentRow * tileSizeInPx, tileSizeInPx, tileSizeInPx));
                                 PB[tmpCounter] = new System.Windows.Forms.PictureBox();
+                                PB[tmpCounter].Click += new System.EventHandler(this.OnClick);
                                 PB[tmpCounter].Size = new Size(30, 30);
                                 PB[tmpCounter].Margin = new System.Windows.Forms.Padding(0);
                                 //PB[tmpCounter].Image = Image.FromFile("C:\\Users\\Moe\\Documents\\Visual Studio 2012\\Projects\\Informatik3_WS1415_Team4\\GUI\\resources\\walkable.jpg");
@@ -378,6 +381,11 @@ namespace DragonsAndRabbits.GUI
 
             }//End foreach mapcells
             
+        }
+
+        private void OnClick(object sender, EventArgs e)
+        {
+            mouseLabel.Text= ("Picturebox clicked.");
         }
 
 
