@@ -129,10 +129,6 @@ namespace DragonsAndRabbits.Client
                     //  tmp = (String)bufferList[0];
                     //  removeMessage();
                 }
-
-
-
-
             }
 
           /*  catch(Exception e)

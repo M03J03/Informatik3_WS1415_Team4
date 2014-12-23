@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestDragonsAndRabbits",
 		{7E5F39B7-C4FE-492B-963D-315F5847263C} = {7E5F39B7-C4FE-492B-963D-315F5847263C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PathFinder", "..\..\PathFinder\PathFinder\PathFinder.vcxproj", "{BC17E987-3F71-4D63-96B6-43ED0CD802B4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PathFinder", "..\PathFinder\PathFinder.vcxproj", "{BC17E987-3F71-4D63-96B6-43ED0CD802B4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7E5F39B7-C4FE-492B-963D-315F5847263C} = {7E5F39B7-C4FE-492B-963D-315F5847263C}
 	EndProjectSection

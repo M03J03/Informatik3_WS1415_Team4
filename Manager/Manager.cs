@@ -29,18 +29,11 @@ namespace DragonsAndRabbits.Manager
         public Manager()
         {
             setManager(this);            
-         //   GUI.GUI gui = new GUI.GUI();
         }
 
         public Manager(GUI.GUI g)
         {
-
             setManager(this);
-
-            gui = g;
-           // gui.ShowDialog();
-            
-            //   GUI.GUI gui = new GUI.GUI();
         }
 
         /// <summary>
@@ -89,7 +82,12 @@ namespace DragonsAndRabbits.Manager
                 if (d.getID() == id)
                 {
                     exists = true;
+
+                  //  gui.redrawTile(d.getColumn(), d.getRow());
+                    
                     d.update(id, description, busy, x, y);
+                    gui.updateGUI();
+                   // gui.drawDragon();
                 }
             }
 
@@ -97,7 +95,9 @@ namespace DragonsAndRabbits.Manager
             {
                 Dragon drag = new Dragon(id, description, busy, x, y);
                 dragons.Add(drag);
-                
+                // gui.drawDragon();
+                gui.updateGUI();
+                          
             }                  
         }
 
@@ -120,6 +120,8 @@ namespace DragonsAndRabbits.Manager
                 Console.WriteLine("is Empty");
                 Player player = new Player(id, busy, description, x, y, points);
                 players.Add(player);
+                
+               
             }
             else
             {
@@ -130,6 +132,7 @@ namespace DragonsAndRabbits.Manager
                         exists = true;
                         p.update(id, description, busy, x, y);
                         p.updatePoints(id, points);
+                        gui.drawPlayer();
                     }
                 }
 
@@ -137,6 +140,7 @@ namespace DragonsAndRabbits.Manager
                 {
                     Player player = new Player(id, busy, description, x, y, points);
                     players.Add(player);
+                  
                 }
             }
         }
@@ -176,9 +180,8 @@ namespace DragonsAndRabbits.Manager
             setWidth(width);
             setHeight(height);
             setMapCell(mapCell);
-         //   gui = new GUI.GUI();
-           // gui.setMapDimensions();
-           // gui.updateGUI();
+            
+            gui.updateGUI();
         }
 
         /// <summary>
@@ -222,6 +225,12 @@ namespace DragonsAndRabbits.Manager
             return this.dragons;
         }
 
+        internal void setChatMessageToGUI(string message)
+        {
+            gui.setChatUpdate(message);
+        }
+
+
         /**********************************************GUI-Server-Communication*************************************************************/
 
         /// <summary>
@@ -250,8 +259,13 @@ namespace DragonsAndRabbits.Manager
         /// <param name="direction"></param>
         public void movePlayer(Direction direction)
         {
+            if(direction.Equals(Direction.left)){
+               // player();
+            }
+
             //send movement towards the server
-            throw new NotImplementedException();
+            //    String s =("ask:mv:" + direction.ToString + "");
+            
         }
 
         /// <summary>
@@ -296,6 +310,7 @@ namespace DragonsAndRabbits.Manager
                     if (p.getID() == id)
                     {
                         players.Remove(p);
+                        gui.updateGUI();
                     }
                 }
             }
@@ -306,6 +321,7 @@ namespace DragonsAndRabbits.Manager
                     if (d.getID() == id)
                     {
                         dragons.Remove(d);
+                        gui.updateGUI();
                     }
                 }
             }
@@ -319,7 +335,8 @@ namespace DragonsAndRabbits.Manager
         {
             this.id = id;
         }
-
+        
+        
         /// <summary>
         /// Setsthe time of the server
         /// </summary>

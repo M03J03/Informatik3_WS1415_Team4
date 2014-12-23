@@ -491,9 +491,10 @@ namespace DragonsAndRabbits.Client
             this.firstNeedMap = false;
             mgr.map(width, height, cells); 
             Connector.Connector.sendToServer("get:ents");
+            /*
             lastChance = new Thread(new ThreadStart(startGUI));
             lastChance.Start();
-
+            */
             
 
             
@@ -501,12 +502,14 @@ namespace DragonsAndRabbits.Client
         
         }
 
+        /*
         private void startGUI()
         {
             
             GUI.GUI g = new GUI.GUI();
             mgr.setGui(g);
         }
+         */
 
         private void doMessage(String msg)
         {
