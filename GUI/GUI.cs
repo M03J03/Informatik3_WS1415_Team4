@@ -374,108 +374,6 @@ namespace DragonsAndRabbits.GUI
                  currentCol++;
 
              }//End foreach mapcells
-
-
-
-
-
-
-
-
-
-            /*
-            foreach (MapCell mc in cells)
-            {
-                //now to draw the tile with the selected property
-                Manager.Properties toDraw = selectPropertyIcon(mc);
-
-             
-                //maps are shaped like a rectangle but not nescessarily a square
-                if(endOfLine(currentCol)){
-                   // Console.WriteLine("new Line!");
-                    currentRow++;
-                    currentCol = 0;
-                }
-
-
-                //PROPERTY: "WALKABLE"|"WALL"|"FOREST"|"WATER"|(ignoring "HUNTABLE")
-                            
-                        switch (toDraw)
-                         {
-                             case Manager.Properties.walkable:
-                                 //g.DrawImage(global::DragonsAndRabbits.Properties.Resources.stones, new Rectangle(currentCol * tileSizeInPx, currentRow * tileSizeInPx, tileSizeInPx, tileSizeInPx));
-                                PB[tmpCounter] = new System.Windows.Forms.PictureBox();
-                                PB[tmpCounter].Click += new System.EventHandler(this.OnClick);
-                                PB[tmpCounter].Size = new Size(30, 30);
-                                PB[tmpCounter].Margin = new System.Windows.Forms.Padding(0);
-                                //PB[tmpCounter].Image = Image.FromFile("C:\\Users\\Moe\\Documents\\Visual Studio 2012\\Projects\\Informatik3_WS1415_Team4\\GUI\\resources\\walkable.jpg");
-                                PB[tmpCounter].Image = (Image)(global::DragonsAndRabbits.Properties.Resources.walkable);
-                                PB[tmpCounter].Name = tmpCounter.ToString();
-                                PB[tmpCounter].SizeMode = PictureBoxSizeMode.Zoom;
-                                
-                                    // InvokeRequired required compares the thread ID of the
-                                    // calling thread to the thread ID of the creating thread.
-                                    // If these threads are different, it returns true.
-                                 PB[tmpCounter].Parent = this.mapViewPanel;
-                               
-                                    
-                                 mapViewPanel.Invoke(new myDelegate(drawMap));
-                                 this.mapViewPanel.Controls.Add(PB[tmpCounter]);tmpCounter++;break;
-
-                             case Manager.Properties.wall:
-                                PB[tmpCounter] = new System.Windows.Forms.PictureBox();
-                                PB[tmpCounter].Click += new System.EventHandler(this.OnClick);
-                                PB[tmpCounter].Size = new Size(30, 30);
-                                PB[tmpCounter].Margin = new System.Windows.Forms.Padding(0);
-                                PB[tmpCounter].Image = (Image)(global::DragonsAndRabbits.Properties.Resources.stones);
-                                //PB[tmpCounter].Parent = this.mapViewPanel;
-                                PB[tmpCounter].Name = tmpCounter.ToString();
-                              
-                                mapViewPanel.Invoke(new myDelegate(drawMap));
-                                this.mapViewPanel.Controls.Add(PB[tmpCounter]);tmpCounter++;break;
-
-                             case Manager.Properties.forest:
-                                PB[tmpCounter] = new System.Windows.Forms.PictureBox();
-                                PB[tmpCounter].Click += new System.EventHandler(this.OnClick);
-                                PB[tmpCounter].Size = new Size(30, 30);
-                                PB[tmpCounter].Margin = new System.Windows.Forms.Padding(0);
-                                PB[tmpCounter].Image = (Image)(global::DragonsAndRabbits.Properties.Resources.forest);
-                                //PB[tmpCounter].Parent = this.mapViewPanel;
-                                PB[tmpCounter].Name = tmpCounter.ToString();
-                                PB[tmpCounter].SizeMode = PictureBoxSizeMode.Zoom;
-                               this.mapViewPanel.Controls.Add(PB[tmpCounter]); tmpCounter++;break;
-
-                             case Manager.Properties.water:
-                                PB[tmpCounter] = new System.Windows.Forms.PictureBox();
-                                PB[tmpCounter].Click += new System.EventHandler(this.OnClick);
-                                PB[tmpCounter].Size = new Size(30, 30);
-                                PB[tmpCounter].Margin = new System.Windows.Forms.Padding(0);
-                                PB[tmpCounter].Image = (Image)(global::DragonsAndRabbits.Properties.Resources.water);
-                                //PB[tmpCounter].Parent = this.mapViewPanel;
-                                PB[tmpCounter].Name = tmpCounter.ToString();
-                                PB[tmpCounter].SizeMode = PictureBoxSizeMode.Zoom;
-                               this.mapViewPanel.Controls.Add(PB[tmpCounter]); tmpCounter++;break;
-
-                             //not necessarily needed - but default ;)
-                             case Manager.Properties.huntable:
-    
-                                PB[tmpCounter] = new System.Windows.Forms.PictureBox();
-                              
-                                PB[tmpCounter].Click += new System.EventHandler(this.OnClick);
-                                PB[tmpCounter].Size = new Size(30, 30);
-                                PB[tmpCounter].Margin = new System.Windows.Forms.Padding(0);
-                                PB[tmpCounter].Image = (Image)(global::DragonsAndRabbits.Properties.Resources.huntable);
-                                //PB[tmpCounter].Parent = this.mapViewPanel;
-                                PB[tmpCounter].Name = tmpCounter.ToString();
-                                PB[tmpCounter].SizeMode = PictureBoxSizeMode.Zoom;
-                               this.mapViewPanel.Controls.Add(PB[tmpCounter]); tmpCounter++;break;
-                        }
-                
-                //one tile ahead
-                currentCol++;
-
-            }//End foreach mapcells
-            */
             
         }
 
@@ -505,45 +403,7 @@ namespace DragonsAndRabbits.GUI
             {
                Graphics g = mapViewPanel.CreateGraphics();
                g.DrawImage(global::DragonsAndRabbits.Properties.Resources.player_female_2, new Rectangle((p.getRow() - 1) * tileSizeInPx, (p.getColumn() - 1) * tileSizeInPx, tileSizeInPx, tileSizeInPx));
-               
-                
-                
-               /* 
-                PictureBox PB = new PictureBox();
-                PB.Size = new Size(30, 30);
-                PB.Click += new System.EventHandler(this.OnClick);
-                PB.Margin = new System.Windows.Forms.Padding(0);
-                PB.Image = (Image)(global::DragonsAndRabbits.Properties.Resources.player_male);
-                PB.Parent = this.mapViewPanel;
-                PB.SizeMode = PictureBoxSizeMode.Zoom;
-
-                int X = p.getRow();  
-                int Y = p.getColumn(); 
-
-                int Result = X * mgr.getWidth() + Y;
-
-
-                int counter = this.mapViewPanel.Controls.Count;
-
-                System.Windows.Forms.Control[] tmp = new System.Windows.Forms.Control[(mgr.getWidth() * mgr.getHeight())+1];
-
-                this.mapViewPanel.Controls.CopyTo(tmp,0);
-
-                tmp[Result] = PB;
-
-                this.mapViewPanel.Controls.Clear();
-
-                for (int i = 0; i < tmp.Length-1 ; i++){
-                    this.mapViewPanel.Controls.Add(tmp[i]);
-                }
-
-
-               foreach (System.Windows.Forms.Control pb in tmp)
-                {
-                    this.mapViewPanel.Controls.Add(pb);
-                } 
-                */
-                          
+                                              
             }
 
 
@@ -604,46 +464,6 @@ namespace DragonsAndRabbits.GUI
                 {
                       Graphics g = mapViewPanel.CreateGraphics();
                       g.DrawImage(global::DragonsAndRabbits.Properties.Resources.dragon, new Rectangle((d.getRow() - 1) * tileSizeInPx, (d.getColumn() - 1) * tileSizeInPx, tileSizeInPx, tileSizeInPx));
-               
-                
-                
-                /*
-                PictureBox PB = new PictureBox();
-                PB.Size = new Size(30, 30);
-                PB.Click += new System.EventHandler(this.OnClick);
-                PB.Margin = new System.Windows.Forms.Padding(0);
-                PB.Image = (Image)(global::DragonsAndRabbits.Properties.Resources.dragon);
-                PB.Parent = this.mapViewPanel;
-                PB.SizeMode = PictureBoxSizeMode.Zoom;
-
-                int X = d.getRow();  
-                int Y = d.getColumn();
-
-                int Result = X * mgr.getWidth() + Y;
-
-
-                int counter = this.mapViewPanel.Controls.Count;
-
-                System.Windows.Forms.Control[] tmp = new System.Windows.Forms.Control[(mgr.getWidth() * mgr.getHeight()) + 1];
-
-                this.mapViewPanel.Controls.CopyTo(tmp, 0);
-
-                tmp[Result] = PB;
-
-                this.mapViewPanel.Controls.Clear();
-
-                for (int i = 0; i < tmp.Length - 1; i++)
-                {
-                    this.mapViewPanel.Controls.Add(tmp[i]);
-                }
-
-
-                      foreach (System.Windows.Forms.Control pb in tmp)
-                      {
-                          this.mapViewPanel.Controls.Add(pb);
-                      } */
-
-
                 }    
             }
 
